@@ -25,7 +25,7 @@ class VacancyController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Vacancy/Crete', []);
+        return Inertia::render('Vacancy/Create', []);
     }
 
     /**

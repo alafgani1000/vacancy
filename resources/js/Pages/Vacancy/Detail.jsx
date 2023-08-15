@@ -2,7 +2,7 @@ import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
 
-export default function Index({ auth }) {
+export default function Dashboard({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -19,13 +19,9 @@ export default function Index({ auth }) {
                     <div className="bg-white overflow-hidden shadow-md sm:rounded-lg">
                         <div className="p-6 text-gray-900">
                             <div className="flex justify-end">
-                                <NavLink
-                                    href={route("vacancy.create")}
-                                    active={route().current("vacancy.create")}
-                                    className="bg-sky-950 px-4 pt-2 pb-2 rounded-md text-white font-semibold shadow-md hover:text-sky-500 hover:bg-white"
-                                >
-                                    + New Data
-                                </NavLink>
+                                <button className="bg-sky-950 px-4 py-2 rounded-md text-white font-semibold shadow-md">
+                                    <span className="text-lg">+</span> New Data
+                                </button>
                             </div>
                             <div className="rounded-md rounded-tr-md bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white shadow-md">
                                 LOREM IPSUM DATA
@@ -34,23 +30,17 @@ export default function Index({ auth }) {
                                 {/* content */}
                                 <div className="rounded-md mb-5">
                                     <div className="bg-sky-500 h-full w-fit p-4 rounded-md text-white float-left mr-4">
-                                        <span className="text-3xl font-bold">
-                                            03
-                                        </span>
-                                        <br />
-                                        <span className="text-2xl font-bold">
-                                            Fri
+                                        <span className="text-lg font-bold">
+                                            03 Fri
                                         </span>
                                         <br />
                                         <span className="text-md font-bold">
-                                            2023
+                                            2023 d
                                         </span>
                                     </div>
                                     <div className="bg-white pl-4 pt-2 pb-2 rounded-xl text-black h-full">
                                         <p className="font-bold pb-2">
-                                            LOREM IPSUM SIMPLY
-                                            <br />
-                                            Remote / Jakarta
+                                            LOREM IPSUM
                                         </p>
                                         <p>
                                             Lorem Ipsum is simply dummy text of
@@ -60,25 +50,14 @@ export default function Index({ auth }) {
                                             since the 1500s, when an unknown
                                             printer took a galley of type and
                                             scrambled it to make a type five
+                                            <br />
+                                            <p>
+                                                <NavLink className="text-sky-500 font-medium">
+                                                    Read more....
+                                                </NavLink>
+                                            </p>
                                         </p>
-                                        <NavLink className="text-sky-500 font-medium">
-                                            Read more....
-                                        </NavLink>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* page */}
-                            <div className="grid grid-cols-2 mt-4 py-2 px-8">
-                                <div className="flex justify-end py-4 pe-4">
-                                    <button className="bg-sky-500 py-2 px-6 rounded-full text-white font-medium">
-                                        Prev
-                                    </button>
-                                </div>
-                                <div className="flex justify-start py-4 px-4">
-                                    <button className="bg-sky-500 py-2 px-6 rounded-full text-white font-medium">
-                                        Next
-                                    </button>
                                 </div>
                             </div>
                         </div>
