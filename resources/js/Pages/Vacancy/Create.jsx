@@ -69,18 +69,85 @@ export default function Create({ auth }) {
                                     />
                                 </div>
                                 <div className="grid grid-cols-2">
-                                    <div>
+                                    <div className="mr-4">
                                         <InputLabel
-                                            htmlFor="title"
-                                            value="Title"
+                                            htmlFor="work_type"
+                                            value="Work Type"
                                         />
                                         <TextInput
                                             id="first_name"
                                             className="mt-1 block w-full"
                                         />
                                     </div>
+                                    <div>
+                                        <InputLabel
+                                            htmlFor="job_level"
+                                            value="Job Level"
+                                        />
+                                        <select
+                                            id="small"
+                                            className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm "
+                                        >
+                                            <option value="US">
+                                                United States
+                                            </option>
+                                            <option value="CA">Canada</option>
+                                            <option value="FR">France</option>
+                                            <option value="DE">Germany</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="mt-6 space-y-6">
+                                <div className="mt-6 space-y-2">
+                                    <InputLabel
+                                        htmlFor="description"
+                                        value="Description"
+                                    />
+                                    <ReactQuill
+                                        style={{ height: "100%" }}
+                                        theme="snow"
+                                        modules={modules}
+                                        formats={formats}
+                                        onChange={(
+                                            content,
+                                            delta,
+                                            source,
+                                            editor
+                                        ) => {
+                                            setInvoice({
+                                                ...invoice,
+                                                remark: editor.getHTML(),
+                                            });
+                                        }}
+                                    />
+                                </div>
+                                <div className="mt-6 space-y-2">
+                                    <InputLabel
+                                        htmlFor="qualification"
+                                        value="Qualification"
+                                    />
+                                    <ReactQuill
+                                        style={{ height: "100%" }}
+                                        theme="snow"
+                                        modules={modules}
+                                        formats={formats}
+                                        onChange={(
+                                            content,
+                                            delta,
+                                            source,
+                                            editor
+                                        ) => {
+                                            setInvoice({
+                                                ...invoice,
+                                                remark: editor.getHTML(),
+                                            });
+                                        }}
+                                    />
+                                </div>
+                                <div className="mt-6 space-y-2">
+                                    <InputLabel
+                                        htmlFor="job_desc"
+                                        value="Job Desc"
+                                    />
                                     <ReactQuill
                                         style={{ height: "100%" }}
                                         theme="snow"

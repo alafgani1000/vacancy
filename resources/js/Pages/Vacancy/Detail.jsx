@@ -8,55 +8,136 @@ export default function Dashboard({ auth }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Vacancy
+                    Detail Vacancy
                 </h2>
             }
         >
-            <Head title="Vacancy" />
+            <Head title="Detail" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white overflow-hidden shadow-md sm:rounded-lg">
+                    <div className="bg-white overflow-hidden shadow-md sm:rounded-none">
                         <div className="p-6 text-gray-900">
-                            <div className="flex justify-end">
-                                <button className="bg-sky-950 px-4 py-2 rounded-md text-white font-semibold shadow-md">
-                                    <span className="text-lg">+</span> New Data
-                                </button>
-                            </div>
-                            <div className="rounded-md rounded-tr-md bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white shadow-md">
-                                LOREM IPSUM DATA
-                            </div>
-                            <div className="rounded-md bg-slate-50 p-3 text-black grid grid-flow-row auto-rows-max">
+                            <div className="bg-slate-50 p-3 text-black grid grid-flow-row auto-rows-max">
                                 {/* content */}
-                                <div className="rounded-md mb-5">
-                                    <div className="bg-sky-500 h-full w-fit p-4 rounded-md text-white float-left mr-4">
-                                        <span className="text-lg font-bold">
-                                            03 Fri
-                                        </span>
-                                        <br />
-                                        <span className="text-md font-bold">
-                                            2023 d
-                                        </span>
-                                    </div>
-                                    <div className="bg-white pl-4 pt-2 pb-2 rounded-xl text-black h-full">
+                                <div className="mb-5">
+                                    <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
+                                        <img
+                                            src="/storage/tailwin.png"
+                                            width="80px"
+                                            className="mb-2"
+                                        />
                                         <p className="font-bold pb-2">
-                                            LOREM IPSUM
+                                            LOREM IPSUM TITLE
                                         </p>
+                                    </div>
+                                    <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
                                         <p>
-                                            Lorem Ipsum is simply dummy text of
-                                            the printing and typesetting
-                                            industry. Lorem Ipsum has been the
-                                            industry's standard dummy text ever
-                                            since the 1500s, when an unknown
-                                            printer took a galley of type and
-                                            scrambled it to make a type five
-                                            <br />
-                                            <p>
-                                                <NavLink className="text-sky-500 font-medium">
-                                                    Read more....
-                                                </NavLink>
-                                            </p>
+                                            Lorem Ipsum is simply description
+                                            dummy text of the printing and
+                                            typesetting industry. Lorem Ipsum
+                                            has been the industry's standard
+                                            dummy text ever since the 1500s,
+                                            when an unknown printer took a
+                                            galley of type and scrambled it to
+                                            make a type five
                                         </p>
+
+                                        <table
+                                            className="table-auto mt-2"
+                                            cellPadding={3}
+                                        >
+                                            <tr>
+                                                <td>Location</td>
+                                                <td>:</td>
+                                                <td>Jakarta, Indonesia</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Work Type</td>
+                                                <td>:</td>
+                                                <td>Remote</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Job Level</td>
+                                                <td>:</td>
+                                                <td>Junior</td>
+                                            </tr>
+                                            <tr></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div className="mb-5">
+                                    <div className="bg-white pl-4 pt-2 pb-2 text-black h-full">
+                                        <p className="font-bold pb-2">
+                                            LOREM IPSUM QUALIFICATION
+                                        </p>
+                                        <ul className="list-disc list-inside">
+                                            <li>
+                                                Sed nec justo elementum,
+                                                vestibulum augue sit amet,
+                                                lacinia enim.
+                                            </li>
+                                            <li>
+                                                Donec tempus augue sed eros
+                                                tristique, ut euismod justo
+                                                blandit.
+                                            </li>
+                                            <li>
+                                                Cras ultricies ligula sit amet
+                                                sem blandit, at facilisis magna
+                                                blandit.
+                                            </li>
+                                            <li>
+                                                Maecenas vel nisi in eros
+                                                sollicitudin ultricies eu sit
+                                                amet nisl.
+                                            </li>
+                                            <li>
+                                                In et lacus ut lorem rhoncus
+                                                molestie pretium sed enim.
+                                            </li>
+                                            <li>
+                                                Curabitur vestibulum felis ac
+                                                dictum molestie.
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="mb-5">
+                                    <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
+                                        <p className="font-bold pb-2">
+                                            LOREM IPSUM JOB DESC
+                                        </p>
+                                        <ul className="list-disc list-inside">
+                                            <li>
+                                                Sed nec justo elementum,
+                                                vestibulum augue sit amet,
+                                                lacinia enim.
+                                            </li>
+                                            <li>
+                                                Donec tempus augue sed eros
+                                                tristique, ut euismod justo
+                                                blandit.
+                                            </li>
+                                            <li>
+                                                Cras ultricies ligula sit amet
+                                                sem blandit, at facilisis magna
+                                                blandit.
+                                            </li>
+                                            <li>
+                                                Maecenas vel nisi in eros
+                                                sollicitudin ultricies eu sit
+                                                amet nisl.
+                                            </li>
+                                            <li>
+                                                In et lacus ut lorem rhoncus
+                                                molestie pretium sed enim.
+                                            </li>
+                                            <li>
+                                                Curabitur vestibulum felis ac
+                                                dictum molestie.
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>

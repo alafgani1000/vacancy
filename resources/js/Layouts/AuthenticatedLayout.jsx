@@ -23,6 +23,12 @@ export default function Authenticated({ user, header, children }) {
 
                             <div className="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink
+                                    href={route("home")}
+                                    active={route().current("home")}
+                                >
+                                    Home
+                                </NavLink>
+                                <NavLink
                                     href={route("dashboard")}
                                     active={route().current("dashboard")}
                                 >
@@ -175,6 +181,11 @@ export default function Authenticated({ user, header, children }) {
             )}
 
             <main>{children}</main>
+            <footer className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div className="bg-white shadow-md py-6 px-4 sm:px-6 lg:px-8">
+                    &copy; 2023 Yasunaga Indonesia
+                </div>
+            </footer>
         </div>
     );
 }

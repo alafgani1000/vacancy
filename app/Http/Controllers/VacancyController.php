@@ -29,6 +29,14 @@ class VacancyController extends Controller
     }
 
     /**
+     * display detail vacancy
+     */
+    public function detail()
+    {
+        return Inertia::render('Vacancy/Detail',[]);
+    }
+
+    /**
      * store vacancy
      *  */
     public function store(Request $reques)

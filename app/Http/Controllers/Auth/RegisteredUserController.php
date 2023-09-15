@@ -17,7 +17,15 @@ use Inertia\Response;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * dis play the registration view for company
+     */
+    public function createCompany(): Response
+    {
+        return Inertia::render('Auth/RegisterCompany');
+    }
+
+    /**
+     * Display the registration view for job seeker.
      */
     public function create(): Response
     {
@@ -32,13 +40,16 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'user_category_id' => 1,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -47,6 +58,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect('/verify-email');
     }
 }
