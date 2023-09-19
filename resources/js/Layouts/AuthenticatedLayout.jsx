@@ -34,12 +34,20 @@ export default function Authenticated({ user, header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
-                                <NavLink
-                                    href={route("vacancy.index")}
-                                    active={route().current("vacancy.index")}
-                                >
-                                    Vacancy
-                                </NavLink>
+                                {user.user_category_id === 2 ? (
+                                    <>
+                                        <NavLink
+                                            href={route("vacancy.index")}
+                                            active={route().current(
+                                                "vacancy.index"
+                                            )}
+                                        >
+                                            Vacancy
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
 

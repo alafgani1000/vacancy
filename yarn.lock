@@ -461,6 +461,11 @@
   dependencies:
     client-only "^0.0.1"
 
+"@heroicons/react@^2.0.18":
+  version "2.0.18"
+  resolved "https://repo.huaweicloud.com/repository/npm/@heroicons/react/-/react-2.0.18.tgz#f80301907c243df03c7e9fd76c0286e95361f7c1"
+  integrity sha512-7TyMjRrZZMBPa+/5Y8lN0iyvUU/01PeMGX2+RE7cQWpEUIcb4QotzUObFkJDejj/HUH4qjP/eQ0gzzKs2f+6Yw==
+
 "@inertiajs/core@1.0.9":
   version "1.0.9"
   resolved "https://repo.huaweicloud.com/repository/npm/@inertiajs/core/-/core-1.0.9.tgz#347068b9d75e009b15f6a0568a8f022820fef888"

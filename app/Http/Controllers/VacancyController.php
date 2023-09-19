@@ -43,4 +43,20 @@ class VacancyController extends Controller
     {
 
     }
+
+    /**
+     * display detail vacancy for job seeker
+     */
+    public function vacancyDetail($id, $name)
+    {
+        return Inertia::render('Detail');
+    }
+
+    /**
+     * display form apply
+     */
+    public function apply(Request $request)
+    {
+        return Inertia::render('Apply');
+    }
 }

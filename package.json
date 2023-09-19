@@ -20,6 +20,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@heroicons/react": "^2.0.18",
         "react-quill": "^2.0.0",
         "react-select": "^5.7.4"
     }

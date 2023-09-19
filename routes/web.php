@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -17,15 +19,9 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'hasVeried' => (Auth::user() != null) ? Auth::user()->hasVerifiedEmail() : "",
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-})->name('home');
+Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/detail/{id}/{name}', [HomeController::class, 'detail'])->name('detail');
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -35,6 +31,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/vacancy/{id}/apply', [VacancyController::class, 'apply'])->name('vacancy.apply');
 
     Route::middleware(['userverified'])->group(function ()  {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
