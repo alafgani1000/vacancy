@@ -114,10 +114,7 @@ export default function Header({ user, header }) {
                                     </>
                                 ) : (
                                     <div className="hidden sm:flex sm:items-center sm:ml-6">
-                                        <NavLink
-                                            href={route("login")}
-                                            className="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                        >
+                                        <NavLink href={route("login")}>
                                             Log in
                                         </NavLink>
 

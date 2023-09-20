@@ -59,7 +59,7 @@ export default function Create({ auth }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                         <div className="rounded-md rounded-tr-md bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white shadow-md">
-                            LOREM IPSUM DATA
+                            Create New Vacancy
                         </div>
                         <section>
                             <form className="mt-6 space-y-6">

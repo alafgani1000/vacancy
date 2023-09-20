@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\StageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,10 +34,14 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/vacancy/{id}/apply', [VacancyController::class, 'apply'])->name('vacancy.apply');
 
-    Route::middleware(['userverified'])->group(function ()  {
+    Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
         Route::get('/vacancy/create', [VacancyController::class, 'create'])->name('vacancy.create');
         Route::get('/vacancy/{id}/detail', [VacancyController::class, 'detail'])->name('vacancy.detail');
+    });
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/stage', [StageController::class, 'index'])->name('stage.index');
     });
 });
 

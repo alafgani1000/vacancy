@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Vacancy;
 
 class VacancyController extends Controller
 {
@@ -39,9 +40,18 @@ class VacancyController extends Controller
     /**
      * store vacancy
      *  */
-    public function store(Request $reques)
+    public function store(VacancyStoreRequest $request)
     {
-
+        Vacancy::create([
+            'user_id' => Auth::user()->id,
+            'job_name' => $request->title,
+            'description' => $request->description,
+            'qualification' => $request->qualification,
+            'job_desc' => $request->job_desc,
+            'work_type_id' => $request->work_type,
+            'jobs_level_id' => $request->job_level,
+            'end_date' => $request->end_date
+        ]);
     }
 
     /**

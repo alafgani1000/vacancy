@@ -48,6 +48,20 @@ export default function Authenticated({ user, header, children }) {
                                 ) : (
                                     ""
                                 )}
+                                {user.user_category_id === 3 ? (
+                                    <>
+                                        <NavLink
+                                            href={route("stage.index")}
+                                            active={route().current(
+                                                "stage.index"
+                                            )}
+                                        >
+                                            Stage
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
 
