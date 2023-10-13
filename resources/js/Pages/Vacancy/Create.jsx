@@ -7,6 +7,7 @@ import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { Transition } from "@headlessui/react";
+import { useState } from "react";
 
 const modules = {
     toolbar: [
@@ -44,6 +45,17 @@ const formats = [
 ];
 
 export default function Create({ auth }) {
+    const [dataForm, setDataForm] = useState({});
+
+    // handle change form
+    const handleChange = (event) => {
+        console.log(event);
+        setDataForm((prev) => ({
+            ...prev,
+            [event.target.name]: event.target.value,
+        }));
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -67,7 +79,10 @@ export default function Create({ auth }) {
                                     <InputLabel htmlFor="title" value="Title" />
                                     <TextInput
                                         id="title"
+                                        name="title"
+                                        value={dataForm.title}
                                         className="mt-1 block w-full"
+                                        onChange={handleChange}
                                     />
                                 </div>
                                 <div className="grid grid-cols-2">
@@ -77,7 +92,10 @@ export default function Create({ auth }) {
                                             value="Work Type"
                                         />
                                         <TextInput
-                                            id="first_name"
+                                            id="work_type"
+                                            name="work_type"
+                                            value={dataForm.work_type}
+                                            onChange={handleChange}
                                             className="mt-1 block w-full"
                                         />
                                     </div>
