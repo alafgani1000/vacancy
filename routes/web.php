@@ -46,6 +46,7 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::middleware(['admin'])->group(function () {
         Route::get('/stage', [StageController::class, 'index'])->name('stage.index');
+        Route::post('/stage', [StageController::class, 'store'])->name('store.index');
     });
 });
 

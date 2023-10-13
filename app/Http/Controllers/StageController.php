@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Stage;
-use App\Http\Request\SageStoreRequest;
+use App\Http\Requests\StageStoreRequest;
 
 class StageController extends Controller
 {
@@ -28,9 +28,9 @@ class StageController extends Controller
     {
         Stage::create([
             'name' => $request->name,
-            'desc' => $request->desc
+            'desc' => $request->description
         ]);
-
+        return to_route('stage.index');
     }
 
     /**

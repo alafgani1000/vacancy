@@ -49,7 +49,6 @@ export default function Create({ auth }) {
 
     // handle change form
     const handleChange = (event) => {
-        console.log(event);
         setDataForm((prev) => ({
             ...prev,
             [event.target.name]: event.target.value,
