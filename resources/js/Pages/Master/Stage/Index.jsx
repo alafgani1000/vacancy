@@ -2,13 +2,16 @@ import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
-import { Head } from "@inertiajs/react";
 import { useState } from "react";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 
 export default function Index({ auth, stages }) {
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({ name: "", description: "" });
+
+    const { data, total } = stages;
+    console.log(stages);
+    console.log(total);
 
     const showFormStage = (status) => {
         if (status === true) {
@@ -114,7 +117,7 @@ export default function Index({ auth, stages }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {stages.map((stage) => {
+                                    {data.map((stage) => {
                                         return (
                                             <tr
                                                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
