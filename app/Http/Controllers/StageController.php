@@ -12,17 +12,18 @@ class StageController extends Controller
 {
     /**
      * view data master stages
-     *
+     * @return view
      */
-    public function index()
+    public function index(Request $req)
     {
-        $stages = Stage::paginate(1);
-        return Inertia::render('Master/Stage/Index',['stages' => $stages]);
+        $stages = Stage::orderBy('id','desc')->paginate(5);
+        $page = $req->page;
+        return Inertia::render('Master/Stage/Index',['stages' => $stages, 'page' => $page]);
     }
 
     /**
      * store data master stage
-     *
+     * @return view
      */
     public function store(StageStoreRequest $request)
     {
@@ -34,54 +35,60 @@ class StageController extends Controller
     }
 
     /**
-     * view create new stage
-     *
+     * view create new stage     *
      */
     public function create()
     {
         return Inertia::render('Master/Stage/Create');
     }
 
-    public function pagination($currentPage, $jumlahPage)
+    /**
+     * edit stage
+     */
+    public function edit($id)
     {
-        $perPage = 5;
-        $break = 4;
+        $stage = Stage::find($id);
+        return $stage;
+    }
+
+    /**
+     * update stage
+     */
+    public function update(StageStoreRequest $request, $id)
+    {
+        Stage::where('id',$id)->update([
+            'name' => $request->name,
+            'desc' => $request->description
+        ]);
+        return to_route('stage.index');
+    }
+
+    /**
+     * delete stage
+     */
+    public function delete($id)
+    {
+        Stage::where('id',$id)->delete();
+        return to_route('stage.index');
+    }
+
+    public function pagination($currentPage, $totalPage, $jumlahPerpage)
+    {
         $start = 0;
         $end = 0;
-        if($currentPage == 1) {
-            $start = 1;
-            $end = 5;
-        } else {
-            if ($currentPage >= 1 and $currentPage <= 4) {
-                $start = ($perPage - $currentPage) - ($perPage - ($perPage - $currentPage));
-                $start = $start < 0 ? $start * -1 : $start;
-                $end = $currentPage + ($perPage - $currentPage);
+        if ($currentPage <= $totalPage) {
+            $countBreak = round($currentPage / ($jumlahPerpage - 2.5));
+            if ($currentPage >= 1 and $currentPage < $jumlahPerpage ) {
+                $start = $jumlahPerpage - ($jumlahPerpage - 1);
+                $end = $jumlahPerpage;
             } else {
-                $start = 5 - 1; //5 (5 + 3) (5-3);
-                $end = 5 + 3;
-
-                $start = 6 - 2; //6
-                $end = 6 + 2;
-
-                $start = 7 - 3; //7
-                $end = 7 + 1;
-
-                $start = 8 - 1; //8
-                $end = 8 + 3;
-
-                $start = 9 - 2; //9
-                $end = 9 + 2;
-
-                $start = 10 - 3; //
-                $end = 10 + 1;
-
-                $start = 11 - 1;
-                $end = 11 + 3;
-
-                $start = 12 - 2;
-                $end = 12 + 2;
+                $start = ($countBreak - 1) * ($jumlahPerpage - 2) + 1;
+                $end =  $start + ($jumlahPerpage-1);
             }
-
+            if ($end > $totalPage) {
+                $end = $totalPage;
+            }
+            return [$start, $end];
         }
     }
 }

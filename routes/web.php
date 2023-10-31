@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VacancyController;
 use App\Http\Controllers\StageController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -45,8 +46,15 @@ Route::middleware(['auth','verified'])->group(function () {
     });
 
     Route::middleware(['admin'])->group(function () {
+        // stage
         Route::get('/stage', [StageController::class, 'index'])->name('stage.index');
-        Route::post('/stage', [StageController::class, 'store'])->name('store.index');
+        Route::post('/stage', [StageController::class, 'store'])->name('stage.store');
+        Route::get('/stage/{id}/edit', [StageController::class, 'edit'])->name('stage.edit');
+        Route::put('/stage/{id}/update', [StageController::class, 'update'])->name('stage.update');
+        Route::delete('/stage/{id}/delete', [StageController::class, 'delete'])->name('stage.delete');
+        // status
+        Route::get('/status', [StatusController::class, 'index'])->name('status.index');
+        Route::post('/status', [StatusController::class, 'store'])->name('status.store');
     });
 });
 

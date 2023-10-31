@@ -77,25 +77,16 @@ export default function Authenticated({ user, header, children }) {
                                             <Dropdown.Content>
                                                 <Dropdown.Link
                                                     href={route("stage.index")}
-                                                    active={route().current(
-                                                        "stage.index"
-                                                    )}
                                                 >
                                                     Stage
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
                                                     href={route("stage.index")}
-                                                    active={route().current(
-                                                        "stage.index"
-                                                    )}
                                                 >
                                                     Job Level
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
-                                                    href={route("stage.index")}
-                                                    active={route().current(
-                                                        "stage.index"
-                                                    )}
+                                                    href={route("status.index")}
                                                 >
                                                     Status
                                                 </Dropdown.Link>
