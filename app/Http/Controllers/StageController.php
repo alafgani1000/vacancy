@@ -16,7 +16,7 @@ class StageController extends Controller
      */
     public function index(Request $req)
     {
-        $stages = Stage::orderBy('id','desc')->paginate(5);
+        $stages = Stage::orderBy('id','desc')->where('name','like','%'.$req->search.'%')->paginate(5);
         $page = $req->page;
         return Inertia::render('Master/Stage/Index',['stages' => $stages, 'page' => $page]);
     }
