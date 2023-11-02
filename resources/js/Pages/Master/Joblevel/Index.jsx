@@ -11,7 +11,7 @@ import pickBy from "loadsh/pickBy";
 import Modal from "@/Components/Modal";
 import Confirm from "@/Components/Confirm";
 
-export default function Index({ auth, stages, page }) {
+export default function Index({ auth, joblevels, page }) {
     const [showForm, setShowForm] = useState(false);
     const [current, setCurrent] = useState(page);
     const [isLoad, setIsLoad] = useState(false);
@@ -20,7 +20,7 @@ export default function Index({ auth, stages, page }) {
         name: "",
         description: "",
     });
-    const [dataStage, setDataStage] = useState({});
+    const [dataJobLevel, setDataJobLevel] = useState({});
     const [isOpen, setIsOpen] = useState(false);
     const [editId, setEditId] = useState("");
     const [showToast, setShowToast] = useState(false);
@@ -35,7 +35,7 @@ export default function Index({ auth, stages, page }) {
     let startPage = useRef();
     let endPage = useRef();
 
-    const { data, last_page, total } = stages;
+    const { data, last_page, total } = joblevels;
 
     useEffect(() => {
         if (wasSearch) {
@@ -109,7 +109,7 @@ export default function Index({ auth, stages, page }) {
         setIsOpen(true);
     };
 
-    const showFormStage = (status) => {
+    const showFormJobLevel = (status) => {
         if (status === true) {
             setFormData({
                 name: "",
@@ -131,7 +131,7 @@ export default function Index({ auth, stages, page }) {
     };
 
     const handleStore = () => {
-        router.post("/stage", formData, {
+        router.post("/job-level", formData, {
             onError: (errors) => {
                 if (errors.name) {
                     setErrorMessage((prev) => ({
@@ -151,7 +151,7 @@ export default function Index({ auth, stages, page }) {
     };
 
     const handleUpdate = (id) => {
-        router.put(`/stage/${id}/update`, formData, {
+        router.put(`/job-level/${id}/update`, formData, {
             onSuccess: () => {
                 setToastData({
                     message: "Update Success",
@@ -171,7 +171,7 @@ export default function Index({ auth, stages, page }) {
 
     const handleEdit = (id) => {
         axios
-            .get(`/stage/${id}/edit`, {})
+            .get(`/job-level/${id}/edit`, {})
             .then(({ data }) => {
                 setEditId(data.id);
                 setFormData({
@@ -194,7 +194,7 @@ export default function Index({ auth, stages, page }) {
     };
 
     const deleteStage = () => {
-        router.delete(`/stage/${dataStage.id}/delete`, {
+        router.delete(`/job-level/${dataJobLevel.id}/delete`, {
             preserveScroll: true,
             onSuccess: () => {
                 setToastData({
@@ -214,8 +214,8 @@ export default function Index({ auth, stages, page }) {
         });
     };
 
-    const confirmDelete = (stage) => {
-        setDataStage(stage);
+    const confirmDelete = (joblevel) => {
+        setDataJobLevel(joblevel);
         setShowConfirm(true);
     };
 
@@ -228,8 +228,8 @@ export default function Index({ auth, stages, page }) {
             return (
                 <div className="w-full ms-2 me-2 mt-4">
                     <LinkNumber
-                        href={route("stage.index", { page: 1 })}
-                        active={route().current("stage.index", {
+                        href={route("joblevel.index", { page: 1 })}
+                        active={route().current("joblevel.index", {
                             page: 1,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -240,11 +240,11 @@ export default function Index({ auth, stages, page }) {
                         return (
                             <LinkNumber
                                 key={value}
-                                href={route("stage.index", {
+                                href={route("joblevel.index", {
                                     search: search,
                                     page: value,
                                 })}
-                                active={route().current("stage.index", {
+                                active={route().current("joblevel.index", {
                                     page: value,
                                 })}
                                 className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -255,8 +255,8 @@ export default function Index({ auth, stages, page }) {
                         );
                     })}
                     <LinkNumber
-                        href={route("stage.index", { page: last_page })}
-                        active={route().current("stage.index", {
+                        href={route("joblevel.index", { page: last_page })}
+                        active={route().current("joblevel.index", {
                             page: last_page,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -278,7 +278,7 @@ export default function Index({ auth, stages, page }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Stages
+                    Job Level
                 </h2>
             }
         >
@@ -291,10 +291,10 @@ export default function Index({ auth, stages, page }) {
                             <div className="flex justify-end mb-4">
                                 {showForm === false ? (
                                     <button
-                                        onClick={() => showFormStage(true)}
+                                        onClick={() => showFormJobLevel(true)}
                                         className="bg-sky-950 px-2 pt-2 pb-2 text-white font-medium shadow-md rounded-md"
                                     >
-                                        New Stage
+                                        New Level
                                     </button>
                                 ) : (
                                     <div className="w-full p-3 rounded-md shadow-md">
@@ -314,25 +314,6 @@ export default function Index({ auth, stages, page }) {
                                                     className="mt-2 text-red-600"
                                                     htmlFor="name"
                                                     value={errorMessage.name}
-                                                />
-                                            </div>
-                                            <div className="mx-2">
-                                                <InputLabel
-                                                    htmlFor="description"
-                                                    value="Description"
-                                                />
-                                                <TextInput
-                                                    name="description"
-                                                    value={formData.description}
-                                                    onChange={handleChange}
-                                                    className="mt-1 block w-full"
-                                                />
-                                                <InputLabel
-                                                    className="mt-2 text-red-600"
-                                                    htmlFor="name"
-                                                    value={
-                                                        errorMessage.description
-                                                    }
                                                 />
                                             </div>
                                             <div className="mx-2">
@@ -360,7 +341,9 @@ export default function Index({ auth, stages, page }) {
                                                     )}
                                                     <button
                                                         onClick={() =>
-                                                            showFormStage(false)
+                                                            showFormJobLevel(
+                                                                false
+                                                            )
                                                         }
                                                         className="bg-red-700 px-2 pt-2 pb-2 mt-2 text-white font-medium shadow-md rounded-r-md ml-0"
                                                     >
@@ -388,9 +371,6 @@ export default function Index({ auth, stages, page }) {
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
                                             <th className="px-6 py-3">Name</th>
-                                            <th className="px-6 py-3">
-                                                Description
-                                            </th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -403,9 +383,6 @@ export default function Index({ auth, stages, page }) {
                                                 >
                                                     <td className="px-6 py-3">
                                                         {stage.name}
-                                                    </td>
-                                                    <td className="px-6 py-3">
-                                                        {stage.desc}
                                                     </td>
                                                     <td>
                                                         <div className="inline-flex">

@@ -16,7 +16,7 @@ class StatusController extends Controller
      */
     public function index(Request $req)
     {
-        $status = Status::paginate(5);
+        $status = Status::where('name', 'like', '%'.$req->search.'%')->orderBy('id', 'desc')->paginate(5);
         $page = $req->page;
         return Inertia::render('Master/Status/Index',['status' => $status, 'page' => $page]);
     }
@@ -30,6 +30,36 @@ class StatusController extends Controller
             'name' => $req->name,
             'desc' => $req->description
         ]);
+        return to_route('status.index');
+    }
+
+    /**
+     * edit status
+     */
+    public function edit($id)
+    {
+        $status = Status::find($id);
+        return $status;
+    }
+
+    /**
+     * update status
+     */
+    public function update(StatusStoreRequest $req, $id)
+    {
+        Status::where('id',$id)->update([
+            'name' => $req->name,
+            'desc' => $req->description
+        ]);
+        return to_route('status.index');
+    }
+
+    /**
+     * delete stage
+     */
+    public function delete($id)
+    {
+        Status::where('id',$id)->delete();
         return to_route('status.index');
     }
 

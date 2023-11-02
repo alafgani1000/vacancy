@@ -5,6 +5,8 @@ use App\Http\Controllers\VacancyController;
 use App\Http\Controllers\StageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JobLevelController;
+use App\Http\Controllers\WorkTypeController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,14 +49,38 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::middleware(['admin'])->group(function () {
         // stage
-        Route::get('/stage', [StageController::class, 'index'])->name('stage.index');
-        Route::post('/stage', [StageController::class, 'store'])->name('stage.store');
-        Route::get('/stage/{id}/edit', [StageController::class, 'edit'])->name('stage.edit');
-        Route::put('/stage/{id}/update', [StageController::class, 'update'])->name('stage.update');
-        Route::delete('/stage/{id}/delete', [StageController::class, 'delete'])->name('stage.delete');
+        Route::controller(StageController::class)->group(function () {
+            Route::get('/stage', 'index')->name('stage.index');
+            Route::post('/stage', 'store')->name('stage.store');
+            Route::get('/stage/{id}/edit', 'edit')->name('stage.edit');
+            Route::put('/stage/{id}/update', 'update')->name('stage.update');
+            Route::delete('/stage/{id}/delete', 'delete')->name('stage.delete');
+        });
         // status
-        Route::get('/status', [StatusController::class, 'index'])->name('status.index');
-        Route::post('/status', [StatusController::class, 'store'])->name('status.store');
+        Route::controller(StatusController::class)->group(function () {
+            Route::get('/status', 'index')->name('status.index');
+            Route::post('/status', 'store')->name('status.store');
+            Route::get('/status/{id}/edit', 'edit')->name('status.edit');
+            Route::put('/status/{id}/update', 'update')->name('status.update');
+            Route::delete('/status/{id}/delete', 'delete')->name('status.delete');
+        });
+        // job level
+        Route::controller(JobLevelController::class)->group(function () {
+            Route::get('/job-level', 'index')->name('joblevel.index');
+            Route::post('/job-level', 'store')->name('joblevel.store');
+            Route::get('/job-level/{id}/edit', 'edit')->name('joblevel.edit');
+            Route::put('/job-level/{id}/update', 'update')->name('joblevel.update');
+            Route::delete('/job-level/{id}/delete', 'delete')->name('joblevel.delete');
+        });
+        // work type
+        Route::controller(WorkTypeController::class)->group(function () {
+            Route::get('/work-type', 'index')->name('worktype.index');
+            Route::post('/work-type', 'store')->name('worktype.store');
+            Route::get('/work-type/{id}/edit', 'edit')->name('worktype.edit');
+            Route::put('/work-type/{id}/update', 'update')->name('worktype.update');
+            Route::delete('/work-type/{id}/delete', 'delete')->name('worktype.delete');
+        });
+
     });
 });
 

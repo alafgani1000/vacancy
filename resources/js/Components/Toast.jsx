@@ -1,9 +1,11 @@
 export default function Toast({
     time = 0,
     show = false,
-    className,
+    className = "",
     message = "",
     falseShow,
+    color = "",
+    ...props
 }) {
     setTimeout(() => {
         falseShow();
@@ -11,7 +13,12 @@ export default function Toast({
     if (show) {
         return (
             <div
-                className={`fixed inline-flex top-0 right-0 m-4 py-3 px-4 rounded-md ${className}`}
+                {...props}
+                className={
+                    "fixed inline-flex top-0 right-0 m-4 py-3 px-4 rounded-md " +
+                    (color === "success" ? "bg-green-500 " : "bg-red-500 ") +
+                    className
+                }
             >
                 <span className="mr-3 p-1 bg-white rounded-full">
                     <svg

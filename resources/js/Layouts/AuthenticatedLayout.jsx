@@ -81,7 +81,9 @@ export default function Authenticated({ user, header, children }) {
                                                     Stage
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
-                                                    href={route("stage.index")}
+                                                    href={route(
+                                                        "joblevel.index"
+                                                    )}
                                                 >
                                                     Job Level
                                                 </Dropdown.Link>
