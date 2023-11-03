@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\PersonalDataUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -36,6 +37,20 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        return Redirect::route('profile.edit');
+    }
+
+    /**
+     * update personal data
+     */
+    public function updatePersonalData(PersonalDataUpdateRequest $request)
+    {
+        User::where('id', Auth::user()->id)->update([
+            'sex' => $request->sex,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+        ]);
 
         return Redirect::route('profile.edit');
     }

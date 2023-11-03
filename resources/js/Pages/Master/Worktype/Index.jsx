@@ -278,7 +278,7 @@ export default function Index({ auth, worktypes, page }) {
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Wprk Type
+                    Work Type
                 </h2>
             }
         >

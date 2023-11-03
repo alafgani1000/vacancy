@@ -24,7 +24,7 @@ class WorkTypeController extends Controller
     /**
      * store data master work type
      */
-    public function store(worktype $req)
+    public function store(WorkTypeStoreRequest $req)
     {
         WorkType::create([
             'name' => $req->name
@@ -44,7 +44,7 @@ class WorkTypeController extends Controller
     /**
      * update work type
      */
-    public function update(worktype $req, $id)
+    public function update(WorkTypeStoreRequest $req, $id)
     {
         WorkType::where('id',$id)->update([
             'name' => $req->name

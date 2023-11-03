@@ -35,16 +35,13 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/personal-data', [ProfileController::class, 'updatePersonalData'])->name('personal-data.update');
     Route::get('/vacancy/{id}/apply', [VacancyController::class, 'apply'])->name('vacancy.apply');
 
     Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
         Route::get('/vacancy/create', [VacancyController::class, 'create'])->name('vacancy.create');
         Route::get('/vacancy/{id}/detail', [VacancyController::class, 'detail'])->name('vacancy.detail');
-
-        Route::controller(JobLevelController::class)->prefix('job-level')->group(function () {
-
-        });
     });
 
     Route::middleware(['admin'])->group(function () {
