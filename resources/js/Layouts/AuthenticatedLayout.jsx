@@ -92,6 +92,13 @@ export default function Authenticated({ user, header, children }) {
                                                 >
                                                     Status
                                                 </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route(
+                                                        "worktype.index"
+                                                    )}
+                                                >
+                                                    Work Type
+                                                </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </>

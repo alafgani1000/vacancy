@@ -16,9 +16,9 @@ class WorkTypeController extends Controller
      */
     public function index(Request $req)
     {
-        $worktypes = WorkType::whre('name','like','%'.$req->search.'%')->orderBy('created_at','desc')->paginate(5);
+        $worktypes = WorkType::where('name','like','%'.$req->search.'%')->orderBy('created_at','desc')->paginate(5);
         $page = $req->page;
-        return Inertia::render('Master/Joblevel/Index',['worktypes' => $worktypes, 'page' => $page]);
+        return Inertia::render('Master/Worktype/Index',['worktypes' => $worktypes, 'page' => $page]);
     }
 
     /**

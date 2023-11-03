@@ -108,6 +108,13 @@ export default function Header({ user, header }) {
                                                         >
                                                             Status
                                                         </Dropdown.Link>
+                                                        <Dropdown.Link
+                                                            href={route(
+                                                                "worktype.index"
+                                                            )}
+                                                        >
+                                                            Work Type
+                                                        </Dropdown.Link>
                                                     </Dropdown.Content>
                                                 </Dropdown>
                                             </>
