@@ -42,6 +42,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
         Route::get('/vacancy/create', [VacancyController::class, 'create'])->name('vacancy.create');
         Route::get('/vacancy/{id}/detail', [VacancyController::class, 'detail'])->name('vacancy.detail');
+        Route::post('/vacancy', [VacancyController::class, 'store'])->name('vacancy.store');
     });
 
     Route::middleware(['admin'])->group(function () {

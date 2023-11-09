@@ -11,7 +11,7 @@ class VacancyStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,7 +27,10 @@ class VacancyStoreRequest extends FormRequest
             'qualification' => 'required',
             'job_desc' => 'required',
             'work_type' => 'required',
-            'job_level' => 'required'
+            'job_level' => 'required',
+            'city' => 'required',
+            'country' => 'required',
+            'end_date' => 'required'
         ];
     }
 }

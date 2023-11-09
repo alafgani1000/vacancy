@@ -20,7 +20,10 @@ return new class extends Migration
             $table->longText('job_desc');
             $table->integer('work_type_id');
             $table->integer('jobs_level_id');
-            $table->string('location');
+            $table->string('location')->nullable();
+            $table->string('city');
+            $table->string('country');
+            $table->date('published_at')->nullable();
             $table->date('end_date')->nullable();
             $table->integer('status_id')->unsigned();
             $table->timestamps();

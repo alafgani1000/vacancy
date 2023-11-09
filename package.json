@@ -21,7 +21,9 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.0.18",
+        "html-react-parser": "^5.0.6",
         "loadsh": "^0.0.4",
+        "moment": "^2.29.4",
         "react-quill": "^2.0.0",
         "react-select": "^5.7.4"
     }

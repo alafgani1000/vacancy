@@ -2,7 +2,7 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
-import { Link, useForm, usePage } from "@inertiajs/react";
+import { Link, router, useForm, usePage } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import Select from "@/Components/Select";
 import TextArea from "@/Components/TextArea";
@@ -14,10 +14,25 @@ export default function UpdatePersonalData({
     className = "",
 }) {
     const user = usePage().props.auth.user;
-    const [formData, setFormData] = useState({});
+    const [errorMessage, setErrorMessage] = useState({});
+    const [formData, setFormData] = useState({
+        sex: user.sex,
+        phone_number: user.phone_number,
+        address: user.address,
+    });
 
     function submit(event) {
         event.preventDefault();
+        router.patch("/personal-data", formData, {
+            onError: function (errors) {
+                if (errors.phone_number) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        [event.target.name]: event.target.value,
+                    }));
+                }
+            },
+        });
     }
 
     function handleChange(event) {
@@ -45,7 +60,7 @@ export default function UpdatePersonalData({
 
                     <Select
                         name="sex"
-                        defaultValue={user.sex}
+                        defaultValue={formData.sex}
                         onChange={handleChange}
                     >
                         <option value="">-- Please Select --</option>
@@ -62,7 +77,7 @@ export default function UpdatePersonalData({
                     <TextInput
                         id="phone_number"
                         className="mt-1 block w-full"
-                        value={user.phone_number}
+                        value={formData.phone_number}
                         onChange={handleChange}
                         name="phone_number"
                         required
@@ -79,7 +94,7 @@ export default function UpdatePersonalData({
                     <TextArea
                         id="address"
                         className="mt-1 block w-full"
-                        value={user.address}
+                        value={formData.address}
                         onChange={handleChange}
                         name="address"
                         required

@@ -1,13 +1,14 @@
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { Transition } from "@headlessui/react";
 import { useState } from "react";
+import InputError from "@/Components/InputError";
+import Toast from "@/Components/Toast";
 
 const modules = {
     toolbar: [
@@ -44,8 +45,29 @@ const formats = [
     "background",
 ];
 
-export default function Create({ auth }) {
-    const [dataForm, setDataForm] = useState({});
+export default function Create({ auth, workTypes, jobLevels }) {
+    const [dataForm, setDataForm] = useState({
+        title: "",
+        work_type: "",
+        job_level: "",
+        description: "",
+        qualification: "",
+        job_desc: "",
+        city: "",
+        country: "",
+        end_date: "",
+    });
+    const [errorMessage, setErrorMessage] = useState({
+        title: "",
+        work_type: "",
+        job_level: "",
+        description: "",
+        qualification: "",
+        job_desc: "",
+        city: "",
+        country: "",
+        end_date: "",
+    });
 
     // handle change form
     const handleChange = (event) => {
@@ -55,12 +77,84 @@ export default function Create({ auth }) {
         }));
     };
 
+    //handle submit
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        router.post("/vacancy", dataForm, {
+            onError: function (errors) {
+                if (errors.title) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        title: errors.title,
+                    }));
+                }
+
+                if (errors.work_type) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        work_type: errors.work_type,
+                    }));
+                }
+
+                if (errors.job_level) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        job_level: errors.job_level,
+                    }));
+                }
+
+                if (errors.city) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        city: errors.city,
+                    }));
+                }
+
+                if (errors.country) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        country: errors.country,
+                    }));
+                }
+
+                if (errors.end_date) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        end_date: errors.end_date,
+                    }));
+                }
+
+                if (errors.description) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        description: errors.description,
+                    }));
+                }
+
+                if (errors.qualification) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        qualification: errors.qualification,
+                    }));
+                }
+
+                if (errors.job_desc) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        job_desc: errors.job_desc,
+                    }));
+                }
+            },
+            onSuccess: function () {},
+        });
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Add New Data
+                    Create New Vacancy
                 </h2>
             }
         >
@@ -73,7 +167,10 @@ export default function Create({ auth }) {
                             Create New Vacancy
                         </div>
                         <section>
-                            <form className="mt-6 space-y-6">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="mt-6 space-y-6"
+                            >
                                 <div>
                                     <InputLabel htmlFor="title" value="Title" />
                                     <TextInput
@@ -83,6 +180,11 @@ export default function Create({ auth }) {
                                         className="mt-1 block w-full"
                                         onChange={handleChange}
                                     />
+
+                                    <InputError
+                                        className="mt-2"
+                                        message={errorMessage.title}
+                                    />
                                 </div>
                                 <div className="grid grid-cols-2">
                                     <div className="mr-4">
@@ -90,12 +192,30 @@ export default function Create({ auth }) {
                                             htmlFor="work_type"
                                             value="Work Type"
                                         />
-                                        <TextInput
-                                            id="work_type"
+                                        <select
+                                            id="small"
                                             name="work_type"
-                                            value={dataForm.work_type}
+                                            defaultValue={dataForm.work_type}
                                             onChange={handleChange}
-                                            className="mt-1 block w-full"
+                                            className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm "
+                                        >
+                                            <option value="">
+                                                -- Please select --
+                                            </option>
+                                            {workTypes.map((data) => {
+                                                return (
+                                                    <option
+                                                        key={data.id}
+                                                        value={data.id}
+                                                    >
+                                                        {data.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.work_type}
                                         />
                                     </div>
                                     <div>
@@ -105,15 +225,83 @@ export default function Create({ auth }) {
                                         />
                                         <select
                                             id="small"
+                                            name="job_level"
+                                            defaultValue={dataForm.job_level}
+                                            onChange={handleChange}
                                             className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm "
                                         >
-                                            <option value="US">
-                                                United States
+                                            <option value="">
+                                                -- Please select --
                                             </option>
-                                            <option value="CA">Canada</option>
-                                            <option value="FR">France</option>
-                                            <option value="DE">Germany</option>
+                                            {jobLevels.map((data) => {
+                                                return (
+                                                    <option
+                                                        key={data.id}
+                                                        value={data.id}
+                                                    >
+                                                        {data.name}
+                                                    </option>
+                                                );
+                                            })}
                                         </select>
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.job_level}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3">
+                                    <div className="mr-4">
+                                        <InputLabel
+                                            htmlFor="city"
+                                            value="City"
+                                        />
+                                        <TextInput
+                                            id="city"
+                                            name="city"
+                                            value={dataForm.city}
+                                            className="mt-1 block w-full"
+                                            onChange={handleChange}
+                                        />
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.city}
+                                        />
+                                    </div>
+                                    <div className="mr-4">
+                                        <InputLabel
+                                            htmlFor="country"
+                                            value="Country"
+                                        />
+                                        <TextInput
+                                            id="country"
+                                            name="country"
+                                            value={dataForm.country}
+                                            className="mt-1 block w-full"
+                                            onChange={handleChange}
+                                        />
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.country}
+                                        />
+                                    </div>
+                                    <div>
+                                        <InputLabel
+                                            htmlFor="end_date"
+                                            value="End Date"
+                                        />
+                                        <TextInput
+                                            id="end_date"
+                                            name="end_date"
+                                            value={dataForm.end_date}
+                                            className="mt-1 block w-full"
+                                            onChange={handleChange}
+                                            type="date"
+                                        />
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.end_date}
+                                        />
                                     </div>
                                 </div>
                                 <div className="mt-6 space-y-2">
@@ -132,11 +320,15 @@ export default function Create({ auth }) {
                                             source,
                                             editor
                                         ) => {
-                                            setInvoice({
-                                                ...invoice,
-                                                remark: editor.getHTML(),
-                                            });
+                                            setDataForm((prev) => ({
+                                                ...prev,
+                                                description: editor.getHTML(),
+                                            }));
                                         }}
+                                    />
+                                    <InputError
+                                        className="mt-2"
+                                        message={errorMessage.description}
                                     />
                                 </div>
                                 <div className="mt-6 space-y-2">
@@ -155,11 +347,15 @@ export default function Create({ auth }) {
                                             source,
                                             editor
                                         ) => {
-                                            setInvoice({
-                                                ...invoice,
-                                                remark: editor.getHTML(),
-                                            });
+                                            setDataForm((prev) => ({
+                                                ...prev,
+                                                qualification: editor.getHTML(),
+                                            }));
                                         }}
+                                    />
+                                    <InputError
+                                        className="mt-2"
+                                        message={errorMessage.qualification}
                                     />
                                 </div>
                                 <div className="mt-6 space-y-2">
@@ -178,11 +374,15 @@ export default function Create({ auth }) {
                                             source,
                                             editor
                                         ) => {
-                                            setInvoice({
-                                                ...invoice,
-                                                remark: editor.getHTML(),
-                                            });
+                                            setDataForm((prev) => ({
+                                                ...prev,
+                                                job_desc: editor.getHTML(),
+                                            }));
                                         }}
+                                    />
+                                    <InputError
+                                        className="mt-2"
+                                        message={errorMessage.job_desc}
                                     />
                                 </div>
                                 <div className="w-full block">
