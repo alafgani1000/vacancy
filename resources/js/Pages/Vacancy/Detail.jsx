@@ -1,8 +1,47 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import parse from "html-react-parser";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
 
-export default function Dashboard({ auth }) {
+const modules = {
+    toolbar: [
+        //[{ 'font': [] }],
+        [{ header: [1, 2, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [
+            { list: "ordered" },
+            { list: "bullet" },
+            { indent: "-1" },
+            { indent: "+1" },
+        ],
+        ["link", "image"],
+        [{ align: [] }, { color: [] }, { background: [] }], // dropdown with defaults from theme
+        ["clean"],
+    ],
+};
+
+const formats = [
+    //'font',
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "align",
+    "color",
+    "background",
+];
+
+export default function Dashboard({ auth, vacancy }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -27,21 +66,12 @@ export default function Dashboard({ auth }) {
                                             width="80px"
                                             className="mb-2"
                                         />
-                                        <p className="font-bold pb-2">
-                                            LOREM IPSUM TITLE
+                                        <p className="font-bold pb-2 text-2xl">
+                                            {vacancy.job_name}
                                         </p>
                                     </div>
                                     <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
-                                        <p>
-                                            Lorem Ipsum is simply description
-                                            dummy text of the printing and
-                                            typesetting industry. Lorem Ipsum
-                                            has been the industry's standard
-                                            dummy text ever since the 1500s,
-                                            when an unknown printer took a
-                                            galley of type and scrambled it to
-                                            make a type five
-                                        </p>
+                                        {parse(vacancy.description)}
 
                                         <table
                                             className="table-auto mt-2"
@@ -51,17 +81,22 @@ export default function Dashboard({ auth }) {
                                                 <tr>
                                                     <td>Location</td>
                                                     <td>:</td>
-                                                    <td>Jakarta, Indonesia</td>
+                                                    <td>
+                                                        {vacancy.city},{" "}
+                                                        {vacancy.country}
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Work Type</td>
                                                     <td>:</td>
-                                                    <td>Remote</td>
+                                                    <td>{vacancy.type.name}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Job Level</td>
                                                     <td>:</td>
-                                                    <td>Junior</td>
+                                                    <td>
+                                                        {vacancy.level.name}
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -70,75 +105,21 @@ export default function Dashboard({ auth }) {
                                 <div className="mb-5">
                                     <div className="bg-white pl-4 pt-2 pb-2 text-black h-full">
                                         <p className="font-bold pb-2">
-                                            LOREM IPSUM QUALIFICATION
+                                            QUALIFICATION
                                         </p>
-                                        <ul className="list-disc list-inside">
-                                            <li>
-                                                Sed nec justo elementum,
-                                                vestibulum augue sit amet,
-                                                lacinia enim.
-                                            </li>
-                                            <li>
-                                                Donec tempus augue sed eros
-                                                tristique, ut euismod justo
-                                                blandit.
-                                            </li>
-                                            <li>
-                                                Cras ultricies ligula sit amet
-                                                sem blandit, at facilisis magna
-                                                blandit.
-                                            </li>
-                                            <li>
-                                                Maecenas vel nisi in eros
-                                                sollicitudin ultricies eu sit
-                                                amet nisl.
-                                            </li>
-                                            <li>
-                                                In et lacus ut lorem rhoncus
-                                                molestie pretium sed enim.
-                                            </li>
-                                            <li>
-                                                Curabitur vestibulum felis ac
-                                                dictum molestie.
-                                            </li>
-                                        </ul>
+                                        <div className="qual">
+                                            {parse(vacancy.qualification)}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="mb-5">
                                     <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
                                         <p className="font-bold pb-2">
-                                            LOREM IPSUM JOB DESC
+                                            JOB DESC
                                         </p>
-                                        <ul className="list-disc list-inside">
-                                            <li>
-                                                Sed nec justo elementum,
-                                                vestibulum augue sit amet,
-                                                lacinia enim.
-                                            </li>
-                                            <li>
-                                                Donec tempus augue sed eros
-                                                tristique, ut euismod justo
-                                                blandit.
-                                            </li>
-                                            <li>
-                                                Cras ultricies ligula sit amet
-                                                sem blandit, at facilisis magna
-                                                blandit.
-                                            </li>
-                                            <li>
-                                                Maecenas vel nisi in eros
-                                                sollicitudin ultricies eu sit
-                                                amet nisl.
-                                            </li>
-                                            <li>
-                                                In et lacus ut lorem rhoncus
-                                                molestie pretium sed enim.
-                                            </li>
-                                            <li>
-                                                Curabitur vestibulum felis ac
-                                                dictum molestie.
-                                            </li>
-                                        </ul>
+                                        <div className="qual">
+                                            {parse(vacancy.job_desc)}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

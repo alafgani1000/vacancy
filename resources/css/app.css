@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.qual ol {
+    list-style: decimal;
+    list-style-position: inside;
+}

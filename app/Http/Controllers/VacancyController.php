@@ -14,6 +14,7 @@ use App\Models\WorkType;
 use App\Models\JobLevel;
 use App\Models\Status;
 use App\Http\Requests\VacancyStoreRequest;
+use App\Http\Requests\VacancyPublishRequest;
 
 class VacancyController extends Controller
 {
@@ -39,9 +40,10 @@ class VacancyController extends Controller
     /**
      * display detail vacancy
      */
-    public function detail()
+    public function detail($id)
     {
-        return Inertia::render('Vacancy/Detail',[]);
+        $vacancy = Vacancy::with('type')->with('level')->where('id',$id)->first();
+        return Inertia::render('Vacancy/Detail',['vacancy' => $vacancy]);
     }
 
     /**
@@ -71,6 +73,61 @@ class VacancyController extends Controller
     public function vacancyDetail($id, $name)
     {
         return Inertia::render('Detail');
+    }
+
+    /**
+     * view form edit
+     */
+    public function edit($id)
+    {
+        $vacancy = Vacancy::where('id',$id)->first();
+        $workTypes = WorkType::all();
+        $jobLevels = JobLevel::all();
+        return Inertia::render('Vacancy/Edit',['vacancy' => $vacancy, 'workTypes' => $workTypes, 'jobLevels' => $jobLevels]);
+    }
+
+    /**
+     * update vacancy
+     */
+    public function update(VacancyStoreRequest $request, $id)
+    {
+        Vacancy::where('id',$id)->update([
+            'user_id' => Auth::user()->id,
+            'job_name' => $request->title,
+            'description' => $request->description,
+            'qualification' => $request->qualification,
+            'job_desc' => $request->job_desc,
+            'work_type_id' => $request->work_type,
+            'jobs_level_id' => $request->job_level,
+            'end_date' => $request->end_date,
+            'city' => $request->city,
+            'country' => $request->country,
+        ]);
+        return to_route('vacancy.index');
+    }
+
+    /**
+     * publish vacancy
+     */
+    public function publish(VacancyPublishRequest $request, $id)
+    {
+        Vacancy::where('id',$id)->update([
+            'status_id' => Status::published()->first()->id,
+            'published_at' => $request->published_at
+        ]);
+        return to_route('vacancy.index');
+    }
+
+    /**
+     * unpublish vacancy
+     */
+    public function unpblish($id)
+    {
+        Vacancy::where('id',$id)->update([
+            'status_id' => Status::creat()->first()->id,
+            'published_at' => NULL
+        ]);
+        return to_route('vacancy.index');
     }
 
     /**

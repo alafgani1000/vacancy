@@ -13,16 +13,16 @@ export default function Confirm({
                 className="fixed flex flex-row justify-center top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
             >
                 <div className="relative flex flex-col justify-center w-full max-w-md max-h-full">
-                    <div className="relative bg-fuchsia-100 rounded-lg shadow-lg dark:bg-gray-700">
+                    <div className="relative bg-sky-950 rounded-lg shadow-lg dark:bg-gray-700">
                         <button
                             type="button"
-                            className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            className="absolute top-3 right-2.5 text-white-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                             data-modal-hide="popup-modal"
                         >
                             <span className="sr-only">Close modal</span>
                         </button>
                         <div className="p-6 text-center">
-                            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            <h3 className="mb-5 text-lg font-normal text-white dark:text-gray-400">
                                 {question}
                             </h3>
                             <button

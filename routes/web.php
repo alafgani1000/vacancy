@@ -43,6 +43,10 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/vacancy/create', [VacancyController::class, 'create'])->name('vacancy.create');
         Route::get('/vacancy/{id}/detail', [VacancyController::class, 'detail'])->name('vacancy.detail');
         Route::post('/vacancy', [VacancyController::class, 'store'])->name('vacancy.store');
+        Route::get('/vacancy/{id}/edit', [VacancyController::class, 'edit'])->name('vacancy.edit');
+        Route::patch('/vacancy/{id}/update', [VacancyController::class, 'update'])->name('vacancy.update');
+        Route::patch('/vacancy/{id}/publish', [VacancyController::class, 'publish'])->name('vacancy.publish');
+        Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'publish'])->name('vacancy.unpublish');
     });
 
     Route::middleware(['admin'])->group(function () {
