@@ -44,7 +44,7 @@ const formats = [
 export default function Dashboard({ auth, vacancy }) {
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                     Detail Vacancy

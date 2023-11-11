@@ -5,9 +5,11 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
 
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({ auth, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+    console.log(auth);
+    const { user, access } = auth;
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -34,7 +36,7 @@ export default function Authenticated({ user, header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
-                                {user.user_category_id === 2 ? (
+                                {access.name === "Company" ? (
                                     <>
                                         <NavLink
                                             href={route("vacancy.index")}
@@ -48,7 +50,7 @@ export default function Authenticated({ user, header, children }) {
                                 ) : (
                                     ""
                                 )}
-                                {user.user_category_id === 3 ? (
+                                {access.name === "Admin" ? (
                                     <>
                                         <Dropdown>
                                             <Dropdown.Trigger>
@@ -98,6 +100,13 @@ export default function Authenticated({ user, header, children }) {
                                                     )}
                                                 >
                                                     Work Type
+                                                </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route(
+                                                        "user_category.index"
+                                                    )}
+                                                >
+                                                    User Category
                                                 </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>

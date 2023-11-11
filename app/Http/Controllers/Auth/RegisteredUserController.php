@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\UserCategory;
 
 class RegisteredUserController extends Controller
 {
@@ -49,9 +50,41 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
-            'user_category_id' => 1,
+            'user_category_id' => UserCategory::jobSeeker()->first()->id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect('/verify-email');
+    }
+
+    /**
+     * handling an incoming company registration request
+     */
+    public function storeCompany(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'user_category_id' => UserCategory::company()->first()->id,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $user->company()->create([
+            'name' => $request->company_name,
+            'hp_number' => $request->phone_number
         ]);
 
         event(new Registered($user));

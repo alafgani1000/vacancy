@@ -9,6 +9,7 @@ export default function Header({ user, header }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     const auth = user;
+    const { access } = user;
     const verified = auth.user ? auth.user.email_verified_at : "";
     return (
         <>
@@ -48,7 +49,7 @@ export default function Header({ user, header }) {
                                         >
                                             Dashboard
                                         </NavLink>
-                                        {auth.user.user_category_id === 2 ? (
+                                        {access.name === "Company" ? (
                                             <NavLink
                                                 href={route("vacancy.index")}
                                                 active={route().current(
@@ -60,7 +61,7 @@ export default function Header({ user, header }) {
                                         ) : (
                                             ""
                                         )}
-                                        {auth.user.user_category_id === 3 ? (
+                                        {access.name === "Admin" ? (
                                             <>
                                                 <Dropdown>
                                                     <Dropdown.Trigger>
@@ -114,6 +115,13 @@ export default function Header({ user, header }) {
                                                             )}
                                                         >
                                                             Work Type
+                                                        </Dropdown.Link>
+                                                        <Dropdown.Link
+                                                            href={route(
+                                                                "user_category.index"
+                                                            )}
+                                                        >
+                                                            User Category
                                                         </Dropdown.Link>
                                                     </Dropdown.Content>
                                                 </Dropdown>
@@ -210,7 +218,9 @@ export default function Header({ user, header }) {
                                                     Registrasi Pencari Kerja
                                                 </Dropdown.Link>
                                                 <Dropdown.Link
-                                                    href={route("register")}
+                                                    href={route(
+                                                        "register-company"
+                                                    )}
                                                 >
                                                     Registrasi Perusahaan
                                                 </Dropdown.Link>

@@ -7,6 +7,7 @@ use App\Http\Controllers\StatusController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JobLevelController;
 use App\Http\Controllers\WorkTypeController;
+use App\Http\Controllers\UserCategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -46,7 +47,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/vacancy/{id}/edit', [VacancyController::class, 'edit'])->name('vacancy.edit');
         Route::patch('/vacancy/{id}/update', [VacancyController::class, 'update'])->name('vacancy.update');
         Route::patch('/vacancy/{id}/publish', [VacancyController::class, 'publish'])->name('vacancy.publish');
-        Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'publish'])->name('vacancy.unpublish');
+        Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'unpublish'])->name('vacancy.unpublish');
     });
 
     Route::middleware(['admin'])->group(function () {
@@ -58,6 +59,7 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::put('/stage/{id}/update', 'update')->name('stage.update');
             Route::delete('/stage/{id}/delete', 'delete')->name('stage.delete');
         });
+
         // status
         Route::controller(StatusController::class)->group(function () {
             Route::get('/status', 'index')->name('status.index');
@@ -66,6 +68,7 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::put('/status/{id}/update', 'update')->name('status.update');
             Route::delete('/status/{id}/delete', 'delete')->name('status.delete');
         });
+
         // job level
         Route::controller(JobLevelController::class)->group(function () {
             Route::get('/job-level', 'index')->name('joblevel.index');
@@ -74,6 +77,7 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::put('/job-level/{id}/update', 'update')->name('joblevel.update');
             Route::delete('/job-level/{id}/delete', 'delete')->name('joblevel.delete');
         });
+
         // work type
         Route::controller(WorkTypeController::class)->group(function () {
             Route::get('/work-type', 'index')->name('worktype.index');
@@ -81,6 +85,15 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::get('/work-type/{id}/edit', 'edit')->name('worktype.edit');
             Route::put('/work-type/{id}/update', 'update')->name('worktype.update');
             Route::delete('/work-type/{id}/delete', 'delete')->name('worktype.delete');
+        });
+
+        // user category
+        Route::controller(UserCategoryController::class)->group(function () {
+            Route::get('/user-category', 'index')->name('user_category.index');
+            Route::post('/user-category', 'store')->name('user_category.store');
+            Route::get('/user-category/{id}/edit', 'edit')->name('user_category.edit');
+            Route::put('/user-category/{id}/update', 'update')->name('user_category.update');
+            Route::delete('/user-category/{id}/delete', 'delete')->name('user_category.delete');
         });
 
     });

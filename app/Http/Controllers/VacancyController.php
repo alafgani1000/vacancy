@@ -121,7 +121,7 @@ class VacancyController extends Controller
     /**
      * unpublish vacancy
      */
-    public function unpblish($id)
+    public function unpublish($id)
     {
         Vacancy::where('id',$id)->update([
             'status_id' => Status::creat()->first()->id,

@@ -2,7 +2,7 @@ import NavLink from "@/Components/NavLink";
 import Header from "./Header";
 import Footer from "./Footer";
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ auth }) {
     return (
         <>
             <div className="min-h-screen bg-gray-100">

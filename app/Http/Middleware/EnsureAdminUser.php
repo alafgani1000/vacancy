@@ -17,10 +17,10 @@ class EnsureAdminUser
     {
         $auth = $request->user();
         if ($auth != null) {
-            if ($auth->user_category_id == 3) {
+            if ($auth->userCategory->name == "Admin") {
                 return $next($request);
             } else {
-                return redirec('/');
+                return redirect('/');
             }
         } else {
             return redirect('/');

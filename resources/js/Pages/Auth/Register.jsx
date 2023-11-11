@@ -133,7 +133,10 @@ export default function Register() {
                         Already registered?
                     </Link>
 
-                    <PrimaryButton className="ml-4" disabled={processing}>
+                    <PrimaryButton
+                        className="ml-4 py-2 px-2"
+                        disabled={processing}
+                    >
                         Register
                     </PrimaryButton>
                 </div>

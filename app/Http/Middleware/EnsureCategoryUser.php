@@ -19,7 +19,7 @@ class EnsureCategoryUser
         if ($auth == null) {
             return redirect('/');
         } else {
-            if ($auth->user_category_id == 1) {
+            if ($auth->userCategory->name == "Job Seeker") {
                 return redirect('/');
             }
         }

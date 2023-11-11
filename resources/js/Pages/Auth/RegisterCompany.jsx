@@ -12,6 +12,8 @@ export default function RegisterCompany() {
         email: "",
         password: "",
         password_confirmation: "",
+        company_name: "",
+        phone_number: "",
     });
 
     useEffect(() => {
@@ -23,7 +25,7 @@ export default function RegisterCompany() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("register"));
+        post(route("register-company"));
     };
 
     return (
@@ -32,20 +34,81 @@ export default function RegisterCompany() {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="first_name" value="First Name" />
 
                     <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
+                        id="first_name"
+                        name="first_name"
+                        value={data.first_name}
                         className="mt-1 block w-full"
-                        autoComplete="name"
+                        autoComplete="first_name"
                         isFocused={true}
-                        onChange={(e) => setData("name", e.target.value)}
+                        onChange={(e) => setData("first_name", e.target.value)}
                         required
                     />
 
-                    <InputError message={errors.name} className="mt-2" />
+                    <InputError message={errors.first_name} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="last_name" value="Last Name" />
+
+                    <TextInput
+                        id="last_name"
+                        name="last_name"
+                        value={data.last_name}
+                        className="mt-1 block w-full"
+                        autoComplete="last_name"
+                        isFocused={true}
+                        onChange={(e) => setData("last_name", e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.last_name} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="company_name" value="Company Name" />
+
+                    <TextInput
+                        id="company_name"
+                        name="company_name"
+                        value={data.company_name}
+                        className="mt-1 block w-full"
+                        autoComplete="company_name"
+                        isFocused={true}
+                        onChange={(e) =>
+                            setData("company_name", e.target.value)
+                        }
+                        required
+                    />
+
+                    <InputError
+                        message={errors.company_name}
+                        className="mt-2"
+                    />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="phone_number" value="Phone Number" />
+
+                    <TextInput
+                        id="phone_number"
+                        name="phone_number"
+                        value={data.phone_number}
+                        className="mt-1 block w-full"
+                        autoComplete="phone_number"
+                        isFocused={true}
+                        onChange={(e) =>
+                            setData("phone_number", e.target.value)
+                        }
+                        required
+                    />
+
+                    <InputError
+                        message={errors.phone_number}
+                        className="mt-2"
+                    />
                 </div>
 
                 <div className="mt-4">
@@ -115,7 +178,10 @@ export default function RegisterCompany() {
                         Already registered?
                     </Link>
 
-                    <PrimaryButton className="ml-4" disabled={processing}>
+                    <PrimaryButton
+                        className="ml-4 px-2 py-2"
+                        disabled={processing}
+                    >
                         Register
                     </PrimaryButton>
                 </div>

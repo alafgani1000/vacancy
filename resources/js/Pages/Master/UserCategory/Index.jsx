@@ -11,7 +11,7 @@ import pickBy from "loadsh/pickBy";
 import Modal from "@/Components/Modal";
 import Confirm from "@/Components/Confirm";
 
-export default function Index({ auth, worktypes, page }) {
+export default function Index({ auth, userCategories, page }) {
     const [showForm, setShowForm] = useState(false);
     const [current, setCurrent] = useState(page);
     const [isLoad, setIsLoad] = useState(false);
@@ -20,7 +20,7 @@ export default function Index({ auth, worktypes, page }) {
         name: "",
         description: "",
     });
-    const [dataWorkType, setDataWorkType] = useState({});
+    const [dataUserCategory, setDataUserCategory] = useState({});
     const [isOpen, setIsOpen] = useState(false);
     const [editId, setEditId] = useState("");
     const [showToast, setShowToast] = useState(false);
@@ -35,7 +35,7 @@ export default function Index({ auth, worktypes, page }) {
     let startPage = useRef();
     let endPage = useRef();
 
-    const { data, last_page, total } = worktypes;
+    const { data, last_page, total } = userCategories;
 
     useEffect(() => {
         if (wasSearch) {
@@ -109,7 +109,7 @@ export default function Index({ auth, worktypes, page }) {
         setIsOpen(true);
     };
 
-    const showFormWorkType = (status) => {
+    const showFormUserCategory = (status) => {
         if (status === true) {
             setFormData({
                 name: "",
@@ -131,7 +131,7 @@ export default function Index({ auth, worktypes, page }) {
     };
 
     const handleStore = () => {
-        router.post("/work-type", formData, {
+        router.post("/user-category", formData, {
             onError: (errors) => {
                 if (errors.name) {
                     setErrorMessage((prev) => ({
@@ -151,7 +151,7 @@ export default function Index({ auth, worktypes, page }) {
     };
 
     const handleUpdate = (id) => {
-        router.put(`/work-type/${id}/update`, formData, {
+        router.put(`/user-category/${id}/update`, formData, {
             onSuccess: () => {
                 setToastData({
                     message: "Update Success",
@@ -171,7 +171,7 @@ export default function Index({ auth, worktypes, page }) {
 
     const handleEdit = (id) => {
         axios
-            .get(`/work-type/${id}/edit`, {})
+            .get(`/user-category/${id}/edit`, {})
             .then(({ data }) => {
                 setEditId(data.id);
                 setFormData({
@@ -193,8 +193,8 @@ export default function Index({ auth, worktypes, page }) {
         setShowConfirm(false);
     };
 
-    const deleteWorkType = () => {
-        router.delete(`/work-type/${dataWorkType.id}/delete`, {
+    const deleteStage = () => {
+        router.delete(`/user-category/${dataUserCategory.id}/delete`, {
             preserveScroll: true,
             onSuccess: () => {
                 setToastData({
@@ -214,8 +214,8 @@ export default function Index({ auth, worktypes, page }) {
         });
     };
 
-    const confirmDelete = (worktype) => {
-        setDataWorkType(worktype);
+    const confirmDelete = (joblevel) => {
+        setDataUserCategory(joblevel);
         setShowConfirm(true);
     };
 
@@ -228,8 +228,8 @@ export default function Index({ auth, worktypes, page }) {
             return (
                 <div className="w-full ms-2 me-2 mt-4">
                     <LinkNumber
-                        href={route("worktype.index", { page: 1 })}
-                        active={route().current("worktype.index", {
+                        href={route("user_category.index", { page: 1 })}
+                        active={route().current("user_category.index", {
                             page: 1,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -240,11 +240,11 @@ export default function Index({ auth, worktypes, page }) {
                         return (
                             <LinkNumber
                                 key={value}
-                                href={route("worktype.index", {
+                                href={route("user_category.index", {
                                     search: search,
                                     page: value,
                                 })}
-                                active={route().current("worktype.index", {
+                                active={route().current("user_category.index", {
                                     page: value,
                                 })}
                                 className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -255,8 +255,8 @@ export default function Index({ auth, worktypes, page }) {
                         );
                     })}
                     <LinkNumber
-                        href={route("worktype.index", { page: last_page })}
-                        active={route().current("worktype.index", {
+                        href={route("user_category.index", { page: last_page })}
+                        active={route().current("user_category.index", {
                             page: last_page,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -278,7 +278,7 @@ export default function Index({ auth, worktypes, page }) {
             auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Work Type
+                    User Category
                 </h2>
             }
         >
@@ -291,10 +291,12 @@ export default function Index({ auth, worktypes, page }) {
                             <div className="flex justify-end mb-4">
                                 {showForm === false ? (
                                     <button
-                                        onClick={() => showFormWorkType(true)}
+                                        onClick={() =>
+                                            showFormUserCategory(true)
+                                        }
                                         className="bg-sky-950 px-2 pt-2 pb-2 text-white font-medium shadow-md rounded-md"
                                     >
-                                        New Type
+                                        New Category
                                     </button>
                                 ) : (
                                     <div className="w-full p-3 rounded-md shadow-md">
@@ -341,7 +343,7 @@ export default function Index({ auth, worktypes, page }) {
                                                     )}
                                                     <button
                                                         onClick={() =>
-                                                            showFormWorkType(
+                                                            showFormUserCategory(
                                                                 false
                                                             )
                                                         }
@@ -375,14 +377,14 @@ export default function Index({ auth, worktypes, page }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((type) => {
+                                        {data.map((stage) => {
                                             return (
                                                 <tr
                                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                                    key={type.id}
+                                                    key={stage.id}
                                                 >
                                                     <td className="px-6 py-3">
-                                                        {type.name}
+                                                        {stage.name}
                                                     </td>
                                                     <td>
                                                         <div className="inline-flex">
@@ -397,7 +399,7 @@ export default function Index({ auth, worktypes, page }) {
                                                                 className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     handleEdit(
-                                                                        type.id
+                                                                        stage.id
                                                                     )
                                                                 }
                                                             >
@@ -419,7 +421,7 @@ export default function Index({ auth, worktypes, page }) {
                                                                 className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     confirmDelete(
-                                                                        type
+                                                                        stage
                                                                     )
                                                                 }
                                                             >
@@ -451,7 +453,7 @@ export default function Index({ auth, worktypes, page }) {
                 <Confirm
                     show={showConfirm}
                     question="Are you sure delete this data ?"
-                    yes={deleteWorkType}
+                    yes={deleteStage}
                     no={cancelDelete}
                 />
             </div>
