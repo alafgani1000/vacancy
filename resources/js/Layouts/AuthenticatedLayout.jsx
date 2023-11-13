@@ -8,7 +8,7 @@ import { Link } from "@inertiajs/react";
 export default function Authenticated({ auth, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-    console.log(auth);
+
     const { user, access } = auth;
 
     return (
@@ -107,6 +107,13 @@ export default function Authenticated({ auth, header, children }) {
                                                     )}
                                                 >
                                                     User Category
+                                                </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route(
+                                                        "category.index"
+                                                    )}
+                                                >
+                                                    Category
                                                 </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>

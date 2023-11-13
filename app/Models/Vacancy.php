@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\WorkType;
 use App\Models\JobLevel;
+use App\Models\Status;
+use App\Models\Category;
 
 class Vacancy extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id','job_name','description','qualification','job_desc','work_type_id','jobs_level_id','status_id','city','country','published_at','end_date'];
+    protected $fillable = ['user_id','job_name','description','qualification','job_desc','work_type_id','jobs_level_id','status_id','category_id','city','country','published_at','end_date'];
 
     /**
      * Get the workType that owns the Vacancy
@@ -31,4 +33,15 @@ class Vacancy extends Model
     {
         return $this->belongsTo(JobLevel::class, 'jobs_level_id', 'id');
     }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class, 'status_id', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
 }

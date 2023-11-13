@@ -11,16 +11,16 @@ import pickBy from "loadsh/pickBy";
 import Modal from "@/Components/Modal";
 import Confirm from "@/Components/Confirm";
 
-export default function Index({ auth, userCategories, page }) {
+export default function Index({ auth, categories, page }) {
     const [showForm, setShowForm] = useState(false);
     const [current, setCurrent] = useState(page);
     const [isLoad, setIsLoad] = useState(false);
-    const [formData, setFormData] = useState({ name: "", description: "" });
+    const [formData, setFormData] = useState({ code: "", name: "" });
     const [errorMessage, setErrorMessage] = useState({
+        code: "",
         name: "",
-        description: "",
     });
-    const [dataUserCategory, setDataUserCategory] = useState({});
+    const [dataCategory, setDataCategory] = useState({});
     const [isOpen, setIsOpen] = useState(false);
     const [editId, setEditId] = useState("");
     const [showToast, setShowToast] = useState(false);
@@ -35,7 +35,7 @@ export default function Index({ auth, userCategories, page }) {
     let startPage = useRef();
     let endPage = useRef();
 
-    const { data, last_page, total } = userCategories;
+    const { data, last_page, total } = categories;
 
     useEffect(() => {
         if (wasSearch) {
@@ -96,8 +96,8 @@ export default function Index({ auth, userCategories, page }) {
 
     const reset = () => {
         setErrorMessage({
+            code: "",
             name: "",
-            description: "",
         });
     };
 
@@ -109,11 +109,11 @@ export default function Index({ auth, userCategories, page }) {
         setIsOpen(true);
     };
 
-    const showFormUserCategory = (status) => {
+    const showFormCategory = (status) => {
         if (status === true) {
             setFormData({
+                code: "",
                 name: "",
-                description: "",
             });
             reset();
             setShowForm(status);
@@ -131,7 +131,7 @@ export default function Index({ auth, userCategories, page }) {
     };
 
     const handleStore = () => {
-        router.post("/user-category", formData, {
+        router.post("/category", formData, {
             onError: (errors) => {
                 if (errors.name) {
                     setErrorMessage((prev) => ({
@@ -140,10 +140,10 @@ export default function Index({ auth, userCategories, page }) {
                     }));
                 }
 
-                if (errors.description) {
+                if (errors.code) {
                     setErrorMessage((prev) => ({
                         ...prev,
-                        description: errors.description,
+                        code: errors.code,
                     }));
                 }
             },
@@ -151,7 +151,7 @@ export default function Index({ auth, userCategories, page }) {
     };
 
     const handleUpdate = (id) => {
-        router.put(`/user-category/${id}/update`, formData, {
+        router.put(`/category/${id}/update`, formData, {
             onSuccess: () => {
                 setToastData({
                     message: "Update Success",
@@ -171,12 +171,12 @@ export default function Index({ auth, userCategories, page }) {
 
     const handleEdit = (id) => {
         axios
-            .get(`/user-category/${id}/edit`, {})
+            .get(`/category/${id}/edit`, {})
             .then(({ data }) => {
                 setEditId(data.id);
                 setFormData({
                     name: data.name,
-                    description: data.desc,
+                    code: data.code,
                 });
                 setShowForm(true);
             })
@@ -194,7 +194,7 @@ export default function Index({ auth, userCategories, page }) {
     };
 
     const deleteStage = () => {
-        router.delete(`/user-category/${dataUserCategory.id}/delete`, {
+        router.delete(`/category/${dataCategory.id}/delete`, {
             preserveScroll: true,
             onSuccess: () => {
                 setToastData({
@@ -214,8 +214,8 @@ export default function Index({ auth, userCategories, page }) {
         });
     };
 
-    const confirmDelete = (joblevel) => {
-        setDataUserCategory(joblevel);
+    const confirmDelete = (category) => {
+        setDataCategory(category);
         setShowConfirm(true);
     };
 
@@ -228,8 +228,8 @@ export default function Index({ auth, userCategories, page }) {
             return (
                 <div className="w-full ms-2 me-2 mt-4">
                     <LinkNumber
-                        href={route("user_category.index", { page: 1 })}
-                        active={route().current("user_category.index", {
+                        href={route("category.index", { page: 1 })}
+                        active={route().current("category.index", {
                             page: 1,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -240,11 +240,11 @@ export default function Index({ auth, userCategories, page }) {
                         return (
                             <LinkNumber
                                 key={value}
-                                href={route("user_category.index", {
+                                href={route("category.index", {
                                     search: search,
                                     page: value,
                                 })}
-                                active={route().current("user_category.index", {
+                                active={route().current("category.index", {
                                     page: value,
                                 })}
                                 className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -255,8 +255,8 @@ export default function Index({ auth, userCategories, page }) {
                         );
                     })}
                     <LinkNumber
-                        href={route("user_category.index", { page: last_page })}
-                        active={route().current("user_category.index", {
+                        href={route("category.index", { page: last_page })}
+                        active={route().current("category.index", {
                             page: last_page,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -278,11 +278,11 @@ export default function Index({ auth, userCategories, page }) {
             auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    User Category
+                    Category
                 </h2>
             }
         >
-            <Head title="User category" />
+            <Head title="Category" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -291,9 +291,7 @@ export default function Index({ auth, userCategories, page }) {
                             <div className="flex justify-end mb-4">
                                 {showForm === false ? (
                                     <button
-                                        onClick={() =>
-                                            showFormUserCategory(true)
-                                        }
+                                        onClick={() => showFormCategory(true)}
                                         className="bg-sky-950 px-2 pt-2 pb-2 text-white font-medium shadow-md rounded-md"
                                     >
                                         New Category
@@ -301,6 +299,23 @@ export default function Index({ auth, userCategories, page }) {
                                 ) : (
                                     <div className="w-full p-3 rounded-md shadow-md">
                                         <div className="w-full grid grid-cols-3">
+                                            <div className="mx-2">
+                                                <InputLabel
+                                                    htmlFor="code"
+                                                    value="Code"
+                                                />
+                                                <TextInput
+                                                    name="code"
+                                                    value={formData.code}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full"
+                                                />
+                                                <InputLabel
+                                                    className="mt-2 text-red-600"
+                                                    htmlFor="name"
+                                                    value={errorMessage.code}
+                                                />
+                                            </div>
                                             <div className="mx-2">
                                                 <InputLabel
                                                     htmlFor="name"
@@ -343,7 +358,7 @@ export default function Index({ auth, userCategories, page }) {
                                                     )}
                                                     <button
                                                         onClick={() =>
-                                                            showFormUserCategory(
+                                                            showFormCategory(
                                                                 false
                                                             )
                                                         }
@@ -372,19 +387,23 @@ export default function Index({ auth, userCategories, page }) {
                                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-2">
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
+                                            <th className="px-6 py-3">Code</th>
                                             <th className="px-6 py-3">Name</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((stage) => {
+                                        {data.map((category) => {
                                             return (
                                                 <tr
                                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                                    key={stage.id}
+                                                    key={category.id}
                                                 >
                                                     <td className="px-6 py-3">
-                                                        {stage.name}
+                                                        {category.code}
+                                                    </td>
+                                                    <td className="px-6 py-3">
+                                                        {category.name}
                                                     </td>
                                                     <td>
                                                         <div className="inline-flex">
@@ -399,7 +418,7 @@ export default function Index({ auth, userCategories, page }) {
                                                                 className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     handleEdit(
-                                                                        stage.id
+                                                                        category.id
                                                                     )
                                                                 }
                                                             >
@@ -421,7 +440,7 @@ export default function Index({ auth, userCategories, page }) {
                                                                 className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     confirmDelete(
-                                                                        stage
+                                                                        category
                                                                     )
                                                                 }
                                                             >

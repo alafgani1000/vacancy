@@ -282,7 +282,7 @@ export default function Index({ auth, joblevels, page }) {
                 </h2>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Job Level" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -375,14 +375,14 @@ export default function Index({ auth, joblevels, page }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.map((stage) => {
+                                        {data.map((level) => {
                                             return (
                                                 <tr
                                                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                                    key={stage.id}
+                                                    key={level.id}
                                                 >
                                                     <td className="px-6 py-3">
-                                                        {stage.name}
+                                                        {level.name}
                                                     </td>
                                                     <td>
                                                         <div className="inline-flex">
@@ -397,7 +397,7 @@ export default function Index({ auth, joblevels, page }) {
                                                                 className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     handleEdit(
-                                                                        stage.id
+                                                                        level.id
                                                                     )
                                                                 }
                                                             >
@@ -419,7 +419,7 @@ export default function Index({ auth, joblevels, page }) {
                                                                 className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded-sm"
                                                                 onClick={() =>
                                                                     confirmDelete(
-                                                                        stage
+                                                                        level
                                                                     )
                                                                 }
                                                             >

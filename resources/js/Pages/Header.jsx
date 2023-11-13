@@ -123,6 +123,13 @@ export default function Header({ user, header }) {
                                                         >
                                                             User Category
                                                         </Dropdown.Link>
+                                                        <Dropdown.Link
+                                                            href={route(
+                                                                "category.index"
+                                                            )}
+                                                        >
+                                                            Category
+                                                        </Dropdown.Link>
                                                     </Dropdown.Content>
                                                 </Dropdown>
                                             </>

@@ -45,7 +45,7 @@ const formats = [
     "background",
 ];
 
-export default function Create({ auth, workTypes, jobLevels }) {
+export default function Create({ auth, workTypes, jobLevels, categories }) {
     const [dataForm, setDataForm] = useState({
         title: "",
         work_type: "",
@@ -56,6 +56,7 @@ export default function Create({ auth, workTypes, jobLevels }) {
         city: "",
         country: "",
         end_date: "",
+        category: "",
     });
     const [errorMessage, setErrorMessage] = useState({
         title: "",
@@ -67,6 +68,7 @@ export default function Create({ auth, workTypes, jobLevels }) {
         city: "",
         country: "",
         end_date: "",
+        category: "",
     });
 
     // handle change form
@@ -144,6 +146,13 @@ export default function Create({ auth, workTypes, jobLevels }) {
                         job_desc: errors.job_desc,
                     }));
                 }
+
+                if (errors.category) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        category: errors.category,
+                    }));
+                }
             },
             onSuccess: function () {},
         });
@@ -186,7 +195,7 @@ export default function Create({ auth, workTypes, jobLevels }) {
                                         message={errorMessage.title}
                                     />
                                 </div>
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-3">
                                     <div className="mr-4">
                                         <InputLabel
                                             htmlFor="work_type"
@@ -218,7 +227,7 @@ export default function Create({ auth, workTypes, jobLevels }) {
                                             message={errorMessage.work_type}
                                         />
                                     </div>
-                                    <div>
+                                    <div className="mr-4">
                                         <InputLabel
                                             htmlFor="job_level"
                                             value="Job Level"
@@ -247,6 +256,37 @@ export default function Create({ auth, workTypes, jobLevels }) {
                                         <InputError
                                             className="mt-2"
                                             message={errorMessage.job_level}
+                                        />
+                                    </div>
+                                    <div>
+                                        <InputLabel
+                                            htmlFor="category"
+                                            value="Category"
+                                        />
+                                        <select
+                                            id="small"
+                                            name="category"
+                                            defaultValue={dataForm.category}
+                                            onChange={handleChange}
+                                            className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm "
+                                        >
+                                            <option value="">
+                                                -- Please select --
+                                            </option>
+                                            {categories.map((data) => {
+                                                return (
+                                                    <option
+                                                        key={data.id}
+                                                        value={data.id}
+                                                    >
+                                                        {data.name}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                        <InputError
+                                            className="mt-2"
+                                            message={errorMessage.category}
                                         />
                                     </div>
                                 </div>

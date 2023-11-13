@@ -283,7 +283,7 @@ export default function Index({ auth, status, page }) {
                 </h2>
             }
         >
-            <Head title="Dashboard" />
+            <Head title="Status" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">

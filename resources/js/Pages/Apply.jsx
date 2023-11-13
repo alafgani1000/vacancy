@@ -1,11 +1,11 @@
 import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import PrimaryButton from "@/Components/PrimaryButton";
+import { useState } from "react";
 
 const modules = {
     toolbar: [
@@ -42,10 +42,34 @@ const formats = [
     "background",
 ];
 
-export default function Apply({ auth }) {
+export default function Apply({ auth, vacancy }) {
+    const [file, setFile] = useState("");
+    const [description, setDescription] = useState("");
+
+    const handleFileChange = (event) => {
+        setFile(event.target.files[0]);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        router.post(
+            `/vacancy/${vacancy.id}/apply`,
+            {
+                _method: "put",
+                file: file,
+                description: description,
+            },
+            {
+                forceFormData: true,
+                onError: () => {},
+                onSuccess: () => {},
+            }
+        );
+    };
+
     return (
         <AuthenticatedLayout
-            user={auth.user}
+            auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
                     Apply
@@ -58,21 +82,25 @@ export default function Apply({ auth }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-4">
                         <div className="rounded-md rounded-tr-md bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white shadow-md">
-                            LOREM IPSUM DATA
+                            Apply Form
                         </div>
                         <section>
-                            <form className="mt-6 space-y-6">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="mt-6 space-y-6"
+                            >
                                 <div>
                                     <label
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                         html="file_input"
                                     >
-                                        Upload file
+                                        Upload CV
                                     </label>
                                     <input
                                         className="block w-full text-sm border rounded-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
                                         id="file_input"
                                         type="file"
+                                        onChange={handleFileChange}
                                     />
                                 </div>
                                 <div className="mt-6 space-y-2">
@@ -98,8 +126,8 @@ export default function Apply({ auth }) {
                                         }}
                                     />
                                 </div>
-                                <div className="w-full block">
-                                    <PrimaryButton className="text-lg text-center py-3 px-5">
+                                <div className="w-ful flex justify-end">
+                                    <PrimaryButton className="text-lg text-center py-3 px-7">
                                         <span>
                                             <svg
                                                 className="w-3.5 h-3.5 text-white mr-2"

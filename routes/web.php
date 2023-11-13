@@ -8,6 +8,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\JobLevelController;
 use App\Http\Controllers\WorkTypeController;
 use App\Http\Controllers\UserCategoryController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ApplyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,7 +39,10 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/personal-data', [ProfileController::class, 'updatePersonalData'])->name('personal-data.update');
-    Route::get('/vacancy/{id}/apply', [VacancyController::class, 'apply'])->name('vacancy.apply');
+
+    // apply
+    Route::get('/vacancy/{id}/apply', [ApplyController::class, 'displayForm'])->name('vacancy.display-apply');
+    Route::put('vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
 
     Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
@@ -94,6 +99,15 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::get('/user-category/{id}/edit', 'edit')->name('user_category.edit');
             Route::put('/user-category/{id}/update', 'update')->name('user_category.update');
             Route::delete('/user-category/{id}/delete', 'delete')->name('user_category.delete');
+        });
+
+        // category
+        Route::controller(CategoryController::class)->group(function () {
+            Route::get('/category', 'index')->name('category.index');
+            Route::post('/category', 'store')->name('category.store');
+            Route::get('/category/{id}/edit', 'edit')->name('category.edit');
+            Route::put('/category/{id}/update', 'update')->name('category.update');
+            Route::delete('/category/{id}/delete', 'delete')->name('category.delete');
         });
 
     });

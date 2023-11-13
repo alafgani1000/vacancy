@@ -1,8 +1,9 @@
 import NavLink from "@/Components/NavLink";
 import Header from "./Header";
-import PrimaryButton from "@/Components/PrimaryButton";
+import parse from "html-react-parser";
+import { Head } from "@inertiajs/react";
 
-export default function ({ auth, laravelVersion, phpVersion, hasVeried }) {
+export default function ({ auth, hasVeried, vacancy }) {
     return (
         <>
             {hasVeried === false ? (
@@ -34,22 +35,12 @@ export default function ({ auth, laravelVersion, phpVersion, hasVeried }) {
                                                 width="80px"
                                                 className="mb-2"
                                             />
-                                            <p className="font-bold pb-2">
-                                                LOREM IPSUM TITLE
+                                            <p className="font-bold pb-2 text-2xl">
+                                                {vacancy.job_name}
                                             </p>
                                         </div>
                                         <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
-                                            <p>
-                                                Lorem Ipsum is simply
-                                                description dummy text of the
-                                                printing and typesetting
-                                                industry. Lorem Ipsum has been
-                                                the industry's standard dummy
-                                                text ever since the 1500s, when
-                                                an unknown printer took a galley
-                                                of type and scrambled it to make
-                                                a type five
-                                            </p>
+                                            {parse(vacancy.description)}
 
                                             <table
                                                 className="table-auto mt-2"
@@ -60,18 +51,23 @@ export default function ({ auth, laravelVersion, phpVersion, hasVeried }) {
                                                         <td>Location</td>
                                                         <td>:</td>
                                                         <td>
-                                                            Jakarta, Indonesia
+                                                            {vacancy.city},{" "}
+                                                            {vacancy.country}
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td>Work Type</td>
                                                         <td>:</td>
-                                                        <td>Remote</td>
+                                                        <td>
+                                                            {vacancy.type.name}
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td>Job Level</td>
                                                         <td>:</td>
-                                                        <td>Junior</td>
+                                                        <td>
+                                                            {vacancy.level.name}
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -80,81 +76,30 @@ export default function ({ auth, laravelVersion, phpVersion, hasVeried }) {
                                     <div className="mb-5">
                                         <div className="bg-white pl-4 pt-2 pb-2 text-black h-full">
                                             <p className="font-bold pb-2">
-                                                LOREM IPSUM QUALIFICATION
+                                                QUALIFICATION
                                             </p>
-                                            <ul className="list-disc list-inside">
-                                                <li>
-                                                    Sed nec justo elementum,
-                                                    vestibulum augue sit amet,
-                                                    lacinia enim.
-                                                </li>
-                                                <li>
-                                                    Donec tempus augue sed eros
-                                                    tristique, ut euismod justo
-                                                    blandit.
-                                                </li>
-                                                <li>
-                                                    Cras ultricies ligula sit
-                                                    amet sem blandit, at
-                                                    facilisis magna blandit.
-                                                </li>
-                                                <li>
-                                                    Maecenas vel nisi in eros
-                                                    sollicitudin ultricies eu
-                                                    sit amet nisl.
-                                                </li>
-                                                <li>
-                                                    In et lacus ut lorem rhoncus
-                                                    molestie pretium sed enim.
-                                                </li>
-                                                <li>
-                                                    Curabitur vestibulum felis
-                                                    ac dictum molestie.
-                                                </li>
-                                            </ul>
+                                            <div className="qual">
+                                                {parse(vacancy.qualification)}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="mb-5">
                                         <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
                                             <p className="font-bold pb-2">
-                                                LOREM IPSUM JOB DESC
+                                                JOB DESC
                                             </p>
-                                            <ul className="list-disc list-inside">
-                                                <li>
-                                                    Sed nec justo elementum,
-                                                    vestibulum augue sit amet,
-                                                    lacinia enim.
-                                                </li>
-                                                <li>
-                                                    Donec tempus augue sed eros
-                                                    tristique, ut euismod justo
-                                                    blandit.
-                                                </li>
-                                                <li>
-                                                    Cras ultricies ligula sit
-                                                    amet sem blandit, at
-                                                    facilisis magna blandit.
-                                                </li>
-                                                <li>
-                                                    Maecenas vel nisi in eros
-                                                    sollicitudin ultricies eu
-                                                    sit amet nisl.
-                                                </li>
-                                                <li>
-                                                    In et lacus ut lorem rhoncus
-                                                    molestie pretium sed enim.
-                                                </li>
-                                                <li>
-                                                    Curabitur vestibulum felis
-                                                    ac dictum molestie.
-                                                </li>
-                                            </ul>
+                                            <div className="qual">
+                                                {parse(vacancy.job_desc)}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="pl-2 pr-2 pb-4 grid place-content-end">
                                         <NavLink
-                                            className="font-medium text-white inline-flex items-center bg-sky-950 hover:text-white hover:bg-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md dark:bg-sky-600 dark:hover:bg-sky-950 dark:focus:ring-blue-950 focus:text-white text-lg text-center pb-4 pt-4 px-10"
-                                            href={route("vacancy.apply", 1)}
+                                            className="font-medium text-white inline-flex items-center bg-sky-950 hover:text-white hover:bg-sky-900 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-md dark:bg-sky-600 dark:hover:bg-sky-950 dark:focus:ring-blue-950 focus:text-white text-lg text-center pb-3 pt-3 px-8"
+                                            href={route(
+                                                "vacancy.display-apply",
+                                                vacancy.id
+                                            )}
                                         >
                                             <span>
                                                 <svg

@@ -13,6 +13,7 @@ use App\Models\Vacancy;
 use App\Models\WorkType;
 use App\Models\JobLevel;
 use App\Models\Status;
+use App\Models\Category;
 use App\Http\Requests\VacancyStoreRequest;
 use App\Http\Requests\VacancyPublishRequest;
 
@@ -23,7 +24,7 @@ class VacancyController extends Controller
      */
     public function index()
     {
-        $vacancies = Vacancy::with('type')->with('level')->orderBy('created_at','desc')->paginate(6);
+        $vacancies = Vacancy::with('type')->with('level')->where('user_id',Auth::user()->id)->orderBy('created_at','desc')->paginate(6);
         return Inertia::render('Vacancy/Index', ['vacancies' => $vacancies]);
     }
 
@@ -34,7 +35,8 @@ class VacancyController extends Controller
     {
         $workTypes = WorkType::all();
         $jobLevels = JobLevel::all();
-        return Inertia::render('Vacancy/Create', ['workTypes' => $workTypes, 'jobLevels' => $jobLevels]);
+        $categories = Category::all();
+        return Inertia::render('Vacancy/Create', ['workTypes' => $workTypes, 'jobLevels' => $jobLevels, 'categories' => $categories]);
     }
 
     /**
@@ -62,7 +64,8 @@ class VacancyController extends Controller
             'end_date' => $request->end_date,
             'city' => $request->city,
             'country' => $request->country,
-            'status_id' => Status::creat()->first()->id
+            'status_id' => Status::creat()->first()->id,
+            'category_id' => $request->category
         ]);
         return to_route('vacancy.index');
     }
@@ -83,7 +86,8 @@ class VacancyController extends Controller
         $vacancy = Vacancy::where('id',$id)->first();
         $workTypes = WorkType::all();
         $jobLevels = JobLevel::all();
-        return Inertia::render('Vacancy/Edit',['vacancy' => $vacancy, 'workTypes' => $workTypes, 'jobLevels' => $jobLevels]);
+        $categories = Category::all();
+        return Inertia::render('Vacancy/Edit',['vacancy' => $vacancy, 'workTypes' => $workTypes, 'jobLevels' => $jobLevels, 'categories' => $categories]);
     }
 
     /**
@@ -102,6 +106,7 @@ class VacancyController extends Controller
             'end_date' => $request->end_date,
             'city' => $request->city,
             'country' => $request->country,
+            'category_id' => $request->category
         ]);
         return to_route('vacancy.index');
     }
@@ -130,11 +135,4 @@ class VacancyController extends Controller
         return to_route('vacancy.index');
     }
 
-    /**
-     * display form apply
-     */
-    public function apply(Request $request)
-    {
-        return Inertia::render('Apply');
-    }
 }
