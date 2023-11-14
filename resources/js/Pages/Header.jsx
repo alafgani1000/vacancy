@@ -47,7 +47,7 @@ export default function Header({ user, header }) {
                                                 "dashboard"
                                             )}
                                         >
-                                            Dashboard
+                                            Curiculum Vite
                                         </NavLink>
                                         {access.name === "Company" ? (
                                             <NavLink

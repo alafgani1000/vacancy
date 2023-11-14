@@ -17,7 +17,25 @@ class ApplyController extends Controller
 
     public function apply(Request $request, $id)
     {
-        dd($request->all());
+        $file = $req->file('file');
+        $name = $file->hashName();
+        $file_name = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        /**
+         * byte to kb 1024
+         */
+        $size = $file->getSize();
+        $path = $file->storeAs('documents', $name);
+        File::create([
+            'category_id' => $req->category,
+            'name' => $path,
+            'file_name' => $file_name,
+            'size' => $size,
+            'file_type' => $extension,
+            'visibility_id' => 1,
+            'user_id' => Auth::user()->id
+        ]);
+        return 'File Uploaded';
     }
 
 
