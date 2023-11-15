@@ -10,6 +10,7 @@ use App\Http\Controllers\WorkTypeController;
 use App\Http\Controllers\UserCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ApplyController;
+use App\Http\Controllers\CvController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -53,6 +54,14 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::patch('/vacancy/{id}/update', [VacancyController::class, 'update'])->name('vacancy.update');
         Route::patch('/vacancy/{id}/publish', [VacancyController::class, 'publish'])->name('vacancy.publish');
         Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'unpublish'])->name('vacancy.unpublish');
+    });
+
+    Route::controller(CvController::class)->prefix('cv')->group(function () {
+        Route::get('/', 'index')->name('cv.index');
+        Route::post('/education', 'storeEducation')->name('education.store');
+        Route::get('/education/{id}/edit')->name('education.edit');
+        Route::put('/education/{id}/update')->name('education.update');
+        Route::delete('education/{id}/delete')->name('education.delete');
     });
 
     Route::middleware(['admin'])->group(function () {

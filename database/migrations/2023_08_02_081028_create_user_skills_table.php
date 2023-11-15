@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('user_skills', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->unsigned();
-            $table->integer('skill_id')->unsigned();
+            $table->text('description');
             $table->timestamps();
         });
     }
