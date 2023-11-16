@@ -34,10 +34,13 @@ class ApplyController extends Controller
         $skill->count() == 0 ? $message->put('skill', 'Please fill skill data') : "";
         $work->count() == 0 ? $message->put('work', 'Please fill work histories data') : "";
 
+        // response
         if ($message->count() > 0) {
-            Inertia::render('Apply', ['message' => $message]);
+            $message->put('process', 'error');
+            return response($message);
         } else {
-            return to_route('apply.history');
+            $message->put('process', 'success');
+            return response($message);
         }
     }
 

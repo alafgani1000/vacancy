@@ -6,6 +6,9 @@ import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useState } from "react";
+import axios from "axios";
+import Modal from "@/Components/Modal";
+import { Dialog } from "@headlessui/react";
 
 const modules = {
     toolbar: [
@@ -44,21 +47,27 @@ const formats = [
 
 export default function Apply({ auth, vacancy }) {
     const [description, setDescription] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [message, setMessage] = useState({});
+
+    const closeModal = () => {
+        setIsOpen(false);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        router.post(
-            `/vacancy/${vacancy.id}/apply`,
-            {
-                _method: "put",
+        axios
+            .put(`/vacancy/${vacancy.id}/apply`, {
                 description: description,
-            },
-            {
-                forceFormData: true,
-                onError: () => {},
-                onSuccess: () => {},
-            }
-        );
+            })
+            .then((res) => {
+                if (res.data.process) {
+                    setMessage(res.data);
+                    setIsOpen(true);
+                } else {
+                }
+            })
+            .catch((error) => {});
     };
 
     return (
@@ -126,6 +135,31 @@ export default function Apply({ auth, vacancy }) {
                     </div>
                 </div>
             </div>
+            <Modal show={isOpen}>
+                <Dialog.Panel className="w-full transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Title
+                        as="h3"
+                        className="text-2xl font-medium leading-6 text-gray-900"
+                    >
+                        Apply not allowed
+                    </Dialog.Title>
+                    <div className="mt-4 text-lg">
+                        <div>{message?.edu}</div>
+                        <div>{message?.skill}</div>
+                        <div>{message?.work}</div>
+                    </div>
+
+                    <div className="mt-4">
+                        <button
+                            type="button"
+                            className="inline-flex justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={closeModal}
+                        >
+                            Close!
+                        </button>
+                    </div>
+                </Dialog.Panel>
+            </Modal>
         </AuthenticatedLayout>
     );
 }

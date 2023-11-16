@@ -9,6 +9,7 @@ use Inertia\Response;
 use App\Models\UserSkill;
 use App\Models\UserEducation;
 use App\Models\UserWorkHistory;
+use App\Models\User;
 use App\Http\Requests\EducationStoreRequest;
 use App\Http\Requests\WorkHistoryStoreRequest;
 use App\Http\Requests\SkillStoreRequest;
@@ -20,7 +21,7 @@ class CvController extends Controller
         return Inertia::render('Cv/Index');
     }
 
-    public function uploadFoto(Request $request)
+    public function uploadPhoto(Request $request)
     {
         $file = $request->file('file');
         $name = $file->hashName();
@@ -31,8 +32,8 @@ class CvController extends Controller
          */
         $size = $file->getSize();
         $path = $file->storeAs('profiles', $name);
-        File::create([
-            'name' => $path,
+        Auth::user()->update([
+            'foto' => $path,
         ]);
         return 'File Uploaded';
     }

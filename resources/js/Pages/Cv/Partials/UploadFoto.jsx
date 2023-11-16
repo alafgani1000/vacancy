@@ -21,41 +21,28 @@ export default function UploadFoto({
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // router.post(
-        //     `/vacancy/${vacancy.id}/apply`,
-        //     {
-        //         _method: "put",
-        //         file: file,
-        //         description: description,
-        //     },
-        //     {
-        //         forceFormData: true,
-        //         onError: () => {},
-        //         onSuccess: () => {},
-        //     }
-        // );
+        router.post(
+            `/cv/upload-photo`,
+            {
+                _method: "put",
+                file: file,
+            },
+            {
+                forceFormData: true,
+                onError: () => {},
+                onSuccess: () => {},
+            }
+        );
     };
 
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">
-                    Skill Data
-                </h2>
-
-                <p className="mt-1 text-sm text-gray-600">
-                    Update your skill data
-                </p>
+                <h2 className="text-lg font-medium text-gray-900">Photo</h2>
             </header>
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-6">
+            <form onSubmit={handleSubmit} className="mt-4 space-y-6">
                 <div>
-                    <label
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        html="file_input"
-                    >
-                        Upload CV
-                    </label>
                     <input
                         className="block w-full text-sm border rounded-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
                         id="file_input"
@@ -65,7 +52,7 @@ export default function UploadFoto({
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton className="px-4 py-2">Save</PrimaryButton>
+                    <PrimaryButton className="px-4 py-2">Upload</PrimaryButton>
 
                     <Transition
                         show={false}
@@ -74,7 +61,7 @@ export default function UploadFoto({
                         leave="transition ease-in-out"
                         leaveTo="opacity-0"
                     >
-                        <p className="text-sm text-gray-600">Saved.</p>
+                        <p className="text-sm text-gray-600">Upload.</p>
                     </Transition>
                 </div>
             </form>

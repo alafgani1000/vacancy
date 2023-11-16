@@ -60,6 +60,8 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::controller(CvController::class)->prefix('cv')->group(function () {
         // inde cv
         Route::get('/', 'index')->name('cv.index');
+        // upload photo
+        Route::put('/upload-photo', 'uploadPhoto')->name('upload.photo');
         // education
         Route::post('/education', 'storeEducation')->name('education.store');
         Route::get('/education/{id}/edit')->name('education.edit');
