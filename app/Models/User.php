@@ -9,6 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Company;
 use App\Models\UserCategory;
+use App\Models\UserEducation;
+use App\Models\UserWorkHistory;
+use App\Models\UserSkill;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -28,7 +31,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'user_category_id',
         'sex',
         'address',
-        'phone_number'
+        'phone_number',
+        'foto'
     ];
 
     /**
@@ -64,5 +68,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userCategory()
     {
         return $this->belongsTo(UserCategory::class);
+    }
+
+    public function educations()
+    {
+        return $this->hasMany(UserEducation::class);
+    }
+
+    public function workHisories()
+    {
+        return $this->hasMany(UserWorkHistory::class);
+    }
+
+    public function skills()
+    {
+        return $this->hasMany(UserSkill::class);
     }
 }

@@ -43,12 +43,7 @@ const formats = [
 ];
 
 export default function Apply({ auth, vacancy }) {
-    const [file, setFile] = useState("");
     const [description, setDescription] = useState("");
-
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
-    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -56,7 +51,6 @@ export default function Apply({ auth, vacancy }) {
             `/vacancy/${vacancy.id}/apply`,
             {
                 _method: "put",
-                file: file,
                 description: description,
             },
             {
@@ -89,20 +83,7 @@ export default function Apply({ auth, vacancy }) {
                                 onSubmit={handleSubmit}
                                 className="mt-6 space-y-6"
                             >
-                                <div>
-                                    <label
-                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                        html="file_input"
-                                    >
-                                        Upload CV
-                                    </label>
-                                    <input
-                                        className="block w-full text-sm border rounded-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
-                                        id="file_input"
-                                        type="file"
-                                        onChange={handleFileChange}
-                                    />
-                                </div>
+                                {" "}
                                 <div className="mt-6 space-y-2">
                                     <InputLabel
                                         htmlFor="description"
@@ -119,10 +100,7 @@ export default function Apply({ auth, vacancy }) {
                                             source,
                                             editor
                                         ) => {
-                                            setInvoice({
-                                                ...invoice,
-                                                remark: editor.getHTML(),
-                                            });
+                                            setDescription(editor.getHTML());
                                         }}
                                     />
                                 </div>

@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Vacancy;
+use App\Models\UserSkill;
+use App\Models\UserEducation;
+use App\Models\UserWokrHistory;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ApplyController extends Controller
 {
@@ -17,26 +22,27 @@ class ApplyController extends Controller
 
     public function apply(Request $request, $id)
     {
-        $file = $req->file('file');
-        $name = $file->hashName();
-        $file_name = $file->getClientOriginalName();
-        $extension = $file->getClientOriginalExtension();
-        /**
-         * byte to kb 1024
-         */
-        $size = $file->getSize();
-        $path = $file->storeAs('documents', $name);
-        File::create([
-            'category_id' => $req->category,
-            'name' => $path,
-            'file_name' => $file_name,
-            'size' => $size,
-            'file_type' => $extension,
-            'visibility_id' => 1,
-            'user_id' => Auth::user()->id
-        ]);
-        return 'File Uploaded';
+        $foto = Auth::user()->foto;
+        $edu = Auth::user()->educations;
+        $skill = Auth::user()->skills;
+        $work = Auth::user()->workHisories;
+        $message = collect([]);
+
+        // cek
+        isset($foto) ? $message->put('foto', 'Please upload your photo') : "";
+        $edu->count() == 0 ? $message->put('edu', 'Please fill education data') : "";
+        $skill->count() == 0 ? $message->put('skill', 'Please fill skill data') : "";
+        $work->count() == 0 ? $message->put('work', 'Please fill work histories data') : "";
+
+        if ($message->count() > 0) {
+            Inertia::render('Apply', ['message' => $message]);
+        } else {
+            return to_route('apply.history');
+        }
     }
 
+    public function applyHistory()
+    {
 
+    }
 }

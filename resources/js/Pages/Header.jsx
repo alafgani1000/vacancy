@@ -42,10 +42,8 @@ export default function Header({ user, header }) {
                                 {auth.user ? (
                                     <>
                                         <NavLink
-                                            href={route("dashboard")}
-                                            active={route().current(
-                                                "dashboard"
-                                            )}
+                                            href={route("cv.index")}
+                                            active={route().current("cv.index")}
                                         >
                                             Curiculum Vite
                                         </NavLink>

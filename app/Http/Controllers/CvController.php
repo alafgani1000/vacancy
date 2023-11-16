@@ -20,6 +20,23 @@ class CvController extends Controller
         return Inertia::render('Cv/Index');
     }
 
+    public function uploadFoto(Request $request)
+    {
+        $file = $request->file('file');
+        $name = $file->hashName();
+        $file_name = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+        /**
+         * byte to kb 1024
+         */
+        $size = $file->getSize();
+        $path = $file->storeAs('profiles', $name);
+        File::create([
+            'name' => $path,
+        ]);
+        return 'File Uploaded';
+    }
+
     public function storeEducation(EducationStoreRequest $request)
     {
         UserSkill::create([

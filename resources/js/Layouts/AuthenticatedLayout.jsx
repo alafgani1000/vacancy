@@ -31,10 +31,10 @@ export default function Authenticated({ auth, header, children }) {
                                     Home
                                 </NavLink>
                                 <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("dashboard")}
+                                    href={route("cv.index")}
+                                    active={route().current("cv.index")}
                                 >
-                                    Dashboard
+                                    Curiculum Vite
                                 </NavLink>
                                 {access.name === "Company" ? (
                                     <>

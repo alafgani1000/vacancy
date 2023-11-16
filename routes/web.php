@@ -43,7 +43,8 @@ Route::middleware(['auth','verified'])->group(function () {
 
     // apply
     Route::get('/vacancy/{id}/apply', [ApplyController::class, 'displayForm'])->name('vacancy.display-apply');
-    Route::put('vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
+    Route::put('/vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
+    Route::get('/apply-history', [ApplyController::class, 'applyHistory'])->name('apply.history');
 
     Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
@@ -57,11 +58,23 @@ Route::middleware(['auth','verified'])->group(function () {
     });
 
     Route::controller(CvController::class)->prefix('cv')->group(function () {
+        // inde cv
         Route::get('/', 'index')->name('cv.index');
+        // education
         Route::post('/education', 'storeEducation')->name('education.store');
         Route::get('/education/{id}/edit')->name('education.edit');
         Route::put('/education/{id}/update')->name('education.update');
         Route::delete('education/{id}/delete')->name('education.delete');
+        // work history
+        Route::post('/work-history', 'storeWorkHistory')->name('workhistory.store');
+        Route::get('/work-history/{id}/edit', 'editWorkHistory')->name('workhistory.edit');
+        Route::put('/work-history/{id}/update', 'updateWorkHistory')->name('workhistory.update');
+        Route::delete('/work-history/{id}/delete', 'deleteWorkHistory')->name('workhistory.delete');
+        // skill
+        Route::post('/skill', 'storeSkill')->name('skill.store');
+        Route::get('/skill/{id}/edit')->name('skill.edit');
+        Route::put('/skill/{id}/update')->name('skill.update');
+        Route::delete('/skill/{id}/delete')->name('skill.delete');
     });
 
     Route::middleware(['admin'])->group(function () {
