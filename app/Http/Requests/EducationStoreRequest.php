@@ -22,8 +22,8 @@ class EducationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from' => 'required',
-            'to' => 'required',
+            'start' => 'required',
+            'end' => 'required',
             'name' => 'required',
             'major' => 'required'
         ];

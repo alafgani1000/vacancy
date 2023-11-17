@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('user_work_histories', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->unsigned();
-            $table->text('description');
+            $table->integer('end');
+            $table->integer('end');
+            $table->string('company');
+            $table->text('job_desc');
             $table->timestamps();
         });
     }

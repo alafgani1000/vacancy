@@ -22,7 +22,10 @@ class WorkHistoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => 'required'
+            'start' => 'required',
+            'end' => 'required',
+            'company' => 'required',
+            'job_desc' => 'required'
         ];
     }
 }

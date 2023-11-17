@@ -10,7 +10,7 @@ class UserWorkHistory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','description'];
+    protected $fillable = ['user_id','start','end','company','job_desc'];
 
     public function user()
     {

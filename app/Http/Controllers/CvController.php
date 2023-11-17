@@ -13,12 +13,16 @@ use App\Models\User;
 use App\Http\Requests\EducationStoreRequest;
 use App\Http\Requests\WorkHistoryStoreRequest;
 use App\Http\Requests\SkillStoreRequest;
+use Illuminate\Support\Facades\Storage;
+use Response as Res;
 
 class CvController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Cv/Index');
+        $educations = Auth::user()->educations;
+        $histories = Auth::user()->workHisories;
+        return Inertia::render('Cv/Index', ['educations' => $educations, 'histories' => $histories]);
     }
 
     public function uploadPhoto(Request $request)
@@ -38,12 +42,23 @@ class CvController extends Controller
         return 'File Uploaded';
     }
 
+    protected function showImage($filename)
+    {
+        $exists = file_exists(storage_path('app/profiles/'.$filename));
+        if ($exists) {
+            return response()->file(storage_path('app/profiles/'.$filename));
+        } else {
+            return response()->file(storage_path('app/profiles/default.jpg'));
+        }
+
+    }
+
     public function storeEducation(EducationStoreRequest $request)
     {
-        UserSkill::create([
+        UserEducation::create([
             'user_id' => Auth::user()->id,
-            'start' => $request->from,
-            'end' => $request->to,
+            'start' => $request->start,
+            'end' => $request->end,
             'name' => $request->name,
             'major' => $request->major,
             'degree' => $request->degree
@@ -60,9 +75,9 @@ class CvController extends Controller
 
     public function updateEducation(EducationStoreRequest $request, $id)
     {
-        UserSkill::where('id',$id)->update([
-            'start' => $request->form,
-            'end' => $request->to,
+        UserEducation::where('id',$id)->update([
+            'start' => $request->start,
+            'end' => $request->end,
             'name' => $request->name,
             'major' => $request->major,
             'degree' => $request->degree,
@@ -73,15 +88,18 @@ class CvController extends Controller
 
     public function deleteEducation($id)
     {
-        UserSkill::where('id',$id)->delete();
+        UserEducation::where('id',$id)->delete();
         return  to_route('cv.index');
     }
 
-    public function storeWorkHistory(WorkHistorStoreRequest $request)
+    public function storeWorkHistory(WorkHistoryStoreRequest $request)
     {
         UserWorkHistory::create([
             'user_id' => Auth::user()->id,
-            'description' => $request->description
+            'start' => $request->start,
+            'end' => $request->end,
+            'company' => $request->company,
+            'job_desc' => $request->job_desc
         ]);
 
         return to_route('cv.index');
@@ -93,10 +111,13 @@ class CvController extends Controller
         return $workHistory;
     }
 
-    public function updateWorkHistory(WorkHistorStoreRequest $request, $id)
+    public function updateWorkHistory(WorkHistoryStoreRequest $request, $id)
     {
         UserWorkHistory::where('id',$id)->update([
-            'description' => $request->description
+            'start' => $request->start,
+            'end' => $request->end,
+            'company' => $request->company,
+            'job_desc' => $request->job_desc
         ]);
 
         return to_route('cv.index');

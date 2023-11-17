@@ -62,11 +62,12 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/', 'index')->name('cv.index');
         // upload photo
         Route::put('/upload-photo', 'uploadPhoto')->name('upload.photo');
+        Route::get('/profiles/{filename}', 'showImage')->name('display.photo');
         // education
         Route::post('/education', 'storeEducation')->name('education.store');
-        Route::get('/education/{id}/edit')->name('education.edit');
-        Route::put('/education/{id}/update')->name('education.update');
-        Route::delete('education/{id}/delete')->name('education.delete');
+        Route::get('/education/{id}/edit', 'editEducation')->name('education.edit');
+        Route::put('/education/{id}/update', 'updateEducation')->name('education.update');
+        Route::delete('education/{id}/delete', 'deleteEducation')->name('education.delete');
         // work history
         Route::post('/work-history', 'storeWorkHistory')->name('workhistory.store');
         Route::get('/work-history/{id}/edit', 'editWorkHistory')->name('workhistory.edit');

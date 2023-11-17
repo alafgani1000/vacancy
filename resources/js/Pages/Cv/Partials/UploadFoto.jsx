@@ -8,12 +8,10 @@ import Select from "@/Components/Select";
 import TextArea from "@/Components/TextArea";
 import { useState } from "react";
 
-export default function UploadFoto({
-    mustVerifyEmail,
-    status,
-    className = "",
-}) {
+export default function UploadFoto({ auth, className = "" }) {
     const [file, setFile] = useState("");
+
+    const { user } = auth;
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -37,32 +35,47 @@ export default function UploadFoto({
 
     return (
         <section className={className}>
-            <header>
-                <h2 className="text-lg font-medium text-gray-900">Photo</h2>
-            </header>
-
-            <form onSubmit={handleSubmit} className="mt-4 space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <input
-                        className="block w-full text-sm border rounded-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
-                        id="file_input"
-                        type="file"
-                        onChange={handleFileChange}
-                    />
-                </div>
+                    <div>
+                        <img
+                            src={`cv/${user.foto}`}
+                            width="80px"
+                            className="mb-2"
+                        />
+                    </div>
+                    <div className="mt-5">
+                        <header>
+                            <h3 className="font-medium text-gray-900">Photo</h3>
+                        </header>
+                        <div className="grid grid-cols-2">
+                            <div>
+                                <input
+                                    className="block w-full text-sm border round-s-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
+                                    id="file_input"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <button className="px-4 ms-4 py-2 rounded-md bg-sky-950 text-white">
+                                    Upload
+                                </button>
 
-                <div className="flex items-center gap-4">
-                    <PrimaryButton className="px-4 py-2">Upload</PrimaryButton>
-
-                    <Transition
-                        show={false}
-                        enter="transition ease-in-out"
-                        enterFrom="opacity-0"
-                        leave="transition ease-in-out"
-                        leaveTo="opacity-0"
-                    >
-                        <p className="text-sm text-gray-600">Upload.</p>
-                    </Transition>
+                                <Transition
+                                    show={false}
+                                    enter="transition ease-in-out"
+                                    enterFrom="opacity-0"
+                                    leave="transition ease-in-out"
+                                    leaveTo="opacity-0"
+                                >
+                                    <p className="text-sm text-gray-600">
+                                        Upload.
+                                    </p>
+                                </Transition>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </section>

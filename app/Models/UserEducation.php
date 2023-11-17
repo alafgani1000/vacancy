@@ -12,7 +12,7 @@ class UserEducation extends Model
 
     protected $table = 'user_educations';
 
-    protected $fillable = ['start','end','name','major','degree'];
+    protected $fillable = ['user_id','start','end','name','major','degree'];
 
     public function user()
     {
