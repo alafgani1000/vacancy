@@ -15,8 +15,13 @@ export default function Index({ auth, status, page }) {
     const [showForm, setShowForm] = useState(false);
     const [current, setCurrent] = useState(page);
     const [isLoad, setIsLoad] = useState(false);
-    const [formData, setFormData] = useState({ name: "", description: "" });
+    const [formData, setFormData] = useState({
+        code: "",
+        name: "",
+        description: "",
+    });
     const [errorMessage, setErrorMessage] = useState({
+        code: "",
         name: "",
         description: "",
     });
@@ -131,7 +136,8 @@ export default function Index({ auth, status, page }) {
     };
 
     const handleStore = () => {
-        router.post("/status", formData, {
+        router.post("/apply-status", formData, {
+            preserveScroll: true,
             onError: (errors) => {
                 if (errors.name) {
                     setErrorMessage((prev) => ({
@@ -151,7 +157,8 @@ export default function Index({ auth, status, page }) {
     };
 
     const handleUpdate = (id) => {
-        router.put(`/status/${id}/update`, formData, {
+        router.put(`/apply-status/${id}/update`, formData, {
+            preserveScroll: true,
             onSuccess: () => {
                 setToastData({
                     message: "Update Success",
@@ -171,12 +178,13 @@ export default function Index({ auth, status, page }) {
 
     const handleEdit = (id) => {
         axios
-            .get(`/status/${id}/edit`, {})
+            .get(`/apply-status/${id}/edit`, {})
             .then(({ data }) => {
                 setEditId(data.id);
                 setFormData({
+                    code: data.code,
                     name: data.name,
-                    description: data.desc,
+                    description: data.description,
                 });
                 setShowForm(true);
             })
@@ -194,7 +202,7 @@ export default function Index({ auth, status, page }) {
     };
 
     const deleteStatus = () => {
-        router.delete(`/status/${dataStatus.id}/delete`, {
+        router.delete(`/apply-status/${dataStatus.id}/delete`, {
             preserveScroll: true,
             onSuccess: () => {
                 setToastData({
@@ -228,8 +236,8 @@ export default function Index({ auth, status, page }) {
             return (
                 <div className="w-full ms-2 me-2 mt-4">
                     <LinkNumber
-                        href={route("status.index", { page: 1 })}
-                        active={route().current("status.index", {
+                        href={route("apply-status.index", { page: 1 })}
+                        active={route().current("apply-status.index", {
                             page: 1,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -240,11 +248,11 @@ export default function Index({ auth, status, page }) {
                         return (
                             <LinkNumber
                                 key={value}
-                                href={route("status.index", {
+                                href={route("apply-status.index", {
                                     search: search,
                                     page: value,
                                 })}
-                                active={route().current("status.index", {
+                                active={route().current("apply-status.index", {
                                     page: value,
                                 })}
                                 className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -255,8 +263,8 @@ export default function Index({ auth, status, page }) {
                         );
                     })}
                     <LinkNumber
-                        href={route("status.index", { page: last_page })}
-                        active={route().current("status.index", {
+                        href={route("apply-status.index", { page: last_page })}
+                        active={route().current("apply-status.index", {
                             page: last_page,
                         })}
                         className="bg-sky-500 pt-2 pb-1 px-3 mx-1 text-white rounded-md"
@@ -278,11 +286,11 @@ export default function Index({ auth, status, page }) {
             auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Status
+                    Apply Status
                 </h2>
             }
         >
-            <Head title="Status" />
+            <Head title="Apply Status" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -298,7 +306,24 @@ export default function Index({ auth, status, page }) {
                                     </button>
                                 ) : (
                                     <div className="w-full p-3 rounded-md shadow-md">
-                                        <div className="w-full grid grid-cols-3">
+                                        <div className="w-full grid grid-cols-4">
+                                            <div className="mx-2">
+                                                <InputLabel
+                                                    htmlFor="code"
+                                                    value="Code"
+                                                />
+                                                <TextInput
+                                                    name="code"
+                                                    value={formData.code}
+                                                    onChange={handleChange}
+                                                    className="mt-1 block w-full"
+                                                />
+                                                <InputLabel
+                                                    className="mt-2 text-red-600"
+                                                    htmlFor="code"
+                                                    value={errorMessage.code}
+                                                />
+                                            </div>
                                             <div className="mx-2">
                                                 <InputLabel
                                                     htmlFor="name"
@@ -389,6 +414,7 @@ export default function Index({ auth, status, page }) {
                                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-2">
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                         <tr>
+                                            <th className="px-6 py-3">Code</th>
                                             <th className="px-6 py-3">Name</th>
                                             <th className="px-6 py-3">
                                                 Description
@@ -404,10 +430,13 @@ export default function Index({ auth, status, page }) {
                                                     key={stage.id}
                                                 >
                                                     <td className="px-6 py-3">
+                                                        {stage.code}
+                                                    </td>
+                                                    <td className="px-6 py-3">
                                                         {stage.name}
                                                     </td>
                                                     <td className="px-6 py-3">
-                                                        {stage.desc}
+                                                        {stage.description}
                                                     </td>
                                                     <td>
                                                         <div className="inline-flex">

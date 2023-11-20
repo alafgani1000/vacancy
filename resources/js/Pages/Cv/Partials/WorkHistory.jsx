@@ -6,6 +6,8 @@ import { router, usePage } from "@inertiajs/react";
 import { Transition } from "@headlessui/react";
 import TextArea from "@/Components/TextArea";
 import { useState } from "react";
+import Confirm from "@/Components/Confirm";
+import Toast from "@/Components/Toast";
 
 export default function WorkHistory({
     mustVerifyEmail,
@@ -27,10 +29,59 @@ export default function WorkHistory({
     });
     const [isEdit, setIsEdit] = useState(false);
     const [idData, setIdData] = useState("");
+    const [isConfirm, setIsConfirm] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
 
     const submit = (event) => {
         event.preventDefault();
+        if (isEdit) {
+            updateData();
+        } else {
+            insertData();
+        }
+    };
+
+    const insertData = () => {
         router.post("/cv/work-history", formData, {
+            preserveScroll: true,
+            onError: function (errors) {
+                if (errors.start) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        start: errors.start,
+                    }));
+                }
+
+                if (errors.end) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        end: errors.end,
+                    }));
+                }
+
+                if (errors.company) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        company: errors.company,
+                    }));
+                }
+
+                if (errors.job_desc) {
+                    setErrorMessage((prev) => ({
+                        ...prev,
+                        job_desc: errors.job_desc,
+                    }));
+                }
+            },
+        });
+    };
+
+    const updateData = () => {
+        router.put(`/cv/work-history/${idData}/update`, formData, {
             preserveScroll: true,
             onError: function (errors) {
                 if (errors.start) {
@@ -73,7 +124,55 @@ export default function WorkHistory({
 
     const handleEdit = (data) => {
         setFormData(data);
+        setIdData(data.id);
         setIsEdit(true);
+    };
+
+    const canceEdit = () => {
+        setFormData({ start: "", end: "", company: "", job_desc: "" });
+        setIdData("");
+        setIsEdit(false);
+    };
+
+    const deleteConfirm = (data) => {
+        setIsConfirm(true);
+        setIdData(data.id);
+    };
+
+    const reset = () => {
+        setFormData({ start: "", end: "", company: "", job_desc: "" });
+        setIdData("");
+        setIsConfirm(false);
+    };
+
+    const deleteData = () => {
+        router.delete(`cv/work-history/${idData}/delete`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setToastData({
+                    message: "Delete Success",
+                    color: "success",
+                });
+                setShowToast(true);
+                reset();
+            },
+            onError: () => {
+                setToastData({
+                    message: "Delete Error",
+                    color: "error",
+                });
+                setShowToast(true);
+            },
+        });
+    };
+
+    const cancelDelete = () => {
+        setIsConfirm(false);
+        setIdData("");
+    };
+
+    const falseShow = () => {
+        setShowToast(false);
     };
 
     return (
@@ -169,21 +268,47 @@ export default function WorkHistory({
                             message={errorMessage.job_desc}
                         />
                     </div>
+                    <div className="flex flex-col-2  gap-2">
+                        <div className="flex items-center gap-4">
+                            <PrimaryButton className="px-4 py-2">
+                                {isEdit ? "Update" : "Save"}
+                            </PrimaryButton>
 
-                    <div className="flex items-center gap-4">
-                        <PrimaryButton className="px-4 py-2">
-                            Save
-                        </PrimaryButton>
+                            <Transition
+                                show={false}
+                                enter="transition ease-in-out"
+                                enterFrom="opacity-0"
+                                leave="transition ease-in-out"
+                                leaveTo="opacity-0"
+                            >
+                                <p className="text-sm text-gray-600">Saved.</p>
+                            </Transition>
+                        </div>
+                        {isEdit ? (
+                            <div className="flex items-center gap-4">
+                                <button
+                                    onClick={canceEdit}
+                                    type="button"
+                                    className="px-4 py-2 bg-red-600 rounded-md text-white text-sm"
+                                >
+                                    Cancel Edit
+                                </button>
 
-                        <Transition
-                            show={false}
-                            enter="transition ease-in-out"
-                            enterFrom="opacity-0"
-                            leave="transition ease-in-out"
-                            leaveTo="opacity-0"
-                        >
-                            <p className="text-sm text-gray-600">Saved.</p>
-                        </Transition>
+                                <Transition
+                                    show={false}
+                                    enter="transition ease-in-out"
+                                    enterFrom="opacity-0"
+                                    leave="transition ease-in-out"
+                                    leaveTo="opacity-0"
+                                >
+                                    <p className="text-sm text-gray-600">
+                                        Saved.
+                                    </p>
+                                </Transition>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
                 </form>
             </div>
@@ -249,6 +374,21 @@ export default function WorkHistory({
                     })}
                 </tbody>
             </table>
+
+            <Confirm
+                show={isConfirm}
+                question="Are you sure delete this data ?"
+                yes={deleteData}
+                no={cancelDelete}
+            />
+
+            <Toast
+                show={showToast}
+                message={toastData.message}
+                time={10000}
+                falseShow={falseShow}
+                color={toastData.color}
+            />
         </section>
     );
 }

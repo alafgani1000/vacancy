@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vacancy_applies', function (Blueprint $table) {
+        Schema::create('apply_status', function (Blueprint $table) {
             $table->id();
-            $table->integer('vacancy_id')->unsigned();
-            $table->integer('user_apply')->unsigned();
-            $table->integer('stage_id')->unsigned();
-            $table->integer('apply_status_id')->unsigned();
-            $table->text('message');
+            $table->string('code');
+            $table->string('name');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vacancy_applies');
+        Schema::dropIfExists('apply_status');
     }
 };

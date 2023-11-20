@@ -128,6 +128,13 @@ export default function Header({ user, header }) {
                                                         >
                                                             Category
                                                         </Dropdown.Link>
+                                                        <Dropdown.Link
+                                                            href={route(
+                                                                "apply-status.index"
+                                                            )}
+                                                        >
+                                                            Apply Status
+                                                        </Dropdown.Link>
                                                     </Dropdown.Content>
                                                 </Dropdown>
                                             </>

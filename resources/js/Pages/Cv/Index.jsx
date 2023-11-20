@@ -5,7 +5,13 @@ import WorkHistory from "./Partials/WorkHistory";
 import Skill from "./Partials/Skill";
 import UploadFoto from "./Partials/UploadFoto";
 
-export default function Edit({ auth, mustVerifyEmail, educations, histories }) {
+export default function Edit({
+    auth,
+    mustVerifyEmail,
+    educations,
+    histories,
+    skills,
+}) {
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -29,7 +35,7 @@ export default function Edit({ auth, mustVerifyEmail, educations, histories }) {
                         <WorkHistory histories={histories} />
                     </div>
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <Skill className="max-w-xl" />
+                        <Skill skills={skills} />
                     </div>
                 </div>
             </div>

@@ -115,6 +115,13 @@ export default function Authenticated({ auth, header, children }) {
                                                 >
                                                     Category
                                                 </Dropdown.Link>
+                                                <Dropdown.Link
+                                                    href={route(
+                                                        "apply-status.index"
+                                                    )}
+                                                >
+                                                    Apply Status
+                                                </Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </>

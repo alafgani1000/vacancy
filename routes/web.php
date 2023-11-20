@@ -11,6 +11,7 @@ use App\Http\Controllers\UserCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\CvController;
+use App\Http\Controllers\ApplyStatusController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -75,9 +76,9 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::delete('/work-history/{id}/delete', 'deleteWorkHistory')->name('workhistory.delete');
         // skill
         Route::post('/skill', 'storeSkill')->name('skill.store');
-        Route::get('/skill/{id}/edit')->name('skill.edit');
-        Route::put('/skill/{id}/update')->name('skill.update');
-        Route::delete('/skill/{id}/delete')->name('skill.delete');
+        Route::get('/skill/{id}/edit', 'editSkill')->name('skill.edit');
+        Route::put('/skill/{id}/update', 'updateSkill')->name('skill.update');
+        Route::delete('/skill/{id}/delete', 'deleteSkill')->name('skill.delete');
     });
 
     Route::middleware(['admin'])->group(function () {
@@ -133,6 +134,15 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::get('/category/{id}/edit', 'edit')->name('category.edit');
             Route::put('/category/{id}/update', 'update')->name('category.update');
             Route::delete('/category/{id}/delete', 'delete')->name('category.delete');
+        });
+
+        // apply status
+        Route::controller(ApplyStatusController::class)->group(function () {
+            Route::get('/apply-status', 'index')->name('apply-status.index');
+            Route::post('/apply-status', 'store')->name('apply-status.store');
+            Route::get('/apply-status/{id}/edit', 'edit')->name('apply-status.edit');
+            Route::put('/apply-status/{id}/update', 'update')->name('apply-status.update');
+            Route::delete('/apply-status/{id}/delete', 'delete')->name('apply-status.delete');
         });
 
     });

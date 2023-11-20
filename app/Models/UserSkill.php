@@ -10,7 +10,7 @@ class UserSkill extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['description'];
+    protected $fillable = ['user_id','description'];
 
     public function user()
     {

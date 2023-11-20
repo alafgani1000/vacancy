@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SkilStoreRequest extends FormRequest
+class ApplyStatusStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,8 @@ class SkilStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'skill' => 'required'
+            'code' => 'required',
+            'name' => 'required'
         ];
     }
 }

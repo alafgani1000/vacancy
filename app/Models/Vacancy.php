@@ -8,6 +8,7 @@ use App\Models\WorkType;
 use App\Models\JobLevel;
 use App\Models\Status;
 use App\Models\Category;
+use App\Models\VacancyApply;
 
 class Vacancy extends Model
 {
@@ -42,6 +43,11 @@ class Vacancy extends Model
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public function applies()
+    {
+        return $this->hasMany(VacancyApply::class);
     }
 
 }

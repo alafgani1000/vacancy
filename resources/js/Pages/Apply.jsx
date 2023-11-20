@@ -61,10 +61,11 @@ export default function Apply({ auth, vacancy }) {
                 description: description,
             })
             .then((res) => {
-                if (res.data.process) {
+                if (res.data.process === "error") {
                     setMessage(res.data);
                     setIsOpen(true);
                 } else {
+                    console.log(res);
                 }
             })
             .catch((error) => {});

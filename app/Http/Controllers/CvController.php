@@ -12,7 +12,7 @@ use App\Models\UserWorkHistory;
 use App\Models\User;
 use App\Http\Requests\EducationStoreRequest;
 use App\Http\Requests\WorkHistoryStoreRequest;
-use App\Http\Requests\SkillStoreRequest;
+use App\Http\Requests\SkilStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use Response as Res;
 
@@ -22,7 +22,8 @@ class CvController extends Controller
     {
         $educations = Auth::user()->educations;
         $histories = Auth::user()->workHisories;
-        return Inertia::render('Cv/Index', ['educations' => $educations, 'histories' => $histories]);
+        $skills = Auth::user()->skills;
+        return Inertia::render('Cv/Index', ['educations' => $educations, 'histories' => $histories, 'skills' => $skills]);
     }
 
     public function uploadPhoto(Request $request)
@@ -130,10 +131,11 @@ class CvController extends Controller
         return to_route('cv.index');
     }
 
-    public function storeSkill(SkillStoreRequest $request)
+    public function storeSkill(SkilStoreRequest $request)
     {
         UserSkill::create([
-            'description' => $request->description
+            'user_id' => Auth::user()->id,
+            'description' => $request->skill
         ]);
 
         return to_route('cv.index');
@@ -145,10 +147,10 @@ class CvController extends Controller
         return $skill;
     }
 
-    public function updateSkill(SkillStoreRequest $request, $id)
+    public function updateSkill(SkilStoreRequest $request, $id)
     {
         UserSkill::where('id',$id)->update([
-            'description' => $request->description
+            'description' => $request->skill
         ]);
 
         return to_route('cv.index');
