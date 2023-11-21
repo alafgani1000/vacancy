@@ -41,21 +41,54 @@ export default function Header({ user, header }) {
                                 </>
                                 {auth.user ? (
                                     <>
-                                        <NavLink
-                                            href={route("cv.index")}
-                                            active={route().current("cv.index")}
-                                        >
-                                            Curiculum Vite
-                                        </NavLink>
+                                        {access.name === "Job Seeker" ? (
+                                            <>
+                                                <NavLink
+                                                    href={route("cv.index")}
+                                                    active={route().current(
+                                                        "cv.index"
+                                                    )}
+                                                >
+                                                    Curiculum Vite
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
+                                                        "apply.history"
+                                                    )}
+                                                    active={route().current(
+                                                        "apply.history"
+                                                    )}
+                                                >
+                                                    History
+                                                </NavLink>
+                                            </>
+                                        ) : (
+                                            ""
+                                        )}
+
                                         {access.name === "Company" ? (
-                                            <NavLink
-                                                href={route("vacancy.index")}
-                                                active={route().current(
-                                                    "vacancy.index"
-                                                )}
-                                            >
-                                                Vacancy
-                                            </NavLink>
+                                            <>
+                                                <NavLink
+                                                    href={route(
+                                                        "vacancy.index"
+                                                    )}
+                                                    active={route().current(
+                                                        "vacancy.index"
+                                                    )}
+                                                >
+                                                    Vacancy
+                                                </NavLink>
+                                                <NavLink
+                                                    href={route(
+                                                        "company.index"
+                                                    )}
+                                                    active={route().current(
+                                                        "company.index"
+                                                    )}
+                                                >
+                                                    Company
+                                                </NavLink>
+                                            </>
                                         ) : (
                                             ""
                                         )}

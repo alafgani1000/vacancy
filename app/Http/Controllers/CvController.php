@@ -46,7 +46,7 @@ class CvController extends Controller
     protected function showImage($filename)
     {
         $exists = file_exists(storage_path('app/profiles/'.$filename));
-        if ($exists) {
+        if ($filename) {
             return response()->file(storage_path('app/profiles/'.$filename));
         } else {
             return response()->file(storage_path('app/profiles/default.jpg'));

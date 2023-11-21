@@ -30,12 +30,26 @@ export default function Authenticated({ auth, header, children }) {
                                 >
                                     Home
                                 </NavLink>
-                                <NavLink
-                                    href={route("cv.index")}
-                                    active={route().current("cv.index")}
-                                >
-                                    Curiculum Vite
-                                </NavLink>
+                                {access.name === "Job Seeker" ? (
+                                    <>
+                                        <NavLink
+                                            href={route("cv.index")}
+                                            active={route().current("cv.index")}
+                                        >
+                                            Curiculum Vite
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("apply.history")}
+                                            active={route().current(
+                                                "apply.history"
+                                            )}
+                                        >
+                                            History
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    ""
+                                )}
                                 {access.name === "Company" ? (
                                     <>
                                         <NavLink
@@ -45,6 +59,14 @@ export default function Authenticated({ auth, header, children }) {
                                             )}
                                         >
                                             Vacancy
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("company.index")}
+                                            active={route().current(
+                                                "company.index"
+                                            )}
+                                        >
+                                            Company
                                         </NavLink>
                                     </>
                                 ) : (

@@ -9,6 +9,7 @@ import { useState } from "react";
 import axios from "axios";
 import Modal from "@/Components/Modal";
 import { Dialog } from "@headlessui/react";
+import Toast from "@/Components/Toast";
 
 const modules = {
     toolbar: [
@@ -49,6 +50,11 @@ export default function Apply({ auth, vacancy }) {
     const [description, setDescription] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState({});
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
 
     const closeModal = () => {
         setIsOpen(false);
@@ -65,10 +71,25 @@ export default function Apply({ auth, vacancy }) {
                     setMessage(res.data);
                     setIsOpen(true);
                 } else {
-                    console.log(res);
+                    setToastData({
+                        message: "Apply Success",
+                        color: "success",
+                    });
+                    setShowToast(true);
+                    router.visit(route("home"));
                 }
             })
-            .catch((error) => {});
+            .catch((error) => {
+                setToastData({
+                    message: "Apply Error",
+                    color: "error",
+                });
+                setShowToast(true);
+            });
+    };
+
+    const falseShow = () => {
+        setShowToast(false);
     };
 
     return (
@@ -161,6 +182,13 @@ export default function Apply({ auth, vacancy }) {
                     </div>
                 </Dialog.Panel>
             </Modal>
+            <Toast
+                show={showToast}
+                message={toastData.message}
+                time={10000}
+                falseShow={falseShow}
+                color={toastData.color}
+            />
         </AuthenticatedLayout>
     );
 }

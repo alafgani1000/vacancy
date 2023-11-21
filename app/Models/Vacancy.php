@@ -9,6 +9,7 @@ use App\Models\JobLevel;
 use App\Models\Status;
 use App\Models\Category;
 use App\Models\VacancyApply;
+use App\Models\User;
 
 class Vacancy extends Model
 {
@@ -48,6 +49,16 @@ class Vacancy extends Model
     public function applies()
     {
         return $this->hasMany(VacancyApply::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
     }
 
 }

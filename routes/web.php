@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\CvController;
 use App\Http\Controllers\ApplyStatusController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,7 +46,7 @@ Route::middleware(['auth','verified'])->group(function () {
     // apply
     Route::get('/vacancy/{id}/apply', [ApplyController::class, 'displayForm'])->name('vacancy.display-apply');
     Route::put('/vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
-    Route::get('/apply-history', [ApplyController::class, 'applyHistory'])->name('apply.history');
+    Route::get('/apply-history', [ApplyController::class, 'applyHistories'])->name('apply.history');
 
     Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
@@ -58,6 +59,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'unpublish'])->name('vacancy.unpublish');
     });
 
+    // cv controller
     Route::controller(CvController::class)->prefix('cv')->group(function () {
         // inde cv
         Route::get('/', 'index')->name('cv.index');
@@ -79,6 +81,14 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/skill/{id}/edit', 'editSkill')->name('skill.edit');
         Route::put('/skill/{id}/update', 'updateSkill')->name('skill.update');
         Route::delete('/skill/{id}/delete', 'deleteSkill')->name('skill.delete');
+    });
+
+    // company controller
+    Route::controller(CompanyController::class)->group(function () {
+        Route::get('/company', 'index')->name('company.index');
+        Route::put('/company/{id}/upload-logo', 'uploadLogo')->name('company.upload-logo');
+        Route::get('/company/{filename}', 'showImage')->name('company.image');
+        Route::put('/company/{id}/update', 'update')->name('company.update');
     });
 
     Route::middleware(['admin'])->group(function () {

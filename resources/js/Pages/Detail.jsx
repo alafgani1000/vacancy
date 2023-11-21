@@ -4,6 +4,7 @@ import parse from "html-react-parser";
 import { Head } from "@inertiajs/react";
 
 export default function ({ auth, hasVeried, vacancy }) {
+    console.log(vacancy);
     return (
         <>
             {hasVeried === false ? (
@@ -31,11 +32,16 @@ export default function ({ auth, hasVeried, vacancy }) {
                                     <div className="mb-5">
                                         <div className="bg-white pl-4 pt-2 pb-2 text-black h-ful">
                                             <img
-                                                src="/storage/tailwin.png"
+                                                src={
+                                                    vacancy.user.company
+                                                        .logo !== null
+                                                        ? `/${vacancy.user.company.logo}`
+                                                        : `/company/default.jpg`
+                                                }
                                                 width="80px"
-                                                className="mb-2"
+                                                className="mb-2 mt-2"
                                             />
-                                            <p className="font-bold pb-2 text-2xl">
+                                            <p className="font-bold pb-2 text-2xl mt-4">
                                                 {vacancy.job_name}
                                             </p>
                                         </div>

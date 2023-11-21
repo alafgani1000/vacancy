@@ -9,7 +9,7 @@ use App\Models\Vacancy;
 class VacancyApply extends Model
 {
     use HasFactory;
-    protected $fillable = ['vacancy_id','user_appy','stage_id','apply_status_id','message'];
+    protected $fillable = ['vacancy_id','user_apply','stage_id','apply_status_id','message'];
 
     public function vacancy()
     {

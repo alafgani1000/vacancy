@@ -39,7 +39,11 @@ export default function UploadFoto({ auth, className = "" }) {
                 <div>
                     <div>
                         <img
-                            src={`cv/${user.foto}`}
+                            src={
+                                user.foto !== null
+                                    ? `cv/${user.foto}`
+                                    : `cv/profiles/default.jpg`
+                            }
                             width="80px"
                             className="mb-2"
                         />

@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function home()
     {
-        $vacancies = Vacancy::with(['type','level','status'])->whereHas('status', function(Builder $query) {
+        $vacancies = Vacancy::with(['type','level','status','user','user.company'])->whereHas('status', function(Builder $query) {
             $query->where('name', 'like', '%'.'Publish'.'%');
         })->paginate(10);
         return Inertia::render('Welcome', ['vacancies' => $vacancies]);
@@ -20,7 +20,7 @@ class HomeController extends Controller
 
     public function detail($id, $name)
     {
-        $vacancy= Vacancy::with(['type','level','status'])->whereHas('status', function(Builder $query) {
+        $vacancy= Vacancy::with(['type','level','status','user','user.company'])->whereHas('status', function(Builder $query) {
             $query->where('name', 'like', '%'.'Publish'.'%');
         })
         ->where('id',$id)

@@ -47,16 +47,16 @@ class ApplyController extends Controller
                 'user_apply' => Auth::user()->id,
                 'stage_id' => Stage::apply()->first()->id,
                 'apply_status_id' => ApplyStatus::wait()->first()->id,
-                'message' => $request->desription
+                'message' => $request->description
             ]);
             $message->put('process', 'success');
             return response($message);
         }
     }
 
-    public function applyHistory()
+    public function applyHistories()
     {
         $applies = VacancyApply::orderBy('created_at','desc')->paginate(6);
-        return Inertia::render('Vacancy/Index', ['vacancies' => $vacancies]);
+        return Inertia::render('Apply/Index', ['applies' => $applies]);
     }
 }

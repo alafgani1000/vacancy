@@ -199,7 +199,6 @@ export default function WorkHistory({
                                 value={formData.start}
                                 onChange={handleChange}
                                 name="start"
-                                isFocused
                                 autoComplete="start"
                                 type="number"
                             />
@@ -219,7 +218,6 @@ export default function WorkHistory({
                                 value={formData.end}
                                 onChange={handleChange}
                                 name="end"
-                                isFocused
                                 autoComplete="end"
                                 type="number"
                             />
@@ -239,7 +237,6 @@ export default function WorkHistory({
                             value={formData.company}
                             onChange={handleChange}
                             name="company"
-                            isFocused
                             autoComplete="company"
                             type="text"
                         />
