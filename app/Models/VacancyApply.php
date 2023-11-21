@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Vacancy;
+use App\Models\Stage;
+use App\Models\ApplyStatus;
 
 class VacancyApply extends Model
 {
@@ -13,6 +15,16 @@ class VacancyApply extends Model
 
     public function vacancy()
     {
-        return belongsTo(Vacancy::class);
+        return $this->belongsTo(Vacancy::class);
+    }
+
+    public function stage()
+    {
+        return $this->belongsTo(Stage::class);
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(ApplyStatus::class, 'apply_status_id');
     }
 }

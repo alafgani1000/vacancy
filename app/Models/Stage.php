@@ -5,11 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\VacancyApply;
 
 class Stage extends Model
 {
     use HasFactory;
     protected $fillable = ['name','desc'];
+
+    public function applies()
+    {
+        return $this->hasMany(VacancyApply::class);
+    }
 
     public function scopeApply(Builder $query): void
     {

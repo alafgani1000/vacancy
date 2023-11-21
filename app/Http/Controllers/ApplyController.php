@@ -56,7 +56,7 @@ class ApplyController extends Controller
 
     public function applyHistories()
     {
-        $applies = VacancyApply::orderBy('created_at','desc')->paginate(6);
+        $applies = VacancyApply::with(['vacancy','stage','status','vacancy.user','vacancy.user.company'])->orderBy('created_at','desc')->paginate(6);
         return Inertia::render('Apply/Index', ['applies' => $applies]);
     }
 }
