@@ -31,6 +31,7 @@ use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 Route::get('/detail/{id}/{name}', [HomeController::class, 'detail'])->name('detail');
+Route::get('/company/{filename}', [CompanyController::class, 'showImage'])->name('company.image');
 
 
 Route::get('/dashboard', function () {
@@ -87,7 +88,6 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::controller(CompanyController::class)->group(function () {
         Route::get('/company', 'index')->name('company.index');
         Route::put('/company/{id}/upload-logo', 'uploadLogo')->name('company.upload-logo');
-        Route::get('/company/{filename}', 'showImage')->name('company.image');
         Route::put('/company/{id}/update', 'update')->name('company.update');
     });
 

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('selections', function (Blueprint $table) {
-            $table->id();
-            $table->integer('vacancy_apply_id')->unsigned();
-            $table->text('message')->nullable();
-            $table->integer('user_selection')->unsigned();
+        Schema::create('notifications', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable');
+            $table->text('data');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('selections');
+        Schema::dropIfExists('notifications');
     }
 };

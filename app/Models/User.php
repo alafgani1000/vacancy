@@ -13,6 +13,7 @@ use App\Models\UserEducation;
 use App\Models\UserWorkHistory;
 use App\Models\UserSkill;
 use App\Models\Vacancy;
+use App\Models\VacancyApply;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -89,5 +90,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function vacancies()
     {
         return $this->hasMany(Vacancy::class);
+    }
+
+    public function applies()
+    {
+        return $this->hasMany(VacancyApply::class);
     }
 }

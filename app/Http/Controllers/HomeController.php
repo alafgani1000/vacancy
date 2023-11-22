@@ -7,6 +7,8 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Vacancy;
+use App\Models\VacancyApply;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -25,6 +27,7 @@ class HomeController extends Controller
         })
         ->where('id',$id)
         ->first();
-        return Inertia::render('Detail', ['vacancy' => $vacancy]);
+        $apply = VacancyApply::where('user_apply', Auth::user()->id)->where('vacancy_id',$vacancy->id)->first();
+        return Inertia::render('Detail', ['vacancy' => $vacancy, 'apply' => $apply]);
     }
 }

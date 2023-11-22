@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Vacancy;
 use App\Models\Stage;
 use App\Models\ApplyStatus;
+use App\Models\User;
 
 class VacancyApply extends Model
 {
@@ -26,5 +27,10 @@ class VacancyApply extends Model
     public function status()
     {
         return $this->belongsTo(ApplyStatus::class, 'apply_status_id');
+    }
+
+    public function userApply()
+    {
+        return $this->belongsTo(User::class, 'user_apply');
     }
 }
