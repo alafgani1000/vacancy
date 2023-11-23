@@ -68,6 +68,14 @@ export default function Authenticated({ auth, header, children }) {
                                         >
                                             Company
                                         </NavLink>
+                                        <NavLink
+                                            href={route("apply.index")}
+                                            active={route().current(
+                                                "apply.index"
+                                            )}
+                                        >
+                                            Apply
+                                        </NavLink>
                                     </>
                                 ) : (
                                     ""

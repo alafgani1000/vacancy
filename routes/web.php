@@ -44,7 +44,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/personal-data', [ProfileController::class, 'updatePersonalData'])->name('personal-data.update');
 
-    // apply
+    // apply vacancy
     Route::get('/vacancy/{id}/apply', [ApplyController::class, 'displayForm'])->name('vacancy.display-apply');
     Route::put('/vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
     Route::get('/apply-history', [ApplyController::class, 'applyHistories'])->name('apply.history');
@@ -58,6 +58,10 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::patch('/vacancy/{id}/update', [VacancyController::class, 'update'])->name('vacancy.update');
         Route::patch('/vacancy/{id}/publish', [VacancyController::class, 'publish'])->name('vacancy.publish');
         Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'unpublish'])->name('vacancy.unpublish');
+
+         // apply
+        Route::get('/apply', [ApplyController::class, 'index'])->name('apply.index');
+        Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
     });
 
     // cv controller

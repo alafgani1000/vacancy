@@ -88,6 +88,14 @@ export default function Header({ user, header }) {
                                                 >
                                                     Company
                                                 </NavLink>
+                                                <NavLink
+                                                    href={route("apply.index")}
+                                                    active={route().current(
+                                                        "apply.index"
+                                                    )}
+                                                >
+                                                    Apply
+                                                </NavLink>
                                             </>
                                         ) : (
                                             ""

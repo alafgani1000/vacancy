@@ -1,8 +1,30 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-export default function Index({ auth, vacancies }) {
-    const { data, next_page_url, prev_page_url, total } = vacancies;
+import { Head, router } from "@inertiajs/react";
+import moment from "moment/moment";
+import parse from "html-react-parser";
+import Modal from "@/Components/Modal";
+import { useState } from "react";
+import { Dialog } from "@headlessui/react";
+import InputLabel from "@/Components/InputLabel";
+import TextInput from "@/Components/TextInput";
+import InputError from "@/Components/InputError";
+import Confirm from "@/Components/Confirm";
+
+export default function Index({ auth, applies }) {
+    const [isPublish, setIsPublish] = useState(false);
+    const [idSelected, setIdSelected] = useState("");
+    const [isConfirm, setIsConfirm] = useState(false);
+    const [dataForm, setDataForm] = useState({
+        published_at: "",
+    });
+    const [errorMessage, setErrorMessage] = useState({
+        published_at: "",
+    });
+
+    const { data, next_page_url, prev_page_url, total } = applies;
+
+    console.log(data);
 
     return (
         <AuthenticatedLayout
@@ -13,7 +35,7 @@ export default function Index({ auth, vacancies }) {
                 </h2>
             }
         >
-            <Head title="Apply data" />
+            <Head title="Apply" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -28,33 +50,24 @@ export default function Index({ auth, vacancies }) {
                             </div>
                             <div className="bg-slate-100 p-3 text-black grid grid-flow-rows auto-rows-max rounded-md">
                                 {/* content */}
-                                {data.map((vacancy) => {
+                                {data.map((apply) => {
                                     return (
-                                        <a
-                                            href={route(
-                                                "apply.detail",
-                                                vacancy.id
-                                            )}
-                                            target="_blank"
-                                            className="mb-4 shadow-blue-100"
-                                            key={vacancy.id}
+                                        <div
+                                            className="mb-2 shadow-blue-100"
+                                            key={apply.id}
                                         >
-                                            <div className="bg-white pl-4 pr-4 pt-3 pb-3 text-black h-full rounded-md hover:bg-sky-500 hover:text-white hover:cursor-pointer">
-                                                <p className="font-bold">
-                                                    {vacancy.job_name}
+                                            <div className="bg-white pl-4 pr-4 pt-4 pb-4 text-black h-full rounded-md">
+                                                <p className="text-xl">
+                                                    {
+                                                        apply.vacancy.user
+                                                            .company.name
+                                                    }
                                                 </p>
-                                                <p>
-                                                    Post date:{" "}
-                                                    {vacancy.published_at}
-                                                </p>
-                                                <p className="mt-1">
-                                                    Apply{" "}
-                                                    <span className="py-1 px-2 bg-sky-400 rounded-full text-sm text-white">
-                                                        {vacancy.applies.length}
-                                                    </span>
-                                                </p>
+                                                <p>{apply.vacancy.job_name}</p>
+                                                <p>{apply.stage.name}</p>
+                                                <p>{apply.status.name}</p>
                                             </div>
-                                        </a>
+                                        </div>
                                     );
                                 })}
                             </div>

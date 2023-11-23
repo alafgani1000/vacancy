@@ -62,7 +62,18 @@ class ApplyController extends Controller
 
     public function index()
     {
-        $vacancies = Vacancy::with(['type','level','applies','applies.userApply'])->where('user_id',Auth::user()->id)->orderBy('created_at','desc')->paginate(6);
+        $vacancies = Vacancy::with(['user','type','level','applies','applies.userApply'])
+            ->where('user_id',Auth::user()->id)
+            ->orderBy('published_at','desc')
+            ->paginate(6);
         return Inertia::render('Apply/Index', ['vacancies' => $vacancies]);
     }
+
+    public function detailApply($id)
+    {
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->paginate(10);
+        $vacancy = Vacancy::where('id',$id)->first();
+        return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy]);
+    }
+
 }
