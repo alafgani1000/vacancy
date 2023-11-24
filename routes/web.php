@@ -68,6 +68,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::controller(CvController::class)->prefix('cv')->group(function () {
         // inde cv
         Route::get('/', 'index')->name('cv.index');
+        Route::get('/{id}/show', 'showCv')->name('cv.show');
         // upload photo
         Route::put('/upload-photo', 'uploadPhoto')->name('upload.photo');
         Route::get('/profiles/{filename}', 'showImage')->name('display.photo');

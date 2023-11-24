@@ -20,7 +20,18 @@ class ApplyController extends Controller
     public function displayForm($id)
     {
         $vacancy = Vacancy::find($id);
-        return Inertia::render('Apply', ['vacancy' => $vacancy]);
+        $allow = true;
+        if (isset(Auth::user()->id)) {
+            $apply = VacancyApply::where('user_apply', Auth::user()->id)->where('vacancy_id',$id)->first();
+            if (!is_null($apply)) {
+                $allow = false;
+            }
+        }
+        if ($allow) {
+            return Inertia::render('Apply', ['vacancy' => $vacancy]);
+        } else {
+            return to_route('home');
+        }
     }
 
     public function apply(Request $request, $id)

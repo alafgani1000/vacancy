@@ -27,7 +27,13 @@ class HomeController extends Controller
         })
         ->where('id',$id)
         ->first();
-        $apply = VacancyApply::where('user_apply', Auth::user()->id)->where('vacancy_id',$vacancy->id)->first();
-        return Inertia::render('Detail', ['vacancy' => $vacancy, 'apply' => $apply]);
+        $allow = true;
+        if (isset(Auth::user()->id)) {
+            $apply = VacancyApply::where('user_apply', Auth::user()->id)->where('vacancy_id',$vacancy->id)->first();
+            if (!is_null($apply)) {
+                $allow = false;
+            }
+        }
+        return Inertia::render('Detail', ['vacancy' => $vacancy, 'allow' => $allow]);
     }
 }

@@ -26,6 +26,12 @@ class CvController extends Controller
         return Inertia::render('Cv/Index', ['educations' => $educations, 'histories' => $histories, 'skills' => $skills]);
     }
 
+    public function showCv($id)
+    {
+       $user = User::with(['educations','workHisories','skills'])->where('id',$id)->first();
+       return $user;
+    }
+
     public function uploadPhoto(Request $request)
     {
         $file = $request->file('file');

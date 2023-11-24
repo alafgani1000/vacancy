@@ -1,30 +1,10 @@
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
-import moment from "moment/moment";
-import parse from "html-react-parser";
-import Modal from "@/Components/Modal";
 import { useState } from "react";
-import { Dialog } from "@headlessui/react";
-import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
-import InputError from "@/Components/InputError";
-import Confirm from "@/Components/Confirm";
 
 export default function Index({ auth, applies }) {
-    const [isPublish, setIsPublish] = useState(false);
-    const [idSelected, setIdSelected] = useState("");
-    const [isConfirm, setIsConfirm] = useState(false);
-    const [dataForm, setDataForm] = useState({
-        published_at: "",
-    });
-    const [errorMessage, setErrorMessage] = useState({
-        published_at: "",
-    });
-
     const { data, next_page_url, prev_page_url, total } = applies;
-
-    console.log(data);
 
     return (
         <AuthenticatedLayout
