@@ -4,6 +4,7 @@ import Education from "./Partials/Education";
 import WorkHistory from "./Partials/WorkHistory";
 import Skill from "./Partials/Skill";
 import UploadFoto from "./Partials/UploadFoto";
+import UpdatePersonalData from "./Partials/UpdatePersonalData";
 
 export default function Edit({
     auth,
@@ -27,6 +28,13 @@ export default function Edit({
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <UploadFoto auth={auth} className="max-w-xl" />
+                    </div>
+                    <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                        <UpdatePersonalData
+                            mustVerifyEmail={mustVerifyEmail}
+                            status={auth}
+                            className="max-w-xl"
+                        />
                     </div>
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                         <Education auth={auth} educations={educations} />

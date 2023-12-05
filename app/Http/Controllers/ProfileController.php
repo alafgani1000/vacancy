@@ -51,6 +51,7 @@ class ProfileController extends Controller
             'sex' => $request->sex,
             'phone_number' => $request->phone_number,
             'address' => $request->address,
+            'date_of_birth' => $request->date_of_birth
         ]);
 
         return Redirect::route('profile.edit');

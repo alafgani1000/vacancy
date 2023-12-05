@@ -20,7 +20,6 @@ export default function DetailApply({ auth, applies, vacancy }) {
     const getCv = (id) => {
         axios.get(`/cv/${id}/show`, {}).then((res) => {
             setDataCv(res.data);
-            console.log(res.data);
             SetModalCv(true);
         });
     };
@@ -56,7 +55,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             <div className="flex justify-start bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white rounded-md">
                                 {vacancy.job_name}
                             </div>
-                            <div className="grid grid-cols-2 pb-2 px-1 mb-4 border-b border-b-sky-950">
+                            <div className="grid grid-cols-2 pb-2 font-bold mb-4 border-b">
                                 <div>List of data</div>
                                 <div className="w-full grid place-items-end pr-2">
                                     Total record: {total}
@@ -121,7 +120,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
             </div>
 
             <Modal show={modalCv}>
-                <Dialog.Panel className="transform overflow-hidden rounded-2xl bg-slate-50 p-6 text-left align-middle shadow-xl transition-all h-screen">
+                <Dialog.Panel className="transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-flow-row justify-items-end">
                         <button
                             type="button"
@@ -167,7 +166,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             </div>
 
                             <div className="mt-8">
-                                <div className="border-b mb-4 py-1">
+                                <div className="border-b-2 border-dashed mb-4 py-1">
                                     Education
                                 </div>
                                 {dataCv?.educations?.map((edu) => {
@@ -192,7 +191,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             </div>
 
                             <div className="mt-8">
-                                <div className="border-b mb-4 py-1">
+                                <div className="border-b-2 border-dashed mb-4 py-1">
                                     Work Histories
                                 </div>
                                 {dataCv?.work_hisories?.map((his) => {
@@ -216,7 +215,9 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             </div>
 
                             <div className="mt-8">
-                                <div className="border-b mb-4 py-1">Skill</div>
+                                <div className="border-b-2 border-dashed mb-4 py-1">
+                                    Skill
+                                </div>
                                 {dataCv?.skills?.map((skill) => {
                                     return <p>{skill.description}</p>;
                                 })}

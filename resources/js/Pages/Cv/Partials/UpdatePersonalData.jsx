@@ -19,6 +19,7 @@ export default function UpdatePersonalData({
         sex: user.sex,
         phone_number: user.phone_number,
         address: user.address,
+        date_of_birth: user.date_of_birth,
     });
 
     function submit(event) {
@@ -55,6 +56,23 @@ export default function UpdatePersonalData({
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                <div>
+                    <InputLabel htmlFor="name" value="Date of Birth" />
+
+                    <TextInput
+                        id="date_of_birth"
+                        className="mt-1 block"
+                        value={formData.date_of_birth}
+                        onChange={handleChange}
+                        name="date_of_birth"
+                        required
+                        isFocused
+                        type="date"
+                        autoComplete="date_of_birth"
+                    />
+
+                    <InputError className="mt-2" message="" />
+                </div>
                 <div>
                     <InputLabel htmlFor="name" value="Sex" />
 
