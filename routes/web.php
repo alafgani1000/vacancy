@@ -62,6 +62,7 @@ Route::middleware(['auth','verified'])->group(function () {
          // apply
         Route::get('/apply', [ApplyController::class, 'index'])->name('apply.index');
         Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
+        Route::put('/apply/{id}/load-more', [ApplyController::class, 'loadMoreApply'])->name('apply.load-more');
     });
 
     // cv controller

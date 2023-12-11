@@ -80,11 +80,22 @@ class ApplyController extends Controller
         return Inertia::render('Apply/Index', ['vacancies' => $vacancies]);
     }
 
-    public function detailApply($id)
+    public function detailApply(Request $req, $id)
     {
-        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->paginate(10);
+        $offset = isset($req->offset) ? $req->offset : 0;
+        $limit = isset($req->limit) ? $req->limit : 100;
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy]);
+    }
+
+    public function loadMoreApply(Request $req, $id)
+    {
+        $offset = isset($req->offset) ? $req->offset : 0;
+        $limit = isset($req->limit) ? $req->limit : 100;
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
+        $vacancy = Vacancy::where('id',$id)->first();
+        return $applies;
     }
 
 }

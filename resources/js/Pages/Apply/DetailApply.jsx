@@ -5,13 +5,16 @@ import { Dialog } from "@headlessui/react";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import parse from "html-react-parser";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function DetailApply({ auth, applies, vacancy }) {
     const [modalCv, SetModalCv] = useState(false);
     const [dataCv, setDataCv] = useState({});
-
-    const { data, next_page_url, prev_page_url, total } = applies;
+    const [offset, setOffset] = useState(0);
+    const [limit, setLimit] = useState(3);
+    const [isData, setIsData] = useState(true);
+    const [data, setData] = useState([]);
+    const [isCheckAll, setIsCheckAll] = useState(false);
 
     const closeModal = () => {
         SetModalCv(false);
@@ -22,6 +25,26 @@ export default function DetailApply({ auth, applies, vacancy }) {
             setDataCv(res.data);
             SetModalCv(true);
         });
+    };
+
+    useEffect(() => {
+        setData(applies.map((prev) => ({ ...prev, checked: false })));
+    }, []);
+
+    const loadMoreData = () => {
+        let newOffset = offset + 100;
+        axios
+            .put(`/apply/${vacancy.id}/load-more`, {
+                offset: newOffset,
+                limit: limit,
+            })
+            .then((res) => {
+                setData((prev) => [...prev, ...res.data]);
+                setOffset(newOffset);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
 
     const capitalize = (data) => {
@@ -35,6 +58,37 @@ export default function DetailApply({ auth, applies, vacancy }) {
         // join array to string
         const dataText = dataArray.join(" ");
         return dataText;
+    };
+
+    const age = (date) => {
+        var tgl1 = new Date(date);
+        var tgl2 = new Date();
+        var timeDiff = Math.abs(tgl2.getTime() - tgl1.getTime());
+        var age = Math.ceil(timeDiff / (1000 * 3600 * 24)) / 365;
+        return Math.floor(age);
+    };
+
+    const checkAll = (e) => {
+        if (isCheckAll === false) {
+            setIsCheckAll(true);
+            setData(data.map((prev) => ({ ...prev, checked: true })));
+        } else if (isCheckAll === true) {
+            setIsCheckAll(false);
+            setData(data.map((prev) => ({ ...prev, checked: false })));
+        }
+    };
+
+    const checked = (id) => {
+        let dataSelected = data.find((d) => {
+            return d.id === id;
+        });
+        if (dataSelected.checked === false) {
+            dataSelected.checked = true;
+            setData(data.map((prev) => ({ ...prev, dataSelected })));
+        } else if (dataSelected.checked === true) {
+            dataSelected.checked = false;
+            setData(data.map((prev) => ({ ...prev, dataSelected })));
+        }
     };
 
     return (
@@ -55,64 +109,101 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             <div className="flex justify-start bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white rounded-md">
                                 {vacancy.job_name}
                             </div>
-                            <div className="grid grid-cols-2 pb-2 font-bold mb-4 border-b">
-                                <div>List of data</div>
-                                <div className="w-full grid place-items-end pr-2">
-                                    Total record: {total}
+                            <div className="grid grid-cols-2 pb-2 mb-4 border-b">
+                                <div className="font-bold">List of data</div>
+                                <div className="flex justify-end">
+                                    <button className="bg-sky-600 py-2 px-4 text-sm font-semibold rounded-md text-white ">
+                                        Action
+                                    </button>
                                 </div>
                             </div>
-                            <div className="bg-slate-100 p-3 text-black grid grid-flow-rows auto-rows-max rounded-md">
+                            <div className="rounded-md overflow-y-auto">
                                 {/* content */}
-                                {data.map((apply) => {
-                                    return (
-                                        <div
-                                            onClick={() =>
-                                                getCv(apply.user_apply.id)
-                                            }
-                                            className="mb-4 shadow-blue-100"
-                                            key={apply.id}
-                                        >
-                                            <div className="bg-white pl-4 pr-4 pt-3 pb-3 text-black h-full rounded-md hover:bg-sky-500 hover:text-white hover:cursor-pointer">
-                                                <p className="">
-                                                    {
-                                                        apply.user_apply
-                                                            .first_name
-                                                    }{" "}
-                                                    {apply.user_apply.last_name}
-                                                </p>
-                                                {parse(apply.message)}
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-2 border-b border-t">
+                                    <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr className="font-bold">
+                                            <th className="pb-3 pt-3 text-center w-20">
+                                                <input
+                                                    className="rounded-sm"
+                                                    type="checkbox"
+                                                    onChange={(e) =>
+                                                        checkAll(e)
+                                                    }
+                                                    defaultChecked={isCheckAll}
+                                                />
+                                            </th>
+                                            <th className="pb-3 pt-3">Name</th>
+                                            <th>Age</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.map((apply) => {
+                                            return (
+                                                <tr
+                                                    key={apply.id}
+                                                    className="border-b"
+                                                >
+                                                    <td className="p-2 text-center">
+                                                        <input
+                                                            className="rounded-sm"
+                                                            type="checkbox"
+                                                            name={apply.id}
+                                                            checked={
+                                                                apply.checked
+                                                            }
+                                                            onChange={() =>
+                                                                checked(
+                                                                    apply.id
+                                                                )
+                                                            }
+                                                        />
+                                                    </td>
+                                                    <td className="p-2">
+                                                        <span
+                                                            className="hover:text-sky-950 hover:cursor-pointer"
+                                                            onClick={() =>
+                                                                getCv(
+                                                                    apply
+                                                                        .user_apply
+                                                                        .id
+                                                                )
+                                                            }
+                                                        >
+                                                            {
+                                                                apply.user_apply
+                                                                    .first_name
+                                                            }{" "}
+                                                            {
+                                                                apply.user_apply
+                                                                    .last_name
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        {apply.user_apply
+                                                            .date_of_birth ===
+                                                        null
+                                                            ? ""
+                                                            : age(
+                                                                  apply
+                                                                      .user_apply
+                                                                      .date_of_birth
+                                                              )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
                             </div>
-
-                            {/* page */}
-                            <div className="grid grid-cols-2 mt-4 py-2 px-8">
-                                <div className="flex justify-end py-4 pe-4">
-                                    {prev_page_url !== null ? (
-                                        <NavLink
-                                            href={prev_page_url}
-                                            className="bg-sky-500 pt-3 pb-2 px-6 rounded-full text-white font-medium"
-                                        >
-                                            Prev
-                                        </NavLink>
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
-                                <div className="flex justify-start py-4 px-4">
-                                    {next_page_url !== null ? (
-                                        <NavLink
-                                            href={next_page_url}
-                                            className="bg-sky-500 pt-3 pb-2 px-6 rounded-full text-white font-medium"
-                                        >
-                                            Next
-                                        </NavLink>
-                                    ) : (
-                                        ""
-                                    )}
-                                </div>
+                            <div className="py-4 flex flex-row justify-center">
+                                <button
+                                    onClick={() => loadMoreData()}
+                                    type="button"
+                                    className="border rounded-3xl text-sm font-semibold py-2 px-4 bg-sky-500 text-white hover:bg-sky-900"
+                                >
+                                    Load More....
+                                </button>
                             </div>
                         </div>
                     </div>
