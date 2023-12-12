@@ -22,6 +22,15 @@ class StageController extends Controller
     }
 
     /**
+     * data stages
+     * @return stages
+     */
+    public function stages()
+    {
+        return Stage::all();
+    }
+
+    /**
      * store data master stage
      * @return view
      */

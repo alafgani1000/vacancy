@@ -15,6 +15,13 @@ export default function DetailApply({ auth, applies, vacancy }) {
     const [isData, setIsData] = useState(true);
     const [data, setData] = useState([]);
     const [isCheckAll, setIsCheckAll] = useState(false);
+    const [inviteData, setInviteData] = useState({
+        stage: "",
+        message: "",
+        apply: [],
+    });
+    const [stages, setStages] = useState([]);
+    const [modalInvite, setModalInvite] = useState(false);
 
     const closeModal = () => {
         SetModalCv(false);
@@ -91,6 +98,27 @@ export default function DetailApply({ auth, applies, vacancy }) {
         }
     };
 
+    const getStages = () => {
+        axios
+            .get(`/stage/data`)
+            .then((res) => {
+                setStages(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const showFormInvite = () => {
+        setModalInvite(true);
+    };
+
+    const getCheckedData = () => {};
+
+    const invite = (id) => {
+        axios.put(`/apply/${id}/invite`, {});
+    };
+
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -112,8 +140,25 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             <div className="grid grid-cols-2 pb-2 mb-4 border-b">
                                 <div className="font-bold">List of data</div>
                                 <div className="flex justify-end">
-                                    <button className="bg-sky-600 py-2 px-4 text-sm font-semibold rounded-md text-white ">
-                                        Action
+                                    <button
+                                        onClick={() => showFormInvite()}
+                                        className="border border-sky-950 py-2 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="w-4 h-5 me-1.5 font-bold"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                                            />
+                                        </svg>
+                                        Invite
                                     </button>
                                 </div>
                             </div>
@@ -209,6 +254,45 @@ export default function DetailApply({ auth, applies, vacancy }) {
                     </div>
                 </div>
             </div>
+
+            <Modal show={modalInvite}>
+                <Dialog.Panel className="transform overflow-hidden bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
+                    <div className="grid grid-flow-row justify-items-end">
+                        <button
+                            type="button"
+                            className="inline-flex justify-center rounded border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            onClick={() => setModalInvite(false)}
+                        >
+                            X
+                        </button>
+                    </div>
+                    <div className="w-full grid justify-items-center">
+                        <div className="max-w-4xl w-full shadow-md bg-white py4 px-6 rounded-md py-6">
+                            <form>
+                                <div>
+                                    <label for="stage" className="block mb-2">
+                                        Stage
+                                    </label>
+                                    <select className="rounded">
+                                        <option value="">
+                                            ...Please Select...
+                                        </option>
+                                    </select>
+                                </div>
+                                <div className="w-full mt-4">
+                                    <label
+                                        for="stage"
+                                        className="block mb-2 w-full"
+                                    >
+                                        Message
+                                    </label>
+                                    <textarea className="w-full rounded h-80"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </Dialog.Panel>
+            </Modal>
 
             <Modal show={modalCv}>
                 <Dialog.Panel className="transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">

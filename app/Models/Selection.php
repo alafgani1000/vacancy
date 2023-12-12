@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Selection extends Model
 {
     use HasFactory;
-    protected $fillable = ['vacancy_apply_id','message','status'];
+    protected $fillable = ['vacancy_apply_id','message','user_selection'];
 }

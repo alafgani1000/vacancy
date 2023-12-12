@@ -63,6 +63,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/apply', [ApplyController::class, 'index'])->name('apply.index');
         Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
         Route::put('/apply/{id}/load-more', [ApplyController::class, 'loadMoreApply'])->name('apply.load-more');
+        Route::put('/apply/{id}/invite', [ApplyController::class, 'invite'])->name('apply.invite');
     });
 
     // cv controller
@@ -96,6 +97,9 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::put('/company/{id}/upload-logo', 'uploadLogo')->name('company.upload-logo');
         Route::put('/company/{id}/update', 'update')->name('company.update');
     });
+
+    // stage
+    Route::get('/stage/data', [StageController::class, 'stages'])->name('stage.data');
 
     Route::middleware(['admin'])->group(function () {
         // stage

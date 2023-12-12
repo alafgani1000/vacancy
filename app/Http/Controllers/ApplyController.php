@@ -13,7 +13,9 @@ use App\Models\User;
 use App\Models\VacancyApply;
 use App\Models\Stage;
 use App\Models\ApplyStatus;
+use App\Jobs\ProcessInvite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class ApplyController extends Controller
 {
@@ -67,7 +69,16 @@ class ApplyController extends Controller
 
     public function applyHistories()
     {
-        $applies = VacancyApply::with(['vacancy','stage','status','vacancy.user','vacancy.user.company'])->orderBy('created_at','desc')->paginate(6);
+        $applies = VacancyApply::with([
+                'vacancy',
+                'stage',
+                'status',
+                'vacancy.user',
+                'vacancy.user.company'
+            ])
+        ->where('user_apply', Auth::user()->id)
+        ->orderBy('created_at','desc')
+        ->paginate(6);
         return Inertia::render('HistoryApply/Index', ['applies' => $applies]);
     }
 
@@ -96,6 +107,17 @@ class ApplyController extends Controller
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return $applies;
+    }
+
+    public function invite(Request $req, $id)
+    {
+        $message = $request->message;
+        $stageId = $request->stage;
+        $userId = Auth::user()->id;
+        $applies = $request->apply;
+        foreach($applies as $apply) {
+            ProcessInvite::dispatch($stageId, $id, $message, $userId);
+        }
     }
 
 }
