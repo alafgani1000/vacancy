@@ -8,21 +8,27 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Selection;
+use App\Models\VacancyApply;
+use Illuminate\Support\Facades\DB;
 
 class ProcessInvite implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $stageId;
-    protected $vacancyApplyId;
-    protected $message;
-    protected $userInputId;
+    public $stageId;
+    public $vacancyApplyId;
+    public $message;
+    public $userInputId;
     /**
      * Create a new job instance.
      */
-    public function __construct()
+    public function __construct($stageId, $vacancyApplyId, $message, $userInputId)
     {
-        //
+        $this->stageId = $stageId;
+        $this->vacancyApplyId = $vacancyApplyId;
+        $this->message = $message;
+        $this->userInputId = $userInputId;
     }
 
     /**
@@ -30,20 +36,20 @@ class ProcessInvite implements ShouldQueue
      */
     public function handle(): void
     {
-
+        $this->proses();
     }
 
-    public function proses($stageId, $vacancyApplyId, $message, $userInputId)
+    public function proses()
     {
         DB::transaction(function () {
-            Selection::create([
-                'vacancy_apply_id' => $vacancyApplyId,
-                'message' => $message,
-                'user_selection' => $userInputId
+            VacancyApply::where('id', $this->vacancyApplyId)->update([
+                'stage_id' => $this->stageId
             ]);
 
-            VacancyApply::where('id', $vacancyApplyId)->update([
-                'stage_id' => $stageId
+            Selection::create([
+                'vacancy_apply_id' => $this->vacancyApplyId,
+                'message' => $this->message,
+                'user_selection' => $this->userInputId
             ]);
         });
 

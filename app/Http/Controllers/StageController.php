@@ -27,7 +27,7 @@ class StageController extends Controller
      */
     public function stages()
     {
-        return Stage::all();
+        return Stage::where('name', '<>', 'Apply')->get();
     }
 
     /**

@@ -16,6 +16,7 @@ class CallApplyer extends Mailable
     /**
      * Create a new message instance.
      */
+
     public function __construct()
     {
         //
@@ -27,7 +28,7 @@ class CallApplyer extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Call Applyer',
+            subject: '',
         );
     }
 

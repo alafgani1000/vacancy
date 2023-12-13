@@ -111,13 +111,14 @@ class ApplyController extends Controller
 
     public function invite(Request $req, $id)
     {
-        $message = $request->message;
-        $stageId = $request->stage;
+        $message = $req->message;
+        $stageId = $req->stage;
         $userId = Auth::user()->id;
-        $applies = $request->apply;
+        $applies = $req->apply;
         foreach($applies as $apply) {
-            ProcessInvite::dispatch($stageId, $id, $message, $userId);
+            ProcessInvite::dispatch($stageId, $apply['id'], $message, $userId);
         }
+        return "Candidate Invite in Process";
     }
 
 }

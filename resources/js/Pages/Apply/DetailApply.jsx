@@ -36,6 +36,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
 
     useEffect(() => {
         setData(applies.map((prev) => ({ ...prev, checked: false })));
+        getStages();
     }, []);
 
     const loadMoreData = () => {
@@ -102,7 +103,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
         axios
             .get(`/stage/data`)
             .then((res) => {
-                setStages(res);
+                setStages(res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -111,12 +112,33 @@ export default function DetailApply({ auth, applies, vacancy }) {
 
     const showFormInvite = () => {
         setModalInvite(true);
+        getCheckedData();
     };
 
-    const getCheckedData = () => {};
+    const getCheckedData = () => {
+        let dataSelected = data.filter((d) => {
+            return d.checked === true;
+        });
+        setInviteData((prev) => ({
+            ...prev,
+            apply: dataSelected,
+        }));
+    };
 
-    const invite = (id) => {
-        axios.put(`/apply/${id}/invite`, {});
+    const inviteChange = (e) => {
+        setInviteData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const invite = () => {
+        axios
+            .put(`/apply/${vacancy.id}/invite`, inviteData)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {});
     };
 
     return (
@@ -245,7 +267,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                 <button
                                     onClick={() => loadMoreData()}
                                     type="button"
-                                    className="border rounded-3xl text-sm font-semibold py-2 px-4 bg-sky-500 text-white hover:bg-sky-900"
+                                    className="border border-sky-950 rounded-3xl text-sm font-semibold py-2 px-4 hover:bg-sky-500 hover:text-white hover:border hover:border-sky-500"
                                 >
                                     Load More....
                                 </button>
@@ -256,39 +278,144 @@ export default function DetailApply({ auth, applies, vacancy }) {
             </div>
 
             <Modal show={modalInvite}>
-                <Dialog.Panel className="transform overflow-hidden bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
-                    <div className="grid grid-flow-row justify-items-end">
-                        <button
-                            type="button"
-                            className="inline-flex justify-center rounded border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={() => setModalInvite(false)}
-                        >
-                            X
-                        </button>
+                <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
+                    <div className="grid grid-cols-2 ">
+                        <div className="text-3xl font-bold">Form invite</div>
+                        <div className="justify-items-end">
+                            <button
+                                type="button"
+                                className="float-right py-1 px-2 justify-center rounded border border-transparent bg-red-600  text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                onClick={() => setModalInvite(false)}
+                            >
+                                X
+                            </button>
+                        </div>
                     </div>
-                    <div className="w-full grid justify-items-center">
-                        <div className="max-w-4xl w-full shadow-md bg-white py4 px-6 rounded-md py-6">
-                            <form>
-                                <div>
-                                    <label for="stage" className="block mb-2">
-                                        Stage
-                                    </label>
-                                    <select className="rounded">
-                                        <option value="">
-                                            ...Please Select...
-                                        </option>
-                                    </select>
-                                </div>
-                                <div className="w-full mt-4">
-                                    <label
-                                        for="stage"
-                                        className="block mb-2 w-full"
+                    <div className="w-full grid grid-cols-3 gap-4 justify-items-center mt-4 pb-10 h-full">
+                        <div className="w-full ">
+                            <div className="w-full shadow-md bg-gradient-to-r from-sky-950 to-sky-900 py4 px-6 rounded-md py-6">
+                                <h1 className="text-base font-semibold text-white">
+                                    List of candidate to invite
+                                </h1>
+                                <table className="w-full text-sm text-left text-white dark:text-gray-400 mt-2 border-b border-t overflow-y-scroll">
+                                    <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr className="font-bold">
+                                            <th className="p-2">Name</th>
+                                            <th className="p-2">Age</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {inviteData.apply.map((data) => {
+                                            return (
+                                                <tr key={data.id}>
+                                                    <td className="pe-2 ps-2 pb-1 pt-2">
+                                                        <span
+                                                            className="hover:text-sky-400 hover:cursor-pointer"
+                                                            onClick={() =>
+                                                                getCv(
+                                                                    data
+                                                                        .user_apply
+                                                                        .id
+                                                                )
+                                                            }
+                                                        >
+                                                            {
+                                                                data.user_apply
+                                                                    .first_name
+                                                            }{" "}
+                                                            {
+                                                                data.user_apply
+                                                                    .last_name
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td className="pe-2 ps-2 pb-1 pt-2">
+                                                        {data.user_apply
+                                                            .date_of_birth ===
+                                                        null
+                                                            ? ""
+                                                            : age(
+                                                                  data
+                                                                      .user_apply
+                                                                      .date_of_birth
+                                                              )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="w-full col-span-2">
+                            <div className="w-full shadow-md bg-white py4 px-6 rounded-md py-6 h-full">
+                                <form>
+                                    <div className="w-80">
+                                        <label
+                                            htmlFor="stage"
+                                            className="block mb-2"
+                                        >
+                                            Stage
+                                        </label>
+                                        <select
+                                            className="rounded"
+                                            name="stage"
+                                            onChange={inviteChange}
+                                            defaultValue={inviteData.stage}
+                                        >
+                                            <option value="">
+                                                ...Please Select...
+                                            </option>
+                                            {stages?.map((stage) => {
+                                                return (
+                                                    <option
+                                                        key={stage.id}
+                                                        value={stage.id}
+                                                    >
+                                                        {stage.desc}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </div>
+                                    <div className="w-full mt-4">
+                                        <label
+                                            htmlFor="stage"
+                                            className="block mb-2 w-full"
+                                        >
+                                            Message
+                                        </label>
+                                        <textarea
+                                            name="message"
+                                            value={inviteData.message}
+                                            onChange={inviteChange}
+                                            className="w-full rounded h-80"
+                                        ></textarea>
+                                    </div>
+                                </form>
+                                <div className="flex flex-row-reverse">
+                                    <button
+                                        onClick={() => invite()}
+                                        className="py-3 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 border-none border border-sky-500 text-white bg-sky-950"
                                     >
-                                        Message
-                                    </label>
-                                    <textarea className="w-full rounded h-80"></textarea>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="w-4 h-5 me-1.5 font-bold"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                                            />
+                                        </svg>
+                                        Send Invite
+                                    </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </Dialog.Panel>
@@ -299,7 +426,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                     <div className="grid grid-flow-row justify-items-end">
                         <button
                             type="button"
-                            className="inline-flex justify-center rounded-lg border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                            className=" justify-center rounded-lg border border-transparent bg-red-600 px-2 py-1 text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                             onClick={closeModal}
                         >
                             X
