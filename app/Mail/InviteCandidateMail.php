@@ -9,17 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class CallApplyer extends Mailable
+class InviteCandidateMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
+    public $date;
 
-    public function __construct()
+    public function __construct($date)
     {
-        //
+        $this->date = $date;
     }
 
     /**
@@ -28,7 +29,7 @@ class CallApplyer extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '',
+            subject: 'Invite Candidate Mail',
         );
     }
 
@@ -38,7 +39,7 @@ class CallApplyer extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.invite_interview',
         );
     }
 

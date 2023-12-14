@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('selections', function (Blueprint $table) {
             $table->id();
             $table->integer('vacancy_apply_id')->unsigned();
-            $table->text('message')->nullable();
+            $table->date('date_interview');
+            $table->time('time_interview');
             $table->integer('user_selection')->unsigned();
             $table->timestamps();
         });
