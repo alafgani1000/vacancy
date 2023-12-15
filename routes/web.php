@@ -13,6 +13,7 @@ use App\Http\Controllers\ApplyController;
 use App\Http\Controllers\CvController;
 use App\Http\Controllers\ApplyStatusController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\InviteStatusController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -163,6 +164,15 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::get('/apply-status/{id}/edit', 'edit')->name('apply-status.edit');
             Route::put('/apply-status/{id}/update', 'update')->name('apply-status.update');
             Route::delete('/apply-status/{id}/delete', 'delete')->name('apply-status.delete');
+        });
+
+        // invite status
+        Route::controller(InviteStatusController::class)->group(function () {
+            Route::get('/invite-status', 'index')->name('invite-status.index');
+            Route::post('/invite-status', 'store')->name('invite-status.store');
+            Route::get('/invite-status/{id}/edit', 'edit')->name('invite-status.edit');
+            Route::put('/invite-status/{id}/update', 'update')->name('invite-status.update');
+            Route::delete('/invite-status/{id}/delete', 'delete')->name('invite-status.delete');
         });
 
     });
