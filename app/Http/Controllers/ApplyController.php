@@ -14,8 +14,10 @@ use App\Models\VacancyApply;
 use App\Models\Stage;
 use App\Models\ApplyStatus;
 use App\Jobs\ProcessInvite;
+use App\Mail\InviteCandidateMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class ApplyController extends Controller
 {
@@ -95,7 +97,7 @@ class ApplyController extends Controller
     {
         $offset = isset($req->offset) ? $req->offset : 0;
         $limit = isset($req->limit) ? $req->limit : 100;
-        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->orderBy('updated_at','desc')->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy]);
     }
@@ -111,12 +113,16 @@ class ApplyController extends Controller
 
     public function invite(Request $req, $id)
     {
-        $message = $req->message;
+        $dateInterview = $req->date_interview;
+        $timeInterview = $req->time_interview;
         $stageId = $req->stage;
         $userId = Auth::user()->id;
         $applies = $req->apply;
         foreach($applies as $apply) {
-            ProcessInvite::dispatch($stageId, $apply['id'], $message, $userId);
+            $user = User::where('id',$apply['user_apply'])->first();
+            $name = $user->first_name." ".$user->last_name;
+            ProcessInvite::dispatch($stageId, $apply['id'], $dateInterview, $timeInterview, $userId);
+            Mail::to($user)->send(new InviteCandidateMail($dateInterview, $timeInterview, $name));
         }
         return "Candidate Invite in Process";
     }

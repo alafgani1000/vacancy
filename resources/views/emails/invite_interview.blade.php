@@ -9,7 +9,7 @@
 <body style="font-family: 'Arial Narrow', Arial, sans-serif">
     <p>
         Kepada Yth.<br/>
-        Al Afghani<br/>
+        Saudara /i {{ $name }}<br/>
         Di tempat.
     </p>
     <p style="font-weight: normal;">
@@ -47,6 +47,15 @@
             <td>:</td>
             <td>{{ $hari }}, {{  date_format($date, 'd F Y') }}</td>
         </tr>
+        <tr>
+            <td>Jam</td>
+            <td>:</td>
+            <td>{{ $time }}</td>
+        </tr>
     </table>
+    <p>
+        Demikian surat panggilan ini dibuat, Atas perhatiannya,<br/>
+        Kami ucapkan terima kasih.
+    </p>
 </body>
 </html>

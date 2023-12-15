@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Selection;
 use App\Models\VacancyApply;
+use App\Models\ApplyStatus;
 use Illuminate\Support\Facades\DB;
 
 class ProcessInvite implements ShouldQueue
@@ -18,16 +19,18 @@ class ProcessInvite implements ShouldQueue
 
     public $stageId;
     public $vacancyApplyId;
-    public $message;
+    public $dateInterview;
+    public $timeInterview;
     public $userInputId;
     /**
      * Create a new job instance.
      */
-    public function __construct($stageId, $vacancyApplyId, $message, $userInputId)
+    public function __construct($stageId, $vacancyApplyId, $dateInterview, $timeInterview, $userInputId)
     {
         $this->stageId = $stageId;
         $this->vacancyApplyId = $vacancyApplyId;
-        $this->message = $message;
+        $this->dateInterview = $dateInterview;
+        $this->timeInterview = $timeInterview;
         $this->userInputId = $userInputId;
     }
 
@@ -43,12 +46,14 @@ class ProcessInvite implements ShouldQueue
     {
         DB::transaction(function () {
             VacancyApply::where('id', $this->vacancyApplyId)->update([
-                'stage_id' => $this->stageId
+                'stage_id' => $this->stageId,
+                'status_id' => ApplyStatus::callHr()->first()->id
             ]);
 
             Selection::create([
                 'vacancy_apply_id' => $this->vacancyApplyId,
-                'message' => $this->message,
+                'date_interview' => $this->dateInterview,
+                'time_interview' => $this->timeInterview,
                 'user_selection' => $this->userInputId
             ]);
         });

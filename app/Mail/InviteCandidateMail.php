@@ -17,10 +17,14 @@ class InviteCandidateMail extends Mailable implements ShouldQueue
      * Create a new message instance.
      */
     public $date;
+    public $time;
+    public $name;
 
-    public function __construct($date)
+    public function __construct($date, $time, $name)
     {
         $this->date = $date;
+        $this->time = $time;
+        $this->name = $name;
     }
 
     /**

@@ -17,7 +17,8 @@ export default function DetailApply({ auth, applies, vacancy }) {
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [inviteData, setInviteData] = useState({
         stage: "",
-        message: "",
+        date_interview: "",
+        time_interview: "",
         apply: [],
     });
     const [stages, setStages] = useState([]);
@@ -201,6 +202,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             </th>
                                             <th className="pb-3 pt-3">Name</th>
                                             <th>Age</th>
+                                            <th>Stage</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -257,6 +259,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                                                       .date_of_birth
                                                               )}
                                                     </td>
+                                                    <td>{apply.stage.name}</td>
                                                 </tr>
                                             );
                                         })}
@@ -291,7 +294,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full grid grid-cols-3 gap-4 justify-items-center mt-4 pb-10 h-full">
+                    <div className="w-full grid grid-cols-2 gap-4 justify-items-center mt-4 pb-10 h-full">
                         <div className="w-full ">
                             <div className="w-full shadow-md bg-gradient-to-r from-sky-950 to-sky-900 py4 px-6 rounded-md py-6">
                                 <h1 className="text-base font-semibold text-white">
@@ -347,10 +350,10 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                 </table>
                             </div>
                         </div>
-                        <div className="w-full col-span-2">
+                        <div className="w-full">
                             <div className="w-full shadow-md bg-white py4 px-6 rounded-md py-6 h-full">
                                 <form>
-                                    <div className="w-80">
+                                    <div className="w-full">
                                         <label
                                             htmlFor="stage"
                                             className="block mb-2"
@@ -358,7 +361,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             Stage
                                         </label>
                                         <select
-                                            className="rounded"
+                                            className="rounded block"
                                             name="stage"
                                             onChange={inviteChange}
                                             defaultValue={inviteData.stage}
@@ -378,22 +381,44 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             })}
                                         </select>
                                     </div>
-                                    <div className="w-full mt-4">
-                                        <label
-                                            htmlFor="stage"
-                                            className="block mb-2 w-full"
-                                        >
-                                            Message
-                                        </label>
-                                        <textarea
-                                            name="message"
-                                            value={inviteData.message}
-                                            onChange={inviteChange}
-                                            className="w-full rounded h-80"
-                                        ></textarea>
+                                    <div className="flex gap-2 mt-4">
+                                        <div className="">
+                                            <label
+                                                htmlFor="stage"
+                                                className="block mb-2 w-full"
+                                            >
+                                                Date
+                                            </label>
+                                            <input
+                                                type="date"
+                                                name="date_interview"
+                                                className="rounded"
+                                                defaultValue={
+                                                    inviteData.date_interview
+                                                }
+                                                onChange={inviteChange}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label
+                                                htmlFor="stage"
+                                                className="block mb-2 w-full"
+                                            >
+                                                Time
+                                            </label>
+                                            <input
+                                                type="time"
+                                                name="time_interview"
+                                                className="rounded w-full"
+                                                defaultValue={
+                                                    inviteData.date_interview
+                                                }
+                                                onChange={inviteChange}
+                                            />
+                                        </div>
                                     </div>
                                 </form>
-                                <div className="flex flex-row-reverse">
+                                <div className="flex flex-row mt-5">
                                     <button
                                         onClick={() => invite()}
                                         className="py-3 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 border-none border border-sky-500 text-white bg-sky-950"
