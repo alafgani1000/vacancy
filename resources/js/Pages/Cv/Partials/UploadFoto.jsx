@@ -37,32 +37,28 @@ export default function UploadFoto({ auth, className = "" }) {
         <section className={className}>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <div>
+                    <div className="shrink-0">
                         <img
                             src={
                                 user.foto !== null
                                     ? `cv/${user.foto}`
                                     : `cv/profiles/default.jpg`
                             }
-                            width="80px"
-                            className="mb-2"
+                            className="mb-2 w-20 p-2 rounded-md object-contain"
                         />
                     </div>
                     <div className="mt-5">
-                        <header>
-                            <h3 className="font-medium text-gray-900">Photo</h3>
-                        </header>
                         <div className="grid grid-cols-2">
                             <div>
                                 <input
-                                    className="block w-full text-sm border round-s-md file:text-sm file:bg-sky-950 file:text-white file:py-2 file:rounded-bl-md file:rounded-tl-md"
+                                    className="block w-full text-sm round-s-md file: mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-300"
                                     id="file_input"
                                     type="file"
                                     onChange={handleFileChange}
                                 />
                             </div>
                             <div className="flex items-center gap-4">
-                                <button className="px-4 ms-4 py-2 rounded-md bg-sky-950 text-white">
+                                <button className="px-4 text-xs ms-4 py-2 rounded-3xl bg-sky-950 text-white">
                                     Upload
                                 </button>
 

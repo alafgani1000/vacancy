@@ -205,10 +205,10 @@ export default function Skill({ mustVerifyEmail, skills, className = "" }) {
             </div>
 
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-8">
-                <thead className="text-xs text-gray-700 uppercase bg-slate-300 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-gray-700 bg-slate-300 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th className="px-6 py-3">Skill</th>
-                        <th>Action</th>
+                        <th className="px-6 py-3.5">Skill</th>
+                        <th className="px-6 py-3.5">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,7 +219,7 @@ export default function Skill({ mustVerifyEmail, skills, className = "" }) {
                                 key={sk.id}
                             >
                                 <td className="px-6 py-3">{sk.description}</td>
-                                <td>
+                                <td className="px-6 py-3">
                                     <div className="inline-flex">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +227,7 @@ export default function Skill({ mustVerifyEmail, skills, className = "" }) {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded-sm"
+                                            className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded"
                                             onClick={() => handleEdit(sk)}
                                         >
                                             <path
@@ -243,7 +243,7 @@ export default function Skill({ mustVerifyEmail, skills, className = "" }) {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded-sm cursor-pointer"
+                                            className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded cursor-pointer"
                                             onClick={() => deleteConfirm(sk)}
                                         >
                                             <path

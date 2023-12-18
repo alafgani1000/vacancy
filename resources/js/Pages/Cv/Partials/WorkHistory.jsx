@@ -288,7 +288,7 @@ export default function WorkHistory({
                                     type="button"
                                     className="px-4 py-2 bg-red-600 rounded-md text-white text-sm"
                                 >
-                                    Cancel Edit
+                                    Cancel
                                 </button>
 
                                 <Transition
@@ -311,12 +311,12 @@ export default function WorkHistory({
             </div>
 
             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-8">
-                <thead className="text-xs text-gray-700 uppercase bg-slate-300 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-gray-700 bg-slate-300 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th className="px-6 py-3">From</th>
-                        <th className="px-6 py-3">To</th>
-                        <th className="px-6 py-3">Company</th>
-                        <th className="px-6 py-3">Job Desc</th>
+                        <th className="px-6 py-3.5">From</th>
+                        <th className="px-6 py-3.5">To</th>
+                        <th className="px-6 py-3.5">Company</th>
+                        <th className="px-6 py-3.5">Job Desc</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -327,10 +327,10 @@ export default function WorkHistory({
                                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                                 key={hist.id}
                             >
-                                <td className="px-6 py-3">{hist.start}</td>
-                                <td className="px-6 py-3">{hist.end}</td>
-                                <td className="px-6 py-3">{hist.company}</td>
-                                <td className="px-6 py-3">{hist.job_desc}</td>
+                                <td className="px-6 py-4">{hist.start}</td>
+                                <td className="px-6 py-4">{hist.end}</td>
+                                <td className="px-6 py-4">{hist.company}</td>
+                                <td className="px-6 py-4">{hist.job_desc}</td>
                                 <td>
                                     <div className="inline-flex">
                                         <svg
@@ -339,7 +339,7 @@ export default function WorkHistory({
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded-sm"
+                                            className="w-6 h-6 bg-sky-700 p-1 m-1 text-white rounded cursor-pointer"
                                             onClick={() => handleEdit(hist)}
                                         >
                                             <path
@@ -355,7 +355,7 @@ export default function WorkHistory({
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded-sm cursor-pointer"
+                                            className="w-6 h-6 bg-red-600 p-1 m-1 text-white rounded cursor-pointer"
                                             onClick={() => deleteConfirm(hist)}
                                         >
                                             <path
