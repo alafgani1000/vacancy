@@ -176,6 +176,13 @@ export default function Header({ user, header }) {
                                                         >
                                                             Apply Status
                                                         </Dropdown.Link>
+                                                        <Dropdown.Link
+                                                            href={route(
+                                                                "invite-status.index"
+                                                            )}
+                                                        >
+                                                            Invite Status
+                                                        </Dropdown.Link>
                                                     </Dropdown.Content>
                                                 </Dropdown>
                                             </>

@@ -8,6 +8,7 @@ use App\Models\Vacancy;
 use App\Models\Stage;
 use App\Models\ApplyStatus;
 use App\Models\User;
+use App\Models\Selection;
 
 class VacancyApply extends Model
 {
@@ -32,5 +33,10 @@ class VacancyApply extends Model
     public function userApply()
     {
         return $this->belongsTo(User::class, 'user_apply');
+    }
+
+    public function selections()
+    {
+        return $this->hasMany(Selection::class, 'vacancy_apply_id');
     }
 }

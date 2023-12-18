@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\InviteStatus;
+use Inertia\Inertia;
+use Inertia\Response;
 use App\Http\Requests\InviteStatusStoreRequest;
 
 class InviteStatusController extends Controller
@@ -14,9 +16,9 @@ class InviteStatusController extends Controller
      */
     public function index(Request $req)
     {
-        $stages = InviteStatus::orderBy('id','desc')->where('name','like','%'.$req->search.'%')->paginate(5);
+        $inviteStatus = InviteStatus::orderBy('id','desc')->where('name','like','%'.$req->search.'%')->paginate(5);
         $page = $req->page;
-        return Inertia::render('Master/InviteStatus/Index',['stages' => $stages, 'page' => $page]);
+        return Inertia::render('Master/InviteStatus/Index',['inviteStatus' => $inviteStatus, 'page' => $page]);
     }
 
     /**
