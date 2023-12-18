@@ -23,6 +23,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
     });
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
+    const [modalHistory, setModalHistory] = useState(false);
 
     const closeModal = () => {
         SetModalCv(false);
@@ -142,6 +143,10 @@ export default function DetailApply({ auth, applies, vacancy }) {
             .catch((err) => {});
     };
 
+    const showHistory = () => {
+        setModalHistory(true);
+    };
+
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -160,12 +165,12 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             <div className="flex justify-start bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white rounded-md">
                                 {vacancy.job_name}
                             </div>
-                            <div className="grid grid-cols-2 pb-2 mb-4 border-b">
+                            <div className="grid grid-cols-2 pb-4 mb-4 border-b">
                                 <div className="font-bold">List of data</div>
                                 <div className="flex justify-end">
                                     <button
                                         onClick={() => showFormInvite()}
-                                        className="border border-sky-950 py-2 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                        className="bg-sky-950 text-white py-2 px-2 text-xs font-semibold rounded-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -173,7 +178,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className="w-4 h-5 me-1.5 font-bold"
+                                            className="w-3 h-4 me-1 font-bold"
                                         >
                                             <path
                                                 strokeLinecap="round"
@@ -233,7 +238,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                                     key={apply.id}
                                                     className="border-b"
                                                 >
-                                                    <td className="p-2 text-center">
+                                                    <td className="px-2 py-2.5 text-center">
                                                         <input
                                                             className="rounded-sm"
                                                             type="checkbox"
@@ -289,6 +294,9 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                                             strokeWidth={1.5}
                                                             stroke="currentColor"
                                                             className="w-6 h-6 cursor-pointer hover:stroke-sky-600"
+                                                            onClick={() =>
+                                                                showHistory()
+                                                            }
                                                         >
                                                             <path
                                                                 strokeLinecap="round"
@@ -303,11 +311,11 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="py-4 flex flex-row justify-center">
+                            <div className="py-4 flex flex-row justify-center from-sky-950 to-sky-900">
                                 <button
                                     onClick={() => loadMoreData()}
                                     type="button"
-                                    className="border border-sky-950 rounded-3xl text-sm font-semibold py-2 px-4 hover:bg-sky-500 hover:text-white hover:border hover:border-sky-500"
+                                    className="bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-full text-sm font-semibold py-2 px-4 hover:bg-sky-500 hover:text-white hover:border hover:border-sky-500"
                                 >
                                     Load More....
                                 </button>
@@ -316,6 +324,24 @@ export default function DetailApply({ auth, applies, vacancy }) {
                     </div>
                 </div>
             </div>
+
+            <Modal show={modalHistory}>
+                <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
+                    <div className="grid grid-cols-2 ">
+                        <div className="text-3xl font-bold">History</div>
+                        <div className="justify-items-end">
+                            <button
+                                type="button"
+                                className="float-right py-1 px-2 justify-center rounded border border-transparent bg-red-600  text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                onClick={() => setModalHistory(false)}
+                            >
+                                X
+                            </button>
+                        </div>
+                    </div>
+                    <div className="w-full grid grid-cols-2 gap-4 justify-items-center mt-4 pb-10 h-full"></div>
+                </Dialog.Panel>
+            </Modal>
 
             <Modal show={modalInvite}>
                 <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
