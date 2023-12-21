@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\VacancyApply;
 use App\Models\Stage;
 use App\Models\ApplyStatus;
+use App\Models\Selection;
 use App\Jobs\ProcessInvite;
 use App\Mail\InviteCandidateMail;
 use Illuminate\Support\Facades\Auth;
@@ -116,15 +117,30 @@ class ApplyController extends Controller
         $dateInterview = $req->date_interview;
         $timeInterview = $req->time_interview;
         $stageId = $req->stage;
+        $withConfirm = $req->with_confirm;
         $userId = Auth::user()->id;
         $applies = $req->apply;
         foreach($applies as $apply) {
             $user = User::where('id',$apply['user_apply'])->first();
             $name = $user->first_name." ".$user->last_name;
-            ProcessInvite::dispatch($stageId, $apply['id'], $dateInterview, $timeInterview, $userId);
+            ProcessInvite::dispatch($stageId, $apply['id'], $dateInterview, $timeInterview, $userId, $withConfirm);
             Mail::to($user)->send(new InviteCandidateMail($dateInterview, $timeInterview, $name));
         }
         return "Candidate Invite in Process";
+    }
+
+    public function confirmation($id)
+    {
+        Selection::where('id',$id)->update([
+            confirmation => 1
+        ]);
+        return "Confirmation Success";
+    }
+
+    public function selections($id)
+    {
+        $selections = Selection::with('stage')->where('vacancy_apply_id', $id)->get();
+        return $selections;
     }
 
 }
