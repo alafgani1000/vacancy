@@ -49,6 +49,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/vacancy/{id}/apply', [ApplyController::class, 'displayForm'])->name('vacancy.display-apply');
     Route::put('/vacancy/{id}/apply', [ApplyController::class, 'apply'])->name('vacancy.apply');
     Route::get('/apply-history', [ApplyController::class, 'applyHistories'])->name('apply.history');
+    Route::get('/apply/{id}/selections', [ApplyController::class, 'selections'])->name('apply.selections');
 
     Route::middleware(['userverified'])->group(function () {
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
@@ -65,6 +66,7 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
         Route::put('/apply/{id}/load-more', [ApplyController::class, 'loadMoreApply'])->name('apply.load-more');
         Route::put('/apply/{id}/invite', [ApplyController::class, 'invite'])->name('apply.invite');
+        Route::put('/apply/{id}/confirmation', [ApplyController::class, 'confirmation'])->name('apply.confirmation');
     });
 
     // cv controller

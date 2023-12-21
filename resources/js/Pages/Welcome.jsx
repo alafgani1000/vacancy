@@ -7,8 +7,6 @@ import parse from "html-react-parser";
 export default function Welcome({ auth, vacancies }) {
     const { data, next_page_url, prev_page_url, total } = vacancies;
 
-    console.log(data);
-
     return (
         <>
             <div className="min-h-screen bg-gray-100">

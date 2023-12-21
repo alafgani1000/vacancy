@@ -20,6 +20,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
         date_interview: "",
         time_interview: "",
         apply: [],
+        with_confirm: "",
     });
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
@@ -138,7 +139,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
         axios
             .put(`/apply/${vacancy.id}/invite`, inviteData)
             .then((res) => {
-                console.log(res);
+                setModalInvite(false);
             })
             .catch((err) => {});
     };
@@ -424,7 +425,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             Stage
                                         </label>
                                         <select
-                                            className="rounded block"
+                                            className="rounded block w-full"
                                             name="stage"
                                             onChange={inviteChange}
                                             defaultValue={inviteData.stage}
@@ -445,7 +446,7 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                         </select>
                                     </div>
                                     <div className="flex gap-2 mt-4">
-                                        <div className="">
+                                        <div className="w-2/4">
                                             <label
                                                 htmlFor="stage"
                                                 className="block mb-2 w-full"
@@ -455,14 +456,14 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                             <input
                                                 type="date"
                                                 name="date_interview"
-                                                className="rounded"
+                                                className="rounded w-full"
                                                 defaultValue={
                                                     inviteData.date_interview
                                                 }
                                                 onChange={inviteChange}
                                             />
                                         </div>
-                                        <div>
+                                        <div className="w-2/4">
                                             <label
                                                 htmlFor="stage"
                                                 className="block mb-2 w-full"
@@ -479,6 +480,28 @@ export default function DetailApply({ auth, applies, vacancy }) {
                                                 onChange={inviteChange}
                                             />
                                         </div>
+                                    </div>
+                                    <div className="w-full mt-4">
+                                        <label
+                                            htmlFor="with_confirmation"
+                                            className="block mb-2"
+                                        >
+                                            With Confirmation
+                                        </label>
+                                        <select
+                                            className="rounded block w-full"
+                                            name="with_confirm"
+                                            onChange={inviteChange}
+                                            defaultValue={
+                                                inviteData.with_onfirm
+                                            }
+                                        >
+                                            <option value="">
+                                                ...Please Select...
+                                            </option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
                                     </div>
                                 </form>
                                 <div className="flex flex-row mt-5">

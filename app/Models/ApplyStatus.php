@@ -26,12 +26,12 @@ class ApplyStatus extends Model
 
     public function scopeCallHr(Builder $query): void
     {
-        $query->where('code','call-hr');
+        $query->where('code','invite-hr');
     }
 
     public function scopeCallUser(Builder $query): void
     {
-        $query->where('code','call-user');
+        $query->where('code','invite-user');
     }
 
     public function scopeDone(Builder $query): void

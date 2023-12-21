@@ -16,7 +16,10 @@ return new class extends Migration
             $table->integer('vacancy_apply_id')->unsigned();
             $table->date('date_interview');
             $table->time('time_interview');
+            $table->integer('stage_id');
             $table->integer('user_selection')->unsigned();
+            $table->enum('with_confirmation', ['yes','no']);
+            $table->integer('confirmation')->nullable();
             $table->timestamps();
         });
     }
