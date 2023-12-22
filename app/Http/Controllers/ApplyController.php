@@ -132,7 +132,7 @@ class ApplyController extends Controller
     public function confirmation($id)
     {
         Selection::where('id',$id)->update([
-            confirmation => 1
+            'confirmation' => 1
         ]);
         return "Confirmation Success";
     }

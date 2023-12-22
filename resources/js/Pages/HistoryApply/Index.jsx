@@ -1,15 +1,23 @@
 import Modal from "@/Components/Modal";
 import NavLink from "@/Components/NavLink";
+import Toast from "@/Components/Toast";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Dialog } from "@headlessui/react";
 import { Head, router } from "@inertiajs/react";
 import axios from "axios";
 import moment from "moment";
+import { useEffect } from "react";
 import { useState } from "react";
 
 export default function Index({ auth, applies }) {
     const [modalHistory, setModalHistory] = useState(false);
     const [selections, setSelections] = useState([]);
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
+    const [idSelected, setIdSelected] = useState("");
 
     const { data, next_page_url, prev_page_url, total } = applies;
 
@@ -17,14 +25,47 @@ export default function Index({ auth, applies }) {
         axios.get(`/apply/${id}/selections`, {}).then(({ data }) => {
             setSelections(data);
         });
+        setIdSelected(id);
         setModalHistory(true);
     };
 
-    const ButtonConfirm = (withc, conf) => {
-        console.log(conf);
-        if (withc == "yes") {
+    useEffect(() => {}, []);
+
+    const confirm = (id) => {
+        axios
+            .put(`/apply/${id}/confirmation`, {})
+            .then((res) => {
+                axios
+                    .get(`/apply/${idSelected}/selections`, {})
+                    .then(({ data }) => {
+                        setSelections(data);
+                    });
+                setToastData({
+                    message: "Update Success",
+                    color: "success",
+                });
+                setShowToast(true);
+            })
+            .catch((error) => {
+                setToastData({
+                    message: "Confirm Error",
+                    color: "error",
+                });
+                setShowToast(true);
+            });
+    };
+
+    const falseShow = () => {
+        setShowToast(false);
+    };
+
+    const ButtonConfirm = ({ withc, conf, iddata }) => {
+        if (withc == "yes" && conf === null) {
             return (
-                <button className="px-3 py-2 text-xs bg-sky-500 text-white rounded mt-2">
+                <button
+                    className="px-3 py-2 text-xs bg-sky-500 text-white rounded mt-2"
+                    onClick={() => confirm(iddata)}
+                >
                     Confirm
                 </button>
             );
@@ -64,7 +105,7 @@ export default function Index({ auth, applies }) {
                                             className="mb-2 shadow-blue-100"
                                             key={apply.id}
                                         >
-                                            <div className="bg-white pl-4 pr-4 pt-4 pb-4 text-black h-full rounded-md hover:bg-sky-500 hover:text-white">
+                                            <div className="bg-white pl-4 pr-4 pt-4 pb-4 text-black h-full rounded-md hover:bg-sky-500 hover:text-white hover:cursor-pointer">
                                                 <p className="text-xl">
                                                     {
                                                         apply.vacancy.user
@@ -162,6 +203,7 @@ export default function Index({ auth, applies }) {
                                     <ButtonConfirm
                                         withc={selection.with_confirmation}
                                         conf={selection.confirmation}
+                                        iddata={selection.id}
                                     />
                                 </div>
                             );
@@ -169,6 +211,14 @@ export default function Index({ auth, applies }) {
                     </div>
                 </Dialog.Panel>
             </Modal>
+
+            <Toast
+                show={showToast}
+                message={toastData.message}
+                time={10000}
+                falseShow={falseShow}
+                color={toastData.color}
+            />
         </AuthenticatedLayout>
     );
 }
