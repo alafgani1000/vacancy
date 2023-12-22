@@ -57,5 +57,11 @@
         Demikian surat panggilan ini dibuat, Atas perhatiannya,<br/>
         Kami ucapkan terima kasih.
     </p>
+
+    <p>
+        @if ($confirm == 'yes')
+            # Undangan ini membutuhkan konfirmasi, silahkan login ke web untuk melakukan konfirmasi.
+        @endif
+    </p>
 </body>
 </html>

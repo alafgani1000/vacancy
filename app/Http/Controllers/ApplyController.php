@@ -124,7 +124,7 @@ class ApplyController extends Controller
             $user = User::where('id',$apply['user_apply'])->first();
             $name = $user->first_name." ".$user->last_name;
             ProcessInvite::dispatch($stageId, $apply['id'], $dateInterview, $timeInterview, $userId, $withConfirm);
-            Mail::to($user)->send(new InviteCandidateMail($dateInterview, $timeInterview, $name));
+            Mail::to($user)->send(new InviteCandidateMail($dateInterview, $timeInterview, $name, $withConfirm));
         }
         return "Candidate Invite in Process";
     }

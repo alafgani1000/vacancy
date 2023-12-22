@@ -19,12 +19,14 @@ class InviteCandidateMail extends Mailable implements ShouldQueue
     public $date;
     public $time;
     public $name;
+    public $confirm;
 
-    public function __construct($date, $time, $name)
+    public function __construct($date, $time, $name, $confirm)
     {
         $this->date = $date;
         $this->time = $time;
         $this->name = $name;
+        $this->confirm = $confirm;
     }
 
     /**
