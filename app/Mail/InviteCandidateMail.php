@@ -35,7 +35,7 @@ class InviteCandidateMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Invite Candidate Mail',
+            subject: 'Undangan Interview',
         );
     }
 
