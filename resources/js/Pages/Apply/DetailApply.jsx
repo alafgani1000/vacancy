@@ -7,7 +7,7 @@ import axios from "axios";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 
-export default function DetailApply({ auth, applies, vacancy }) {
+export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [modalCv, SetModalCv] = useState(false);
     const [dataCv, setDataCv] = useState({});
     const [offset, setOffset] = useState(0);
@@ -193,7 +193,21 @@ export default function DetailApply({ auth, applies, vacancy }) {
                             </div>
                             <div className="rounded-md overflow-y-auto">
                                 {/* content */}
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-2 border-b border-t">
+                                <div clas>
+                                    <select className="text-xs rounded-md me-4">
+                                        <option value="">
+                                            -- Please Select Stage --
+                                        </option>
+                                        {stagesdata.map((dt) => {
+                                            return (
+                                                <option value={dt.id}>
+                                                    {dt.name}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </div>
+                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
                                     <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                                         <tr className="font-bold">
                                             <th className="pb-3 pt-3 text-center w-20">

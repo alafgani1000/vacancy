@@ -19,6 +19,7 @@ use App\Mail\InviteCandidateMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class ApplyController extends Controller
 {
@@ -77,12 +78,22 @@ class ApplyController extends Controller
                 'stage',
                 'status',
                 'vacancy.user',
-                'vacancy.user.company'
+                'vacancy.user.company',
+                'selections' => function (Builder $query) {
+                    $query->whereNull('read_at');
+                }
             ])
         ->where('user_apply', Auth::user()->id)
         ->orderBy('created_at','desc')
         ->paginate(6);
         return Inertia::render('HistoryApply/Index', ['applies' => $applies]);
+    }
+
+    public function readSelection($applyId)
+    {
+        $selection = Selection::where('vacancy_apply_id', $applyId)->update([
+            'read_at' => now()
+        ]);
     }
 
     public function index()
@@ -100,7 +111,8 @@ class ApplyController extends Controller
         $limit = isset($req->limit) ? $req->limit : 100;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->orderBy('updated_at','desc')->get();
         $vacancy = Vacancy::where('id',$id)->first();
-        return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy]);
+        $stagesdata = Stage::all();
+        return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy, 'stagesdata' => $stagesdata]);
     }
 
     public function loadMoreApply(Request $req, $id)
@@ -110,6 +122,11 @@ class ApplyController extends Controller
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return $applies;
+    }
+
+    public function filter()
+    {
+
     }
 
     public function invite(Request $req, $id)
@@ -140,6 +157,7 @@ class ApplyController extends Controller
     public function selections($id)
     {
         $selections = Selection::with('stage')->where('vacancy_apply_id', $id)->get();
+        $read = $this->readSelection($id);
         return $selections;
     }
 

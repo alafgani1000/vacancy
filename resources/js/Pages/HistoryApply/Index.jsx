@@ -112,7 +112,10 @@ export default function Index({ auth, applies }) {
                                                             .company.name
                                                     }
                                                     <span className="bg-sky-600 text-white px-2 py-1 ms-2 text-sm rounded-full animate-bounce">
-                                                        1
+                                                        {
+                                                            apply.selections
+                                                                .length
+                                                        }
                                                     </span>
                                                 </p>
                                                 <p>{apply.vacancy.job_name}</p>

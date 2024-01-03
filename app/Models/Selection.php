@@ -11,11 +11,11 @@ use App\Models\Stage;
 class Selection extends Model
 {
     use HasFactory;
-    protected $fillable = ['vacancy_apply_id','user_selection', 'date_interview', 'time_interview', 'stage_id'];
+    protected $fillable = ['vacancy_apply_id','user_selection', 'date_interview', 'time_interview', 'stage_id', 'read_at'];
 
     public function vacancyApply()
     {
-        return $this->belongsTo(VacancyApply::class);
+        return $this->belongsTo(VacancyApply::class, 'vacancy_apply_id');
     }
 
     public function user()
