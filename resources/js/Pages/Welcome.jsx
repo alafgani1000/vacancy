@@ -26,7 +26,7 @@ export default function Welcome({ auth, vacancies }) {
                                 <div className="bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white shadow-md rounded-md">
                                     List of Vacancy
                                 </div>
-                                <div className="bg-slate-100 p-3 text-black grid grid-cols-2 gap-4 auto-rows-max rounded-md">
+                                <div className="bg-slate-100 p-3 text-black grid grid-cols-1 gap-4 auto-rows-max rounded-md">
                                     {/* content */}
                                     {data.map((item) => {
                                         return (
@@ -39,7 +39,7 @@ export default function Welcome({ auth, vacancies }) {
                                                         <div>
                                                             <img
                                                                 className="my-2 p-2 bg-slate-50 rounded-md"
-                                                                width="75px"
+                                                                width="85px"
                                                                 src={
                                                                     item.user
                                                                         .company
@@ -64,19 +64,20 @@ export default function Welcome({ auth, vacancies }) {
                                                                 / {item.city},{" "}
                                                                 {item.country}
                                                             </span>
+                                                            <br />
+                                                            <span className="font-bold text-xs px-1.5 rounded mr-2">
+                                                                {
+                                                                    item.level
+                                                                        .name
+                                                                }
+                                                                {/* &nbsp;
+                                                                {moment(
+                                                                    item.published_at
+                                                                ).format(
+                                                                    "DD MMMM YYYY"
+                                                                )} */}
+                                                            </span>
                                                         </div>
-                                                    </div>
-                                                    <div>
-                                                        <span className="text-xs bg-sky-500 py-1.5 px-1.5 rounded mr-2 text-white">
-                                                            {item.level.name}
-                                                        </span>
-                                                        <span className="text-xs bg-sky-500 py-1.5 px-1.5 rounded text-white">
-                                                            {moment(
-                                                                item.published_at
-                                                            ).format(
-                                                                "DD MMMM YYYY"
-                                                            )}
-                                                        </span>
                                                     </div>
                                                     <div className="mt-2">
                                                         <p className="font-bold text-lg pb-2">
@@ -89,7 +90,7 @@ export default function Welcome({ auth, vacancies }) {
                                                         </div>
                                                         <p className="mt-2">
                                                             <NavLink
-                                                                className="text-white font-medium bg-sky-950 px-2 py-2 pb-1 mt-2 rounded hover:text-black hover:bg-white"
+                                                                className="text-white font-medium bg-sky-950 px-3 py-4 pb-1 mt-2 rounded hover:text-white hover:bg-sky-500"
                                                                 href={route(
                                                                     "detail",
                                                                     {

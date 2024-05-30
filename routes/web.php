@@ -53,6 +53,8 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::put('/apply/{id}/confirmation', [ApplyController::class, 'confirmation'])->name('apply.confirmation');
 
     Route::middleware(['userverified'])->group(function () {
+        // this is route for company user
+        // create vacancy
         Route::get('/vacancy', [VacancyController::class, 'index'])->name('vacancy.index');
         Route::get('/vacancy/create', [VacancyController::class, 'create'])->name('vacancy.create');
         Route::get('/vacancy/{id}/detail', [VacancyController::class, 'detail'])->name('vacancy.detail');
@@ -62,7 +64,10 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::patch('/vacancy/{id}/publish', [VacancyController::class, 'publish'])->name('vacancy.publish');
         Route::patch('/vacancy/{id}/unpublish', [VacancyController::class, 'unpublish'])->name('vacancy.unpublish');
 
-         // apply
+        // invite
+        Route::get('/invites/{id}', [ApplyController::class, 'invites'])->name('invite.index');
+
+        // apply
         Route::get('/apply', [ApplyController::class, 'index'])->name('apply.index');
         Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
         Route::put('/apply/{id}/load-more', [ApplyController::class, 'loadMoreApply'])->name('apply.load-more');

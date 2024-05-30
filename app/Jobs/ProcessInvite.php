@@ -50,15 +50,8 @@ class ProcessInvite implements ShouldQueue
         DB::transaction(function () {
             $stage = Stage::where('id', $this->stageId)->first();
 
-            if ($stage->name == 'HR Test') {
-                $status = ApplyStatus::callHr()->first()->id;
-            } else if ($stage == 'User Test') {
-                $status = ApplyStatus::callUser()->first()->id;
-            }
-
             VacancyApply::where('id', $this->vacancyApplyId)->update([
                 'stage_id' => $this->stageId,
-                'apply_status_id' => $status
             ]);
 
             Selection::create([

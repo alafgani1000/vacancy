@@ -307,8 +307,8 @@ export default function Authenticated({ auth, header, children }) {
 
             <main>{children}</main>
             <footer className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <div className="bg-white shadow-md py-6 px-4 sm:px-6 lg:px-8">
-                    &copy; 2023 Yasunaga Indonesia
+                <div className="bg-white shadow-md py-6 px-4 sm:px-6 lg:px-8 rounded-md">
+                    Made with &#10084; on Earth
                 </div>
             </footer>
         </div>

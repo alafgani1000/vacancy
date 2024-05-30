@@ -109,10 +109,19 @@ class ApplyController extends Controller
     {
         $offset = isset($req->offset) ? $req->offset : 0;
         $limit = isset($req->limit) ? $req->limit : 100;
-        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->orderBy('updated_at','desc')->get();
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->where('vacancy_id',$id)
+            ->offset($offset)
+            ->limit($limit)
+            ->orderBy('updated_at','desc')
+            ->get();
         $vacancy = Vacancy::where('id',$id)->first();
         $stagesdata = Stage::all();
-        return Inertia::render('Apply/DetailApply', ['applies' => $applies, 'vacancy' => $vacancy, 'stagesdata' => $stagesdata]);
+        return Inertia::render('Apply/DetailApply', [
+            'applies' => $applies,
+            'vacancy' => $vacancy,
+            'stagesdata' => $stagesdata
+        ]);
     }
 
     public function loadMoreApply(Request $req, $id)
@@ -122,6 +131,37 @@ class ApplyController extends Controller
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return $applies;
+    }
+
+    public function invites(Request $req, $id)
+    {
+        $offset = isset($req->offset) ? $req->offset : 0;
+        $limit = isset($req->limit) ? $req->limit : 100;
+        $idApplies = VacancyApply::where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+        $invites = Selection::whereIn('vacancy_apply_id', $idApplies->pluck('id'))
+            ->with(['vacancyApply.userApply'])
+            ->with('user')
+            ->with('stage')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+        return $invites;
+    }
+
+    public function loadMoreInvites(Request $req, $id)
+    {
+        $offset = isset($req->offset) ? $req->offset : 0;
+        $limit = isset($req->limit) ? $req->limit : 100;
+        $idApplies = VacancyApply::where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+        $invites = Selection::whereIn('vacancy_appy_id', $idApplies->pluck('id'))
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+        return $invites;
     }
 
     public function filter()

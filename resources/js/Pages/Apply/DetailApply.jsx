@@ -6,6 +6,7 @@ import { Head } from "@inertiajs/react";
 import axios from "axios";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [modalCv, SetModalCv] = useState(false);
@@ -25,6 +26,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
     const [modalHistory, setModalHistory] = useState(false);
+    const [tabs, setTabs] = useState({
+        apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
+        history:
+            "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
+    });
+    const [tabStatus, setTabStatus] = useState({
+        apply: true,
+        history: false,
+    });
+    const [invites, setInvites] = useState([]);
+    const [historyData, setHistoryData] = useState([]);
 
     const closeModal = () => {
         SetModalCv(false);
@@ -52,6 +64,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .then((res) => {
                 setData((prev) => [...prev, ...res.data]);
                 setOffset(newOffset);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const getDataInvites = () => {
+        axios
+            .get(`/invites/${vacancy.id}`, {})
+            .then((res) => {
+                setInvites(res.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -144,7 +167,8 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .catch((err) => {});
     };
 
-    const showHistory = () => {
+    const showHistory = (data) => {
+        setHistoryData(data);
         setModalHistory(true);
     };
 
@@ -153,7 +177,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             auth={auth}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Detail Data Apply
+                    Detail
                 </h2>
             }
         >
@@ -161,189 +185,402 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400 mb-6">
+                        <li className="me-2">
+                            <a
+                                href="#"
+                                className={tabs.apply}
+                                aria-current="page"
+                                onClick={() => {
+                                    setTabs({
+                                        apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
+                                        history:
+                                            "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
+                                    });
+                                    setTabStatus({
+                                        apply: true,
+                                        history: false,
+                                    });
+                                }}
+                            >
+                                Apply Data
+                            </a>
+                        </li>
+                        <li className="me-2">
+                            <a
+                                href="#"
+                                className={tabs.history}
+                                onClick={() => {
+                                    setTabs({
+                                        apply: "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
+                                        history:
+                                            "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
+                                    });
+                                    setTabStatus({
+                                        apply: false,
+                                        history: true,
+                                    });
+                                    getDataInvites();
+                                }}
+                            >
+                                Invite History
+                            </a>
+                        </li>
+                    </ul>
                     <div className="bg-white overflow-hidden shadow-md sm:rounded-md">
                         <div className="p-6 text-gray-900">
-                            <div className="flex justify-start bg-sky-950 p-3 mt-4 mb-4 text-white font-bold border-b-2 border-white rounded-md">
+                            <div className="flex justify-start bg-sky-950 p-3 mt-2 mb-5 text-white font-bold border-b-2 border-white rounded-md">
                                 {vacancy.job_name}
                             </div>
-                            <div className="grid grid-cols-2 pb-4 mb-4 border-b">
-                                <div className="font-bold">List of data</div>
-                                <div className="flex justify-end">
-                                    <button
-                                        onClick={() => showFormInvite()}
-                                        className="bg-sky-950 text-white py-2 px-2 text-xs font-semibold rounded-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="w-3 h-4 me-1 font-bold"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                                            />
-                                        </svg>
-                                        Invite
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="rounded-md overflow-y-auto">
-                                {/* content */}
-                                <div clas>
-                                    <select className="text-xs rounded-md me-4">
-                                        <option value="">
-                                            -- Please Select Stage --
-                                        </option>
-                                        {stagesdata.map((dt) => {
-                                            return (
-                                                <option value={dt.id}>
-                                                    {dt.name}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                </div>
-                                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
-                                    <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr className="font-bold">
-                                            <th className="pb-3 pt-3 text-center w-20">
-                                                <input
-                                                    className="rounded-sm"
-                                                    type="checkbox"
-                                                    onChange={(e) =>
-                                                        checkAll(e)
-                                                    }
-                                                    defaultChecked={isCheckAll}
+                            {/* apply data */}
+                            {tabStatus.apply === true ? (
+                                <>
+                                    <div className="grid grid-cols-2 pb-4 mb-4 border-b">
+                                        <div className="text-lg flex flex-row">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"
                                                 />
-                                            </th>
-                                            <th className="pb-3 pt-3">Name</th>
-                                            <th>Age</th>
-                                            <th>Stage</th>
-                                            <th>
+                                            </svg>
+                                            <span className="ms-2">
+                                                List of data
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <button
+                                                onClick={() => showFormInvite()}
+                                                className="bg-red-500 text-white py-2 px-2 text-sm font-semibold rounded-md inline-flex hover:bg-red-700 hover:border-none hover:border hover:border-sky-500 hover:text-white me-2"
+                                            >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     strokeWidth={1.5}
                                                     stroke="currentColor"
-                                                    className="w-6 h-6"
+                                                    className="w-4 h-5 me-1 font-bold"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"
-                                                    />
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
                                                     />
                                                 </svg>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.map((apply) => {
-                                            return (
-                                                <tr
-                                                    key={apply.id}
-                                                    className="border-b"
+                                                Delete
+                                            </button>
+
+                                            <button
+                                                onClick={() => showFormInvite()}
+                                                className="bg-sky-500 text-white py-2 px-2 text-sm font-semibold rounded-md inline-flex hover:bg-sky-400 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="w-4 h-5 me-1 font-bold"
                                                 >
-                                                    <td className="px-2 py-2.5 text-center">
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                                                    />
+                                                </svg>
+                                                Invite
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="rounded-md overflow-y-auto">
+                                        {/* content */}
+                                        <div>
+                                            <select className="text-xs rounded-md me-4">
+                                                <option value="">
+                                                    -- Please Select Stage --
+                                                </option>
+                                                {stagesdata.map((dt, i) => {
+                                                    return (
+                                                        <option
+                                                            key={i}
+                                                            value={dt.id}
+                                                        >
+                                                            {dt.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </div>
+                                        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
+                                            <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                                <tr className="font-bold">
+                                                    <th className="pb-3 pt-3 text-center w-20">
                                                         <input
                                                             className="rounded-sm"
                                                             type="checkbox"
-                                                            name={apply.id}
-                                                            checked={
-                                                                apply.checked
+                                                            onChange={(e) =>
+                                                                checkAll(e)
                                                             }
-                                                            onChange={() =>
-                                                                checked(
-                                                                    apply.id
-                                                                )
+                                                            defaultChecked={
+                                                                isCheckAll
                                                             }
                                                         />
-                                                    </td>
-                                                    <td className="p-2">
-                                                        <span
-                                                            className="hover:text-sky-950 hover:cursor-pointer"
-                                                            onClick={() =>
-                                                                getCv(
-                                                                    apply
-                                                                        .user_apply
-                                                                        .id
-                                                                )
-                                                            }
-                                                        >
-                                                            {
-                                                                apply.user_apply
-                                                                    .first_name
-                                                            }{" "}
-                                                            {
-                                                                apply.user_apply
-                                                                    .last_name
-                                                            }
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        {apply.user_apply
-                                                            .date_of_birth ===
-                                                        null
-                                                            ? ""
-                                                            : age(
-                                                                  apply
-                                                                      .user_apply
-                                                                      .date_of_birth
-                                                              )}
-                                                    </td>
-                                                    <td>{apply.stage.name}</td>
-                                                    <td>
+                                                    </th>
+                                                    <th className="pb-3 pt-3">
+                                                        Name
+                                                    </th>
+                                                    <th>Age</th>
+                                                    <th>Stage</th>
+                                                    <th>
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             strokeWidth={1.5}
                                                             stroke="currentColor"
-                                                            className="w-6 h-6 cursor-pointer hover:stroke-sky-600"
-                                                            onClick={() =>
-                                                                showHistory()
-                                                            }
+                                                            className="w-6 h-6"
                                                         >
                                                             <path
                                                                 strokeLinecap="round"
                                                                 strokeLinejoin="round"
-                                                                d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                                                                d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"
+                                                            />
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                                                             />
                                                         </svg>
-                                                    </td>
+                                                    </th>
                                                 </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="py-4 flex flex-row justify-center from-sky-950 to-sky-900">
-                                <button
-                                    onClick={() => loadMoreData()}
-                                    type="button"
-                                    className="bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-full text-sm font-semibold py-2 px-4 hover:bg-sky-500 hover:text-white hover:border hover:border-sky-500"
-                                >
-                                    Load More....
-                                </button>
-                            </div>
+                                            </thead>
+                                            <tbody>
+                                                {data.map((apply) => {
+                                                    return (
+                                                        <tr
+                                                            key={apply.id}
+                                                            className="border-b"
+                                                        >
+                                                            <td className="px-2 py-2.5 text-center">
+                                                                <input
+                                                                    className="rounded-sm"
+                                                                    type="checkbox"
+                                                                    name={
+                                                                        apply.id
+                                                                    }
+                                                                    checked={
+                                                                        apply.checked
+                                                                    }
+                                                                    onChange={() =>
+                                                                        checked(
+                                                                            apply.id
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </td>
+                                                            <td className="p-2">
+                                                                <span
+                                                                    className="hover:text-sky-950 hover:cursor-pointer"
+                                                                    onClick={() =>
+                                                                        getCv(
+                                                                            apply
+                                                                                .user_apply
+                                                                                .id
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        apply
+                                                                            .user_apply
+                                                                            .first_name
+                                                                    }{" "}
+                                                                    {
+                                                                        apply
+                                                                            .user_apply
+                                                                            .last_name
+                                                                    }
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                {apply
+                                                                    .user_apply
+                                                                    .date_of_birth ===
+                                                                null
+                                                                    ? ""
+                                                                    : age(
+                                                                          apply
+                                                                              .user_apply
+                                                                              .date_of_birth
+                                                                      )}
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    apply.stage
+                                                                        .name
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    strokeWidth={
+                                                                        1.5
+                                                                    }
+                                                                    stroke="currentColor"
+                                                                    className="w-6 h-6 cursor-pointer stroke-sky-600 hover:stroke-slate-300"
+                                                                    onClick={() =>
+                                                                        showHistory(
+                                                                            apply.selections
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"
+                                                                    />
+                                                                </svg>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="py-4 flex flex-row justify-center from-sky-950 to-sky-900">
+                                        <button
+                                            onClick={() => loadMoreData()}
+                                            type="button"
+                                            className="bg-gradient-to-r from-sky-500 to-sky-600 text-white rounded-full text-sm font-semibold py-2 px-4 hover:bg-sky-500 hover:text-white hover:border hover:border-sky-500"
+                                        >
+                                            Load More....
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <></>
+                            )}
+
+                            {tabStatus.history === true ? (
+                                <div className="rounded-md overflow-y-auto">
+                                    <div className="flex flex-row">
+                                        <div className="font-semibold">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div className="text-lg ms-2">
+                                            History Invites
+                                        </div>
+                                    </div>
+                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-4 border-b border-t">
+                                        <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr className="font-bold">
+                                                <th className="pb-3 pt-3 ps-3">
+                                                    Name
+                                                </th>
+                                                <th>Email</th>
+                                                <th>Stage</th>
+                                                <th>Interview Jadual</th>
+                                                <th>Confirmation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {invites.map((value, i) => {
+                                                return (
+                                                    <tr
+                                                        className="border-b"
+                                                        key={i}
+                                                    >
+                                                        <td className="p-2">
+                                                            {
+                                                                value
+                                                                    .vacancy_apply
+                                                                    .user_apply
+                                                                    .first_name
+                                                            }{" "}
+                                                            {
+                                                                value
+                                                                    .vacancy_apply
+                                                                    .user_apply
+                                                                    .last_name
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                value
+                                                                    .vacancy_apply
+                                                                    .user_apply
+                                                                    .email
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {value.stage.name}
+                                                        </td>
+                                                        <td>
+                                                            <span className="bg-sky-800 text-white py-1 px-2 text-xs rounded-xl font-semibold">
+                                                                {moment(
+                                                                    value.date_interview
+                                                                ).format(
+                                                                    "DD-MM-YYYY"
+                                                                )}{" "}
+                                                                {
+                                                                    value.time_interview
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {value.confirmation ===
+                                                            1 ? (
+                                                                <span className="bg-green-600 py-1 px-3 rounded-xl text-xs text-white font-bold">
+                                                                    Yes
+                                                                </span>
+                                                            ) : (
+                                                                <span className="bg-red-600 py-1 px-3 rounded-xl text-xs text-white font-bold">
+                                                                    No
+                                                                </span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* modal history invite */}
             <Modal show={modalHistory}>
                 <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-cols-2 ">
-                        <div className="text-3xl font-bold">History</div>
+                        <div className="text-2xl font-semibold">
+                            History Invites
+                        </div>
                         <div className="justify-items-end">
                             <button
                                 type="button"
@@ -354,10 +591,47 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full grid grid-cols-2 gap-4 justify-items-center mt-4 pb-10 h-full"></div>
+                    <div className="mt-4 pb-10">
+                        <ul>
+                            {historyData.map((value, i) => {
+                                return (
+                                    <li
+                                        key={i}
+                                        className="bg-white p-4 rounded-md"
+                                    >
+                                        <span className="bg-sky-950 py-1 px-3 text-white rounded-xl text-sm">
+                                            {value.stage.name}
+                                        </span>
+                                        <p className="mt-1">
+                                            {value.stage.desc}
+                                        </p>
+                                        <p>
+                                            Jadual Interview:{" "}
+                                            {moment(
+                                                value.date_interview
+                                            ).format("DD-MM-YYYY")}{" "}
+                                            {value.time_interview}
+                                        </p>
+                                        <p>
+                                            {value.confirmation === 1 ? (
+                                                <span className="bg-green-600 text-white text-xs py-1 px-2 rounded-xl">
+                                                    Confirmation
+                                                </span>
+                                            ) : (
+                                                <span className="bg-red-600 text-white text-xs py-1 px-2 rounded-xl">
+                                                    No Confirmation
+                                                </span>
+                                            )}
+                                        </p>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                 </Dialog.Panel>
             </Modal>
 
+            {/* modal invite  */}
             <Modal show={modalInvite}>
                 <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-cols-2 ">
@@ -645,8 +919,8 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                 <div className="border-b-2 border-dashed mb-4 py-1">
                                     Skill
                                 </div>
-                                {dataCv?.skills?.map((skill) => {
-                                    return <p>{skill.description}</p>;
+                                {dataCv?.skills?.map((skill, i) => {
+                                    return <p key={i}>{skill.description}</p>;
                                 })}
                             </div>
                         </div>
