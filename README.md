@@ -16,7 +16,6 @@ Aplikasi ini dibuat menggunakan frame laravel
 -   Admin
 -   Job Seeker
 -   Company
--
 
 ## Login Awal
 
