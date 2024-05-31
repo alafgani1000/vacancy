@@ -16,6 +16,7 @@ Aplikasi ini dibuat menggunakan frame laravel
 -   Admin
 -   Job Seeker
 -   Company
+-
 
 ## Login Awal
 
@@ -23,3 +24,7 @@ Aplikasi ini dibuat menggunakan frame laravel
 -   password: test
 
 Pastikan seeder telah dijalankan
+
+## Menjalankan Notifikasi Email
+
+Jalan Perintah 'php artisan queue:work'
