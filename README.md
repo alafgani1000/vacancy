@@ -1,8 +1,8 @@
-## Aplikasi untuk mengelola recruiment
+# Aplikasi untuk mengelola recruiment
 
 Aplikasi ini dibuat menggunakan frame laravel
 
-# Installasi
+## Installasi
 
 -   Clone aplikasi
 -   Masuk ke root direktori aplikasi
@@ -11,13 +11,13 @@ Aplikasi ini dibuat menggunakan frame laravel
 -   Jalankan perintah 'php artisan migrate' untuk migrasi database
 -   Jalankan perintah 'php artisan db:seed' untuk insert data seeder
 
-# Kategori User
+## Kategori User
 
 -   Admin
 -   Job Seeker
 -   Company
 
-# Login Awal
+## Login Awal
 
 -   username: admin@test.com
 -   password: test
