@@ -29,6 +29,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
     const [modalReject, setModalReject] = useState(false);
+    const [modalPass, setModalPass] = useState(false);
     const [modalHistory, setModalHistory] = useState(false);
     const [tabs, setTabs] = useState({
         apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
@@ -160,6 +161,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const exitFormReject = () => {
         setModalReject(false);
     };
+
+    const showFormPass = () => {
+        setModalPass(true);
+        getCheckedData();
+    };
+
+    const exitFormPass = () => {
+        setModalPass(false);
+    };
+
+    const passApply = () => {};
 
     const getCheckedData = () => {
         let dataSelected = data.filter((d) => {
@@ -336,7 +348,10 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                 </svg>
                                                 Reject
                                             </button>
-                                            <button className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-emerald-500 hover:border-none hover:border hover:border-emerald-500 hover:text-white">
+                                            <button
+                                                onClick={() => showFormPass()}
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-emerald-500 hover:border-none hover:border hover:border-emerald-500 hover:text-white"
+                                            >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     fill="none"
@@ -665,6 +680,14 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                     </div>
                 </div>
             </div>
+
+            <Confirm
+                show={modalPass}
+                question="Are you sure pass this apply ?"
+                yes={passApply}
+                no={exitFormPass}
+            />
+
             <Confirm
                 show={modalReject}
                 question="Are you sure reject this apply ?"
