@@ -19,19 +19,19 @@ class ApplyStatus extends Model
         return $this->hasMany(VacancyApply::class);
     }
 
-    public function scopeWait(Builder $query): void
+    public function scopeApply(Builder $query): void
     {
-        $query->where('code','wait');
+        $query->where('code','apply');
     }
 
-    public function scopeCallHr(Builder $query): void
+    public function scopePass(Builder $query): void
     {
-        $query->where('code','invite-hr');
+        $query->where('code','pass');
     }
 
-    public function scopeCallUser(Builder $query): void
+    public function scopeRejected(Builder $query): void
     {
-        $query->where('code','invite-user');
+        $query->where('code','rejected');
     }
 
     public function scopeDone(Builder $query): void

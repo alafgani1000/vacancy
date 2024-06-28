@@ -72,6 +72,10 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/apply/{id}/detail', [ApplyController::class, 'detailApply'])->name('apply.detail');
         Route::put('/apply/{id}/load-more', [ApplyController::class, 'loadMoreApply'])->name('apply.load-more');
         Route::put('/apply/{id}/invite', [ApplyController::class, 'invite'])->name('apply.invite');
+        Route::put('/apply/{id}/rejected', [ApplyController::class, 'reject'])->name('apply.reject');
+        Route::put('/apply/{id}/passed', [ApplyController::class, 'pass'])->name('apply.pass');
+        Route::put('/apply/{id}/done', [ApplyController::class, 'done'])->name('apply.done');
+
     });
 
     // cv controller

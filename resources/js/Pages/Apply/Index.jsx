@@ -35,7 +35,6 @@ export default function Index({ auth, vacancies }) {
                                                 "apply.detail",
                                                 vacancy.id
                                             )}
-                                            target="_blank"
                                             className="mb-4 shadow-blue-100"
                                             key={vacancy.id}
                                         >

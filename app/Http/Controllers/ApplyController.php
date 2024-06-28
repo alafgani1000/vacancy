@@ -15,6 +15,8 @@ use App\Models\Stage;
 use App\Models\ApplyStatus;
 use App\Models\Selection;
 use App\Jobs\ProcessInvite;
+use App\Jobs\ProcessRejected;
+use App\Jobs\ProcessPassed;
 use App\Mail\InviteCandidateMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
@@ -63,7 +65,7 @@ class ApplyController extends Controller
                 'vacancy_id' => $id,
                 'user_apply' => Auth::user()->id,
                 'stage_id' => Stage::apply()->first()->id,
-                'apply_status_id' => ApplyStatus::wait()->first()->id,
+                'apply_status_id' => ApplyStatus::apply()->first()->id,
                 'message' => $request->description
             ]);
             $message->put('process', 'success');
@@ -199,6 +201,32 @@ class ApplyController extends Controller
         $selections = Selection::with('stage')->where('vacancy_apply_id', $id)->get();
         $read = $this->readSelection($id);
         return $selections;
+    }
+
+    public function reject(Request $req)
+    {
+        $applies = $req->apply;
+        foreach($applies as $apply) {
+            ProcessRejected::dispatch($apply['id']);
+        }
+        return "Rejected Success";
+    }
+
+    public function pass($id)
+    {
+        $applies = $req->apply;
+        foreach($applies as $apply) {
+            ProcessPassed::dispatch($apply['id']);
+        }
+        return "Success";
+    }
+
+    public function done($id)
+    {
+        $reject = VacancyApply::where('id',$id)->update([
+            'apply_status_id' => ApplyStatus::rejected()->first()->id
+        ]);
+        return "Process Selection Is Done";
     }
 
 }

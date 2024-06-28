@@ -13,22 +13,22 @@ class ApplyStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        $wait = ApplyStatus::create([
-            'code' => 'wait',
-            'name' => 'Wait for Invite',
-            'description' => 'wait for invite'
+        $apply = ApplyStatus::create([
+            'code' => 'apply',
+            'name' => 'Apply',
+            'description' => 'Apply'
         ]);
 
-        $invite_hr = ApplyStatus::create([
-            'code' => 'invite-hr',
-            'name' => 'Invite Interview',
-            'description' => 'interview dengan HR'
+        $pass = ApplyStatus::create([
+            'code' => 'pass',
+            'name' => 'Pass',
+            'description' => 'Pass'
         ]);
 
-        $invite_user = ApplyStatus::create([
-            'code' => 'invite-user',
-            'name' => 'Invite User Interview',
-            'description' => 'interview with user'
+        $reject = ApplyStatus::create([
+            'code' => 'rejected',
+            'name' => 'Rejected',
+            'description' => 'Rejected'
         ]);
 
         $done = ApplyStatus::create([

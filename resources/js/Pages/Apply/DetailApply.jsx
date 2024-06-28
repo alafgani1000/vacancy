@@ -1,12 +1,15 @@
 import Modal from "@/Components/Modal";
 import NavLink from "@/Components/NavLink";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { Head } from "@inertiajs/react";
 import axios from "axios";
 import parse from "html-react-parser";
 import { useEffect, useState } from "react";
 import moment from "moment";
+import { Fragment } from "react";
+import Confirm from "@/Components/Confirm";
+import Toast from "@/Components/Toast";
 
 export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [modalCv, SetModalCv] = useState(false);
@@ -25,11 +28,13 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     });
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
+    const [modalReject, setModalReject] = useState(false);
     const [modalHistory, setModalHistory] = useState(false);
     const [tabs, setTabs] = useState({
         apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
         history:
             "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
+        prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
     });
     const [tabStatus, setTabStatus] = useState({
         apply: true,
@@ -37,6 +42,11 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     });
     const [invites, setInvites] = useState([]);
     const [historyData, setHistoryData] = useState([]);
+    const [showToast, setShowToast] = useState(false);
+    const [toastData, setToastData] = useState({
+        message: "",
+        color: "",
+    });
 
     const closeModal = () => {
         SetModalCv(false);
@@ -141,6 +151,16 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         getCheckedData();
     };
 
+    const rejectApply = () => {};
+
+    const showFormReject = () => {
+        setModalReject(true);
+    };
+
+    const exitFormReject = () => {
+        setModalReject(false);
+    };
+
     const getCheckedData = () => {
         let dataSelected = data.filter((d) => {
             return d.checked === true;
@@ -163,6 +183,11 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .put(`/apply/${vacancy.id}/invite`, inviteData)
             .then((res) => {
                 setModalInvite(false);
+                setToastData({
+                    message: "Reject Success",
+                    color: "success",
+                });
+                setShowToast(true);
             })
             .catch((err) => {});
     };
@@ -170,6 +195,19 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const showHistory = (data) => {
         setHistoryData(data);
         setModalHistory(true);
+    };
+
+    const reject = () => {
+        axios
+            .put(`/apply/${vacancy.id}/rejected`, inviteData)
+            .then((res) => {
+                setModalReject(false);
+            })
+            .catch((err) => {});
+    };
+
+    const falseShow = () => {
+        setShowToast(false);
     };
 
     return (
@@ -186,6 +224,26 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400 mb-6">
+                        <li className="me-4">
+                            <a
+                                href={route("apply.index")}
+                                className={tabs.prev}
+                                aria-current="page"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="w-5 h-5 cursor-pointer black hover:stroke-slate-300"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M9.53 2.47a.75.75 0 0 1 0 1.06L4.81 8.25H15a6.75 6.75 0 0 1 0 13.5h-3a.75.75 0 0 1 0-1.5h3a5.25 5.25 0 1 0 0-10.5H4.81l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 0Z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </a>
+                        </li>
                         <li className="me-2">
                             <a
                                 href="#"
@@ -196,6 +254,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
                                         history:
                                             "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
+                                        prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
                                     });
                                     setTabStatus({
                                         apply: true,
@@ -215,6 +274,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         apply: "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
                                         history:
                                             "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
+                                        prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
                                     });
                                     setTabStatus({
                                         apply: false,
@@ -257,8 +317,8 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         </div>
                                         <div className="flex justify-end">
                                             <button
-                                                onClick={() => showFormInvite()}
-                                                className="bg-red-500 text-white py-2 px-2 text-sm font-semibold rounded-md inline-flex hover:bg-red-700 hover:border-none hover:border hover:border-sky-500 hover:text-white me-2"
+                                                onClick={() => showFormReject()}
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -266,20 +326,37 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                     viewBox="0 0 24 24"
                                                     strokeWidth={1.5}
                                                     stroke="currentColor"
-                                                    className="w-4 h-5 me-1 font-bold"
+                                                    className="w-5 h-6 me-1 hover:font-bold"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
-                                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                                                     />
                                                 </svg>
-                                                Delete
+                                                Reject
+                                            </button>
+                                            <button className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-emerald-500 hover:border-none hover:border hover:border-emerald-500 hover:text-white">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="w-5 h-6 me-1 hover:font-bold"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                                                    />
+                                                </svg>
+                                                Accept
                                             </button>
 
                                             <button
                                                 onClick={() => showFormInvite()}
-                                                className="bg-sky-500 text-white py-2 px-2 text-sm font-semibold rounded-md inline-flex hover:bg-sky-400 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-e-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -287,7 +364,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                     viewBox="0 0 24 24"
                                                     strokeWidth={1.5}
                                                     stroke="currentColor"
-                                                    className="w-4 h-5 me-1 font-bold"
+                                                    className="w-5 h-6 me-1 hover:font-bold"
                                                 >
                                                     <path
                                                         strokeLinecap="round"
@@ -336,8 +413,10 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                     <th className="pb-3 pt-3">
                                                         Name
                                                     </th>
+                                                    <th>Sex</th>
                                                     <th>Age</th>
                                                     <th>Stage</th>
+                                                    <th>Status</th>
                                                     <th>
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
@@ -409,6 +488,13 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                                 </span>
                                                             </td>
                                                             <td>
+                                                                {
+                                                                    apply
+                                                                        .user_apply
+                                                                        .sex
+                                                                }
+                                                            </td>
+                                                            <td>
                                                                 {apply
                                                                     .user_apply
                                                                     .date_of_birth ===
@@ -423,6 +509,12 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                             <td>
                                                                 {
                                                                     apply.stage
+                                                                        .name
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    apply.status
                                                                         .name
                                                                 }
                                                             </td>
@@ -511,7 +603,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                         className="border-b"
                                                         key={i}
                                                     >
-                                                        <td className="p-2">
+                                                        <td className="p-3">
                                                             {
                                                                 value
                                                                     .vacancy_apply
@@ -573,6 +665,20 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                     </div>
                 </div>
             </div>
+            <Confirm
+                show={modalReject}
+                question="Are you sure reject this apply ?"
+                yes={rejectApply}
+                no={exitFormReject}
+            />
+
+            <Toast
+                show={showToast}
+                message={toastData.message}
+                time={10000}
+                falseShow={falseShow}
+                color={toastData.color}
+            />
 
             {/* modal history invite */}
             <Modal show={modalHistory}>
@@ -820,6 +926,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                 </Dialog.Panel>
             </Modal>
 
+            {/* modal cv  */}
             <Modal show={modalCv}>
                 <Dialog.Panel className="transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-flow-row justify-items-end">
