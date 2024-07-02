@@ -110,8 +110,9 @@ class ApplyController extends Controller
     public function detailApply(Request $req, $id)
     {
         $offset = isset($req->offset) ? $req->offset : 0;
-        $limit = isset($req->limit) ? $req->limit : 100;
+        $limit = isset($req->limit) ? $req->limit : 3;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->whereRelation('status','code','!=','rejected')
             ->where('vacancy_id',$id)
             ->offset($offset)
             ->limit($limit)
@@ -128,9 +129,15 @@ class ApplyController extends Controller
 
     public function loadMoreApply(Request $req, $id)
     {
-        $offset = isset($req->offset) ? $req->offset : 0;
-        $limit = isset($req->limit) ? $req->limit : 100;
-        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])->where('vacancy_id',$id)->offset($offset)->limit($limit)->get();
+        $offset = isset($req->offset) ? $req->offset : 3;
+        $limit = isset($req->limit) ? $req->limit : 3;
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply'])
+            ->whereRelation('status','code','!=','rejected')
+            ->where('vacancy_id',$id)
+            ->offset($offset)
+            ->limit($limit)
+            ->orderBy('updated_at','desc')
+            ->get();
         $vacancy = Vacancy::where('id',$id)->first();
         return $applies;
     }

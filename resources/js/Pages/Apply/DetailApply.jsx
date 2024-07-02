@@ -66,15 +66,38 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     }, []);
 
     const loadMoreData = () => {
-        let newOffset = offset + 100;
+        let newOffset = offset + 3;
         axios
             .put(`/apply/${vacancy.id}/load-more`, {
                 offset: newOffset,
                 limit: limit,
             })
             .then((res) => {
-                setData((prev) => [...prev, ...res.data]);
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setData((prev) => [...prev, ...dataMap]);
                 setOffset(newOffset);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const reloadData = () => {
+        let limit = data.length;
+        axios
+            .put(`/apply/${vacancy.id}/load-more`, {
+                offset: 0,
+                limit: limit,
+            })
+            .then((res) => {
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setData(dataMap);
             })
             .catch((error) => {
                 console.log(error);
@@ -148,14 +171,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     };
 
     const showFormInvite = () => {
-        setModalInvite(true);
-        getCheckedData();
+        let coundData = getCheckedData();
+        if (coundData > 0) {
+            setModalInvite(true);
+        }
     };
 
-    const rejectApply = () => {};
-
     const showFormReject = () => {
-        setModalReject(true);
+        let coundData = getCheckedData();
+        if (coundData > 0) {
+            setModalReject(true);
+        }
     };
 
     const exitFormReject = () => {
@@ -163,15 +189,35 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     };
 
     const showFormPass = () => {
-        setModalPass(true);
-        getCheckedData();
+        let coundData = getCheckedData();
+        if (coundData > 0) {
+            setModalPass(true);
+        }
     };
 
     const exitFormPass = () => {
         setModalPass(false);
     };
 
-    const passApply = () => {};
+    const passApply = () => {
+        axios
+            .put(`/apply/${vacancy.id}/passsed`, inviteData)
+            .then((res) => {
+                setModalReject(false);
+                setInviteData((prev) => ({
+                    ...prev,
+                    apply: [],
+                }));
+            })
+            .catch((err) => {
+                setModalReject(false);
+                setToastData({
+                    message: "Reject Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            });
+    };
 
     const getCheckedData = () => {
         let dataSelected = data.filter((d) => {
@@ -181,6 +227,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             ...prev,
             apply: dataSelected,
         }));
+        return dataSelected.length;
     };
 
     const inviteChange = (e) => {
@@ -200,6 +247,10 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                     color: "success",
                 });
                 setShowToast(true);
+                setInviteData((prev) => ({
+                    ...prev,
+                    apply: [],
+                }));
             })
             .catch((err) => {});
     };
@@ -214,8 +265,21 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .put(`/apply/${vacancy.id}/rejected`, inviteData)
             .then((res) => {
                 setModalReject(false);
+                setInviteData((prev) => ({
+                    ...prev,
+                    apply: [],
+                }));
+                reloadData();
             })
-            .catch((err) => {});
+            .catch((err) => {
+                console.log(err);
+                setModalReject(false);
+                setToastData({
+                    message: "Reject Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            });
     };
 
     const falseShow = () => {
@@ -691,7 +755,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             <Confirm
                 show={modalReject}
                 question="Are you sure reject this apply ?"
-                yes={rejectApply}
+                yes={reject}
                 no={exitFormReject}
             />
 

@@ -38,7 +38,7 @@ class ProcessRejected implements ShouldQueue
     public function proses()
     {
         VacancyApply::where('id', $this->vacancyApplyId)->update([
-            'apply_status_id' => ApllyStatus::rejected()->first()->id
+            'apply_status_id' => ApplyStatus::rejected()->first()->id
         ]);
     }
 }
