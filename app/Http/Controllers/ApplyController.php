@@ -110,7 +110,7 @@ class ApplyController extends Controller
     public function detailApply(Request $req, $id)
     {
         $offset = isset($req->offset) ? $req->offset : 0;
-        $limit = isset($req->limit) ? $req->limit : 3;
+        $limit = isset($req->limit) ? $req->limit : 100;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
             ->whereRelation('status','code','!=','rejected')
             ->where('vacancy_id',$id)
@@ -129,8 +129,8 @@ class ApplyController extends Controller
 
     public function loadMoreApply(Request $req, $id)
     {
-        $offset = isset($req->offset) ? $req->offset : 3;
-        $limit = isset($req->limit) ? $req->limit : 3;
+        $offset = isset($req->offset) ? $req->offset : 100;
+        $limit = isset($req->limit) ? $req->limit : 100;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])
             ->whereRelation('status','code','!=','rejected')
             ->where('vacancy_id',$id)
@@ -173,14 +173,14 @@ class ApplyController extends Controller
         return $invites;
     }
 
-    public function dataReject(Request $req)
+    public function dataApplyReject(Request $req, $id)
     {
-
-    }
-
-    public function filter()
-    {
-
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->whereRelation('status','code','=','rejected')
+            ->where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+            return $applies;
     }
 
     public function invite(Request $req, $id)

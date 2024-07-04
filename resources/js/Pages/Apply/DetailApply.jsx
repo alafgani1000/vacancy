@@ -15,7 +15,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [modalCv, SetModalCv] = useState(false);
     const [dataCv, setDataCv] = useState({});
     const [offset, setOffset] = useState(0);
-    const [limit, setLimit] = useState(3);
+    const [limit, setLimit] = useState(100);
     const [isData, setIsData] = useState(true);
     const [data, setData] = useState([]);
     const [isCheckAll, setIsCheckAll] = useState(false);
@@ -55,6 +55,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         message: "",
         color: "",
     });
+    const [dataRejects, setDataRejects] = useState([]);
 
     // variabel reload data
     var reloadInterval;
@@ -76,7 +77,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     }, []);
 
     const loadMoreData = () => {
-        let newOffset = offset + 3;
+        let newOffset = offset + 100;
         axios
             .put(`/apply/${vacancy.id}/load-more`, {
                 offset: newOffset,
@@ -100,6 +101,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .get(`/invites/${vacancy.id}`, {})
             .then((res) => {
                 setInvites(res.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const getDataReject = () => {
+        axios
+            .get(`/apply/${vacancy.id}/rejected`)
+            .then((res) => {
+                setDataRejects(res.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -338,7 +350,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400 mb-6">
                         <li className="me-4">
-                            <a
+                            <NavLink
                                 href={route("apply.index")}
                                 className={tabs.prev}
                                 aria-current="page"
@@ -347,7 +359,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="w-5 h-5 cursor-pointer black hover:stroke-slate-300"
+                                    className="w-5 h-7 pt-2 cursor-pointer black hover:stroke-slate-300"
                                 >
                                     <path
                                         fillRule="evenodd"
@@ -355,7 +367,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         clipRule="evenodd"
                                     />
                                 </svg>
-                            </a>
+                            </NavLink>
                         </li>
                         <li className="me-2">
                             <a
@@ -366,7 +378,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                     setTabs({
                                         apply: tabCssStyle.active,
                                         history: tabCssStyle.inActive,
-                                        prev: tabCssStyle.active,
+                                        prev: tabCssStyle.prev,
                                         reject: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
@@ -387,7 +399,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                     setTabs({
                                         apply: tabCssStyle.inActive,
                                         history: tabCssStyle.active,
-                                        prev: tabCssStyle.active,
+                                        prev: tabCssStyle.prev,
                                         reject: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
@@ -409,7 +421,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                     setTabs({
                                         apply: tabCssStyle.inActive,
                                         history: tabCssStyle.inActive,
-                                        prev: tabCssStyle.active,
+                                        prev: tabCssStyle.prev,
                                         reject: tabCssStyle.active,
                                     });
                                     setTabStatus({
@@ -417,7 +429,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         history: false,
                                         reject: true,
                                     });
-                                    getDataInvites();
+                                    getDataReject();
                                 }}
                             >
                                 Reject Data
@@ -791,6 +803,175 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                                     No
                                                                 </span>
                                                             )}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+
+                            {tabStatus.reject === true ? (
+                                <div className="rounded-md overflow-y-auto">
+                                    <div className="flex flex-row">
+                                        <div className="font-semibold">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div className="text-lg ms-2">
+                                            Data apply rejected
+                                        </div>
+                                    </div>
+                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
+                                        <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr className="font-bold">
+                                                <th className="pb-3 pt-3 text-center w-20">
+                                                    <input
+                                                        className="rounded-sm"
+                                                        type="checkbox"
+                                                        onChange={(e) =>
+                                                            checkAll(e)
+                                                        }
+                                                        defaultChecked={
+                                                            isCheckAll
+                                                        }
+                                                    />
+                                                </th>
+                                                <th className="pb-3 pt-3">
+                                                    Name
+                                                </th>
+                                                <th>Sex</th>
+                                                <th>Age</th>
+                                                <th>Stage</th>
+                                                <th>Status</th>
+                                                <th>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        strokeWidth={1.5}
+                                                        stroke="currentColor"
+                                                        className="w-6 h-6"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"
+                                                        />
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                        />
+                                                    </svg>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {dataRejects.map((apply) => {
+                                                return (
+                                                    <tr
+                                                        key={apply.id}
+                                                        className="border-b"
+                                                    >
+                                                        <td className="px-2 py-2.5 text-center">
+                                                            <input
+                                                                className="rounded-sm"
+                                                                type="checkbox"
+                                                                name={apply.id}
+                                                                checked={
+                                                                    apply.checked
+                                                                }
+                                                                onChange={() =>
+                                                                    checked(
+                                                                        apply.id
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className="p-2">
+                                                            <span
+                                                                className="hover:text-sky-950 hover:cursor-pointer"
+                                                                onClick={() =>
+                                                                    getCv(
+                                                                        apply
+                                                                            .user_apply
+                                                                            .id
+                                                                    )
+                                                                }
+                                                            >
+                                                                {
+                                                                    apply
+                                                                        .user_apply
+                                                                        .first_name
+                                                                }{" "}
+                                                                {
+                                                                    apply
+                                                                        .user_apply
+                                                                        .last_name
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                apply.user_apply
+                                                                    .sex
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {apply.user_apply
+                                                                .date_of_birth ===
+                                                            null
+                                                                ? ""
+                                                                : age(
+                                                                      apply
+                                                                          .user_apply
+                                                                          .date_of_birth
+                                                                  )}
+                                                        </td>
+                                                        <td>
+                                                            {apply.stage.name}
+                                                        </td>
+                                                        <td>
+                                                            {apply.status.name}
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                className="bg-blue-600 p-1 rounded"
+                                                                title="Cancel Reject"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    strokeWidth={
+                                                                        1.5
+                                                                    }
+                                                                    stroke="currentColor"
+                                                                    className="w-5 h-5 stroke-white"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+                                                                    />
+                                                                </svg>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 );

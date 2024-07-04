@@ -30,15 +30,15 @@ export default function Index({ auth, vacancies }) {
                                 {/* content */}
                                 {data.map((vacancy) => {
                                     return (
-                                        <a
+                                        <NavLink
                                             href={route(
                                                 "apply.detail",
                                                 vacancy.id
                                             )}
-                                            className="mb-4 shadow-blue-100"
+                                            className="mb-4 shadow-blue-100 w-full borde "
                                             key={vacancy.id}
                                         >
-                                            <div className="bg-white pl-4 pr-4 pt-3 pb-3 text-black h-full rounded-md hover:bg-sky-500 hover:text-white hover:cursor-pointer">
+                                            <div className="bg-white pl-4 pr-4 pt-3 pb-3 text-black h-full w-full rounded-md hover:bg-sky-500 hover:text-white hover:cursor-pointer">
                                                 <p className="font-bold">
                                                     {vacancy.job_name}
                                                 </p>
@@ -53,7 +53,7 @@ export default function Index({ auth, vacancies }) {
                                                     </span>
                                                 </p>
                                             </div>
-                                        </a>
+                                        </NavLink>
                                     );
                                 })}
                             </div>
