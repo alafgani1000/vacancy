@@ -14,6 +14,7 @@ use App\Http\Controllers\CvController;
 use App\Http\Controllers\ApplyStatusController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\InviteStatusController;
+use App\Http\Controllers\JobListsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -75,6 +76,9 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::put('/apply/{id}/rejected', [ApplyController::class, 'reject'])->name('apply.reject');
         Route::put('/apply/{id}/passed', [ApplyController::class, 'pass'])->name('apply.pass');
         Route::put('/apply/{id}/done', [ApplyController::class, 'done'])->name('apply.done');
+
+        // Job List
+        Route::post('/job-list', [JobListsController::class, 'data'])->name('job-list.data');
 
     });
 

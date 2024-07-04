@@ -31,15 +31,22 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
     const [modalReject, setModalReject] = useState(false);
     const [modalPass, setModalPass] = useState(false);
     const [modalHistory, setModalHistory] = useState(false);
-    const [tabs, setTabs] = useState({
-        apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
-        history:
+    const [tabCssStyle, setTabCssStyle] = useState({
+        active: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
+        inActive:
             "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
         prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
+    });
+    const [tabs, setTabs] = useState({
+        apply: tabCssStyle.active,
+        history: tabCssStyle.inActive,
+        reject: tabCssStyle.inActive,
+        prev: tabCssStyle.prev,
     });
     const [tabStatus, setTabStatus] = useState({
         apply: true,
         history: false,
+        reject: false,
     });
     const [invites, setInvites] = useState([]);
     const [historyData, setHistoryData] = useState([]);
@@ -48,6 +55,9 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         message: "",
         color: "",
     });
+
+    // variabel reload data
+    var reloadInterval;
 
     const closeModal = () => {
         SetModalCv(false);
@@ -79,25 +89,6 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                 }));
                 setData((prev) => [...prev, ...dataMap]);
                 setOffset(newOffset);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    };
-
-    const reloadData = () => {
-        let limit = data.length;
-        axios
-            .put(`/apply/${vacancy.id}/load-more`, {
-                offset: 0,
-                limit: limit,
-            })
-            .then((res) => {
-                let dataMap = res.data.map((prev) => ({
-                    ...prev,
-                    checked: false,
-                }));
-                setData(dataMap);
             })
             .catch((error) => {
                 console.log(error);
@@ -260,25 +251,71 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         setModalHistory(true);
     };
 
+    const reloadData = () => {
+        let limit = data.length;
+        axios
+            .put(`/apply/${vacancy.id}/load-more`, {
+                offset: 0,
+                limit: limit,
+            })
+            .then((res) => {
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setData(dataMap);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const jobListData = (model, action) => {
+        axios
+            .post("/job-list", {
+                model: model,
+                action: action,
+            })
+            .then((res) => {
+                setJobList(res.data);
+                if (res.data > 0) {
+                    clearInterval(reloadInterval);
+                    reloadData();
+                }
+            });
+    };
+
+    //
     const reject = () => {
         axios
             .put(`/apply/${vacancy.id}/rejected`, inviteData)
             .then((res) => {
-                setModalReject(false);
                 setInviteData((prev) => ({
                     ...prev,
                     apply: [],
                 }));
-                reloadData();
+                setToastData({
+                    message: "Reject Success",
+                    color: "success",
+                });
+                setShowToast(true);
+                reloadInterval = setInterval(
+                    jobListData,
+                    1000,
+                    "VacancyApply",
+                    "reject"
+                );
             })
             .catch((err) => {
-                console.log(err);
                 setModalReject(false);
                 setToastData({
                     message: "Reject Failed",
                     color: "error",
                 });
                 setShowToast(true);
+            })
+            .finally(() => {
+                setModalReject(false);
             });
     };
 
@@ -327,14 +364,15 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                 aria-current="page"
                                 onClick={() => {
                                     setTabs({
-                                        apply: "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
-                                        history:
-                                            "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
-                                        prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
+                                        apply: tabCssStyle.active,
+                                        history: tabCssStyle.inActive,
+                                        prev: tabCssStyle.active,
+                                        reject: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
                                         apply: true,
                                         history: false,
+                                        reject: false,
                                     });
                                 }}
                             >
@@ -347,19 +385,42 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                 className={tabs.history}
                                 onClick={() => {
                                     setTabs({
-                                        apply: "inline-block px-4 py-3 rounded-md hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-white",
-                                        history:
-                                            "inline-block px-4 py-3 shadow-md bg-white text-black rounded-md activate",
-                                        prev: "inline-block px-4 py-3 shadow-md bg-sky-950 text-white rounded-md activate",
+                                        apply: tabCssStyle.inActive,
+                                        history: tabCssStyle.active,
+                                        prev: tabCssStyle.active,
+                                        reject: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
                                         apply: false,
                                         history: true,
+                                        reject: false,
                                     });
                                     getDataInvites();
                                 }}
                             >
                                 Invite History
+                            </a>
+                        </li>
+                        <li className="me-2">
+                            <a
+                                href="#"
+                                className={tabs.reject}
+                                onClick={() => {
+                                    setTabs({
+                                        apply: tabCssStyle.inActive,
+                                        history: tabCssStyle.inActive,
+                                        prev: tabCssStyle.active,
+                                        reject: tabCssStyle.active,
+                                    });
+                                    setTabStatus({
+                                        apply: false,
+                                        history: false,
+                                        reject: true,
+                                    });
+                                    getDataInvites();
+                                }}
+                            >
+                                Reject Data
                             </a>
                         </li>
                     </ul>

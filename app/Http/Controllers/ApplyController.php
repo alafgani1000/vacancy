@@ -173,6 +173,11 @@ class ApplyController extends Controller
         return $invites;
     }
 
+    public function dataReject(Request $req)
+    {
+
+    }
+
     public function filter()
     {
 
@@ -213,10 +218,9 @@ class ApplyController extends Controller
     public function reject(Request $req)
     {
         $applies = $req->apply;
-        foreach($applies as $apply) {
-            ProcessRejected::dispatch($apply['id']);
-        }
-        return "Rejected Success";
+        $appliesColl = collect($applies);
+        $job = ProcessRejected::dispatch($appliesColl->pluck('id'), Auth::user()->id);
+        return 'Reject Success';
     }
 
     public function pass($id)
