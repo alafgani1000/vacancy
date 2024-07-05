@@ -41,12 +41,14 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         apply: tabCssStyle.active,
         history: tabCssStyle.inActive,
         reject: tabCssStyle.inActive,
+        pass: tabCssStyle.inActive,
         prev: tabCssStyle.prev,
     });
     const [tabStatus, setTabStatus] = useState({
         apply: true,
         history: false,
         reject: false,
+        pass: false,
     });
     const [invites, setInvites] = useState([]);
     const [historyData, setHistoryData] = useState([]);
@@ -56,6 +58,8 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         color: "",
     });
     const [dataRejects, setDataRejects] = useState([]);
+    const [dataPass, setDataPass] = useState([]);
+    const [JobList, setJobList] = useState();
 
     // variabel reload data
     var reloadInterval;
@@ -112,6 +116,17 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             .get(`/apply/${vacancy.id}/rejected`)
             .then((res) => {
                 setDataRejects(res.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const getDataPass = () => {
+        axios
+            .get(`/apply/${vacancy.id}/passed`)
+            .then((res) => {
+                setDataPass(res.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -202,26 +217,6 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
         setModalPass(false);
     };
 
-    const passApply = () => {
-        axios
-            .put(`/apply/${vacancy.id}/passsed`, inviteData)
-            .then((res) => {
-                setModalReject(false);
-                setInviteData((prev) => ({
-                    ...prev,
-                    apply: [],
-                }));
-            })
-            .catch((err) => {
-                setModalReject(false);
-                setToastData({
-                    message: "Reject Failed",
-                    color: "error",
-                });
-                setShowToast(true);
-            });
-    };
-
     const getCheckedData = () => {
         let dataSelected = data.filter((d) => {
             return d.checked === true;
@@ -297,7 +292,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             });
     };
 
-    //
+    // reject
     const reject = () => {
         axios
             .put(`/apply/${vacancy.id}/rejected`, inviteData)
@@ -328,6 +323,40 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             })
             .finally(() => {
                 setModalReject(false);
+            });
+    };
+
+    // pass
+    const pass = () => {
+        axios
+            .put(`/apply/${vacancy.id}/pass`, inviteData)
+            .then((res) => {
+                setInviteData((prev) => ({
+                    ...prev,
+                    apply: [],
+                }));
+                setToastData({
+                    message: "Pass Success",
+                    color: "success",
+                });
+                setShowToast(true);
+                reloadInterval = setInterval(
+                    jobListData,
+                    1000,
+                    "VacancyApply",
+                    "pass"
+                );
+            })
+            .catch((err) => {
+                setModalPass(false);
+                setToastData({
+                    message: "Pass Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            })
+            .finally(() => {
+                setModalPass(false);
             });
     };
 
@@ -380,11 +409,13 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         history: tabCssStyle.inActive,
                                         prev: tabCssStyle.prev,
                                         reject: tabCssStyle.inActive,
+                                        pass: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
                                         apply: true,
                                         history: false,
                                         reject: false,
+                                        pass: false,
                                     });
                                 }}
                             >
@@ -401,11 +432,13 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         history: tabCssStyle.active,
                                         prev: tabCssStyle.prev,
                                         reject: tabCssStyle.inActive,
+                                        pass: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
                                         apply: false,
                                         history: true,
                                         reject: false,
+                                        pass: false,
                                     });
                                     getDataInvites();
                                 }}
@@ -423,16 +456,42 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         history: tabCssStyle.inActive,
                                         prev: tabCssStyle.prev,
                                         reject: tabCssStyle.active,
+                                        pass: tabCssStyle.inActive,
                                     });
                                     setTabStatus({
                                         apply: false,
                                         history: false,
                                         reject: true,
+                                        pass: false,
                                     });
                                     getDataReject();
                                 }}
                             >
                                 Reject Data
+                            </a>
+                        </li>
+                        <li className="me-2">
+                            <a
+                                href="#"
+                                className={tabs.pass}
+                                onClick={() => {
+                                    setTabs({
+                                        apply: tabCssStyle.inActive,
+                                        history: tabCssStyle.inActive,
+                                        prev: tabCssStyle.prev,
+                                        reject: tabCssStyle.inActive,
+                                        pass: tabCssStyle.active,
+                                    });
+                                    setTabStatus({
+                                        apply: false,
+                                        history: false,
+                                        reject: false,
+                                        pass: true,
+                                    });
+                                    getDataPass();
+                                }}
+                            >
+                                Pass Data
                             </a>
                         </li>
                     </ul>
@@ -467,7 +526,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                         <div className="flex justify-end">
                                             <button
                                                 onClick={() => showFormReject()}
-                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
+                                                className="bg-slate-300 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -487,7 +546,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                             </button>
                                             <button
                                                 onClick={() => showFormPass()}
-                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-emerald-500 hover:border-none hover:border hover:border-emerald-500 hover:text-white"
+                                                className="bg-slate-300 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-emerald-500 hover:border-none hover:border hover:border-emerald-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -508,7 +567,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
 
                                             <button
                                                 onClick={() => showFormInvite()}
-                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-e-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                                className="bg-slate-300 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-e-md inline-flex hover:bg-blue-500 hover:border-none hover:border hover:border-blue-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -952,7 +1011,176 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                                                         </td>
                                                         <td>
                                                             <button
-                                                                className="bg-blue-600 p-1 rounded"
+                                                                className="bg-slate-400 p-1 rounded hover:bg-blue-500"
+                                                                title="Cancel Reject"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    strokeWidth={
+                                                                        1.5
+                                                                    }
+                                                                    stroke="currentColor"
+                                                                    className="w-5 h-5 stroke-white"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+                                                                    />
+                                                                </svg>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <></>
+                            )}
+
+                            {tabStatus.pass === true ? (
+                                <div className="rounded-md overflow-y-auto">
+                                    <div className="flex flex-row">
+                                        <div className="font-semibold">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div className="text-lg ms-2">
+                                            Data apply passed
+                                        </div>
+                                    </div>
+                                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
+                                        <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                            <tr className="font-bold">
+                                                <th className="pb-3 pt-3 text-center w-20">
+                                                    <input
+                                                        className="rounded-sm"
+                                                        type="checkbox"
+                                                        onChange={(e) =>
+                                                            checkAll(e)
+                                                        }
+                                                        defaultChecked={
+                                                            isCheckAll
+                                                        }
+                                                    />
+                                                </th>
+                                                <th className="pb-3 pt-3">
+                                                    Name
+                                                </th>
+                                                <th>Sex</th>
+                                                <th>Age</th>
+                                                <th>Stage</th>
+                                                <th>Status</th>
+                                                <th>
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        strokeWidth={1.5}
+                                                        stroke="currentColor"
+                                                        className="w-6 h-6"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"
+                                                        />
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                        />
+                                                    </svg>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {dataPass.map((apply) => {
+                                                return (
+                                                    <tr
+                                                        key={apply.id}
+                                                        className="border-b"
+                                                    >
+                                                        <td className="px-2 py-2.5 text-center">
+                                                            <input
+                                                                className="rounded-sm"
+                                                                type="checkbox"
+                                                                name={apply.id}
+                                                                checked={
+                                                                    apply.checked
+                                                                }
+                                                                onChange={() =>
+                                                                    checked(
+                                                                        apply.id
+                                                                    )
+                                                                }
+                                                            />
+                                                        </td>
+                                                        <td className="p-2">
+                                                            <span
+                                                                className="hover:text-sky-950 hover:cursor-pointer"
+                                                                onClick={() =>
+                                                                    getCv(
+                                                                        apply
+                                                                            .user_apply
+                                                                            .id
+                                                                    )
+                                                                }
+                                                            >
+                                                                {
+                                                                    apply
+                                                                        .user_apply
+                                                                        .first_name
+                                                                }{" "}
+                                                                {
+                                                                    apply
+                                                                        .user_apply
+                                                                        .last_name
+                                                                }
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            {
+                                                                apply.user_apply
+                                                                    .sex
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {apply.user_apply
+                                                                .date_of_birth ===
+                                                            null
+                                                                ? ""
+                                                                : age(
+                                                                      apply
+                                                                          .user_apply
+                                                                          .date_of_birth
+                                                                  )}
+                                                        </td>
+                                                        <td>
+                                                            {apply.stage.name}
+                                                        </td>
+                                                        <td>
+                                                            {apply.status.name}
+                                                        </td>
+                                                        <td>
+                                                            <button
+                                                                className="bg-slate-400 p-1 rounded hover:bg-blue-500"
                                                                 title="Cancel Reject"
                                                             >
                                                                 <svg
@@ -990,7 +1218,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
             <Confirm
                 show={modalPass}
                 question="Are you sure pass this apply ?"
-                yes={passApply}
+                yes={pass}
                 no={exitFormPass}
             />
 
@@ -1068,7 +1296,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
 
             {/* modal invite  */}
             <Modal show={modalInvite}>
-                <Dialog.Panel className="transform overflow-hidde bg-gray-100 rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
+                <Dialog.Panel className="transform overflow-hidde bg-white rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-cols-2 ">
                         <div className="text-3xl font-bold">Form invite</div>
                         <div className="justify-items-end">
@@ -1138,7 +1366,7 @@ export default function DetailApply({ auth, applies, vacancy, stagesdata }) {
                             </div>
                         </div>
                         <div className="w-full">
-                            <div className="w-full shadow-md bg-white py4 px-6 rounded-md py-6 h-full">
+                            <div className="w-full shadow-lg bg-white py4 px-6 rounded-md py-6 h-full">
                                 <form>
                                     <div className="w-full">
                                         <label

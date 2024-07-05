@@ -113,6 +113,7 @@ class ApplyController extends Controller
         $limit = isset($req->limit) ? $req->limit : 100;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
             ->whereRelation('status','code','!=','rejected')
+            ->whereRelation('status','code','!=','pass')
             ->where('vacancy_id',$id)
             ->offset($offset)
             ->limit($limit)
@@ -133,6 +134,7 @@ class ApplyController extends Controller
         $limit = isset($req->limit) ? $req->limit : 100;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])
             ->whereRelation('status','code','!=','rejected')
+            ->whereRelation('status','code','!=','pass')
             ->where('vacancy_id',$id)
             ->offset($offset)
             ->limit($limit)
@@ -180,7 +182,17 @@ class ApplyController extends Controller
             ->where('vacancy_id',$id)
             ->orderBy('updated_at','desc')
             ->get();
-            return $applies;
+        return $applies;
+    }
+
+    public function dataApplyPass(Request $req, $id)
+    {
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->whereRelation('status','code','=','pass')
+            ->where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+        return $applies;
     }
 
     public function invite(Request $req, $id)
@@ -223,12 +235,11 @@ class ApplyController extends Controller
         return 'Reject Success';
     }
 
-    public function pass($id)
+    public function pass(Request $req)
     {
         $applies = $req->apply;
-        foreach($applies as $apply) {
-            ProcessPassed::dispatch($apply['id']);
-        }
+        $appliesColl = collect($applies);
+        ProcessPassed::dispatch($appliesColl->pluck('id'), Auth::user()->id);
         return "Success";
     }
 

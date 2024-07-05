@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\ApplyStatus;
 use App\Models\VacancyApply;
+use App\Models\JobLists;
 
 
 class ProcessPassed implements ShouldQueue
@@ -17,13 +18,16 @@ class ProcessPassed implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $vacancyApplyId;
+    public $authId;
+
 
     /**
      * Create a new job instance.
      */
-    public function __construct($vacancyApplyId)
+    public function __construct($vacancyApplyId, $authId)
     {
         $this->vacancyApplyId = $vacancyApplyId;
+        $this->authId = $authId;
     }
 
     /**
@@ -31,13 +35,21 @@ class ProcessPassed implements ShouldQueue
      */
     public function handle(): void
     {
-        //
+        $this->proses();
     }
 
-    public function prose()
+    public function proses()
     {
-        VacancyApply::where('id',$this->vacancyApplyId)->update([
+        VacancyApply::whereIn('id',$this->vacancyApplyId)->update([
             'apply_status_id' => ApplyStatus::pass()->first()->id
         ]);
+
+        $jobLists = JobLists::create([
+            'user_id' => $this->authId,
+            'model' => 'VacancyApply',
+            'action' => 'pass',
+            'status' => 0
+        ]);
+
     }
 }
