@@ -107,7 +107,7 @@ export default function Index({ auth, vacancies }) {
                                     Total record: {total}
                                 </div>
                             </div>
-                            <div className="bg-slate-100 p-3 text-black grid grid-cols-2 gap-4 auto-rows-max rounded-md">
+                            <div className="bg-slate-100 p-3 text-black grid md:grid-cols-2 sm:grid-cols-1 gap-4 auto-rows-max rounded-md">
                                 {/* content */}
                                 {data.map((vacancy) => {
                                     return (
@@ -194,26 +194,26 @@ export default function Index({ auth, vacancies }) {
                                                     </div>
                                                 </div>
                                                 <div className="px-2">
-                                                    <p className="font-bold pb-2">
+                                                    <p className="font-bold">
                                                         {vacancy.job_name}
                                                     </p>
-                                                    <p className="pb-2">
-                                                        <span className="font-bold text-xs bg-red-600 py-1.5 px-1.5 rounded text-white mr-2">
+                                                    <div className="flex flex-wrap pb-2">
+                                                        <div className="font-bold text-xs bg-rose-600 py-1.5 px-1.5 rounded text-white mr-2 my-1">
                                                             {vacancy.level.name}
-                                                        </span>
-                                                        <span className="font-bold text-xs bg-sky-500 py-1.5 px-1.5 rounded text-white mr-2">
+                                                        </div>
+                                                        <div className="font-bold text-xs bg-sky-500 py-1.5 px-1.5 rounded text-white mr-2  my-1">
                                                             {vacancy.type.name}{" "}
                                                             / {vacancy.city},{" "}
                                                             {vacancy.country}
-                                                        </span>
-                                                        <span className="font-bold text-xs bg-sky-500 py-1.5 px-1.5 rounded text-white">
+                                                        </div>
+                                                        <div className="font-bold text-xs bg-sky-500 py-1.5 px-1.5 rounded text-white  my-1">
                                                             {moment(
                                                                 vacancy.created_at
                                                             ).format(
                                                                 "DD-MM-YYYY"
                                                             )}{" "}
-                                                        </span>
-                                                    </p>
+                                                        </div>
+                                                    </div>
                                                     <p>
                                                         <span className="text-sm font-bold">
                                                             Publish At:{" "}
