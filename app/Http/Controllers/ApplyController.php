@@ -121,10 +121,12 @@ class ApplyController extends Controller
             ->get();
         $vacancy = Vacancy::where('id',$id)->first();
         $stagesdata = Stage::all();
+        $statusData = ApplyStatus::all();
         return Inertia::render('Apply/DetailApply', [
             'applies' => $applies,
             'vacancy' => $vacancy,
-            'stagesdata' => $stagesdata
+            'stagesdata' => $stagesdata,
+            'statusData' => $statusData
         ]);
     }
 
@@ -249,6 +251,14 @@ class ApplyController extends Controller
             'apply_status_id' => ApplyStatus::rejected()->first()->id
         ]);
         return "Process Selection Is Done";
+    }
+
+    function changeApplyStatus(Request $req, $id)
+    {
+        $applies = $req->apply;
+        $appliesColl = collect($applies);
+        $job = ProcessRejected::dispatch($appliesColl->pluck('id'), Auth::user()->id);
+        return 'Change Success';
     }
 
 }
