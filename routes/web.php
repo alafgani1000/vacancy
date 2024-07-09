@@ -81,6 +81,8 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/apply/{id}/rejected', [ApplyController::class, 'dataApplyReject'])->name('apply.data-reject');
         Route::get('/apply/{id}/passed', [ApplyController::class, 'dataApplyPass'])->name('apply.data-pass');
 
+        Route::put('/apply/{id}/cancel', [ApplyController::class, 'changeApplyStatus'])->name('apply.cancel');
+        Route::put('/apply/{id}/pass-cancel', [ApplyController::class, 'changeApplyPassStatus'])->name('apply.pass-cancel');
         // Job List
         Route::post('/job-list', [JobListsController::class, 'data'])->name('job-list.data');
 

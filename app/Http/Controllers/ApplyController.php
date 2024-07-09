@@ -257,8 +257,33 @@ class ApplyController extends Controller
     {
         $applies = $req->apply;
         $appliesColl = collect($applies);
-        $job = ProcessRejected::dispatch($appliesColl->pluck('id'), Auth::user()->id);
-        return 'Change Success';
+        $change = VacancyApply::where('vacancy_id',$id)->whereIn('id',$appliesColl->pluck('id'))->update([
+            'apply_status_id' => $req->status
+        ]);
+
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->whereRelation('status','code','=','rejected')
+            ->where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+        return $applies;
     }
+
+    function changeApplyPassStatus(Request $req, $id)
+    {
+        $applies = $req->apply;
+        $appliesColl = collect($applies);
+        $change = VacancyApply::where('vacancy_id',$id)->whereIn('id',$appliesColl->pluck('id'))->update([
+            'apply_status_id' => $req->status
+        ]);
+
+        $applies = VacancyApply::with(['vacancy','stage','status','userApply','selections','selections.stage'])
+            ->whereRelation('status','code','=','pass')
+            ->where('vacancy_id',$id)
+            ->orderBy('updated_at','desc')
+            ->get();
+        return $applies;
+    }
+
 
 }

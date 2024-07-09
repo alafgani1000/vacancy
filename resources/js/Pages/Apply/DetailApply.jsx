@@ -26,6 +26,7 @@ export default function DetailApply({
     const [data, setData] = useState([]);
     const [isCheckAll, setIsCheckAll] = useState(false);
     const [isRejectCheckAll, SetIsRejectCheckAll] = useState(false);
+    const [isPassCheckAll, setIsPassCheckAll] = useState(false);
     const [inviteData, setInviteData] = useState({
         stage: "",
         date_interview: "",
@@ -35,10 +36,16 @@ export default function DetailApply({
     });
     const [cancelData, setCancelData] = useState({
         apply: [],
+        status: "",
+    });
+    const [cancelPassData, setCancelPassData] = useState({
+        apply: [],
+        status: "",
     });
     const [stages, setStages] = useState([]);
     const [modalInvite, setModalInvite] = useState(false);
     const [modalChange, setModalChange] = useState(false);
+    const [modalPassChange, setModalPassChange] = useState(false);
     const [modalReject, setModalReject] = useState(false);
     const [modalPass, setModalPass] = useState(false);
     const [modalHistory, setModalHistory] = useState(false);
@@ -130,7 +137,7 @@ export default function DetailApply({
                     ...prev,
                     checked: false,
                 }));
-                setDataRejects((prev) => [...prev, ...dataMap]);
+                setDataRejects(dataMap);
             })
             .catch((error) => {
                 console.log(error);
@@ -141,7 +148,11 @@ export default function DetailApply({
         axios
             .get(`/apply/${vacancy.id}/passed`)
             .then((res) => {
-                setDataPass(res.data);
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setDataPass(dataMap);
             })
             .catch((error) => {
                 console.log(error);
@@ -209,8 +220,31 @@ export default function DetailApply({
         }
     };
 
+    const checkedPass = (id) => {
+        let dataSelected = dataPass.find((d) => {
+            return d.id === id;
+        });
+        if (dataSelected.checked === false) {
+            dataSelected.checked = true;
+            setDataPass(dataPass.map((prev) => ({ ...prev, dataSelected })));
+        } else if (dataSelected.checked === true) {
+            dataSelected.checked = false;
+            setDataPass(dataPass.map((prev) => ({ ...prev, dataSelected })));
+        }
+    };
+
+    const checkAllPass = (e) => {
+        if (isPassCheckAll === false) {
+            setIsPassCheckAll(true);
+            setDataPass(dataPass.map((prev) => ({ ...prev, checked: true })));
+        } else if (isPassCheckAll === true) {
+            setIsPassCheckAll(false);
+            setDataPass(dataPass.map((prev) => ({ ...prev, checked: false })));
+        }
+    };
+
     const checkAllRejects = (e) => {
-        if (isRejectCheckAll === false) {
+        if (isPassAll === false) {
             SetIsRejectCheckAll(true);
             setDataRejects(
                 dataRejects.map((prev) => ({ ...prev, checked: true }))
@@ -255,6 +289,59 @@ export default function DetailApply({
         }
     };
 
+    const getRejectCheckedData = () => {
+        let dataSelected = dataRejects.filter((d) => {
+            return d.checked === true;
+        });
+        setCancelData((prev) => ({
+            ...prev,
+            apply: dataSelected,
+        }));
+        return dataSelected.length;
+    };
+
+    const showFormPassChange = () => {
+        let coundData = getPassCheckedData();
+        if (coundData > 0) {
+            setModalPassChange(true);
+        }
+    };
+
+    const getPassCheckedData = () => {
+        let dataSelected = dataPass.filter((d) => {
+            return d.checked === true;
+        });
+        setCancelPassData((prev) => ({
+            ...prev,
+            apply: dataSelected,
+        }));
+        return dataSelected.length;
+    };
+
+    const inviteCancel = (e) => {
+        setCancelData((prev) => ({
+            ...prev,
+            status: e.target.value,
+        }));
+    };
+
+    const invitePassCancel = (e) => {
+        setCancelPassData((prev) => ({
+            ...prev,
+            status: e.target.value,
+        }));
+    };
+
+    const closeModalChange = () => {
+        setModalChange(false);
+        setCancelData({ apply: [], status: "" });
+    };
+
+    const closeModalPassChange = () => {
+        setModalPassChange(false);
+        setCancelPassData({ apply: [], status: "" });
+    };
+
     const exitFormReject = () => {
         setModalReject(false);
     };
@@ -275,17 +362,6 @@ export default function DetailApply({
             return d.checked === true;
         });
         setInviteData((prev) => ({
-            ...prev,
-            apply: dataSelected,
-        }));
-        return dataSelected.length;
-    };
-
-    const getRejectCheckedData = () => {
-        let dataSelected = dataRejects.filter((d) => {
-            return d.checked === true;
-        });
-        setCancelData((prev) => ({
             ...prev,
             apply: dataSelected,
         }));
@@ -424,6 +500,74 @@ export default function DetailApply({
             });
     };
 
+    // cancel
+    const cancel = () => {
+        axios
+            .put(`/apply/${vacancy.id}/cancel`, cancelData)
+            .then((res) => {
+                setCancelData({
+                    apply: [],
+                    status: "",
+                });
+                setToastData({
+                    message: "Pass Success",
+                    color: "success",
+                });
+                setShowToast(true);
+                setModalChange(false);
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setDataRejects(dataMap);
+            })
+            .catch((err) => {
+                setModalChange(false);
+                setToastData({
+                    message: "Cancel Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            })
+            .finally(() => {
+                setModalChange(false);
+            });
+    };
+
+    // pass cancel
+    const passCancel = () => {
+        axios
+            .put(`/apply/${vacancy.id}/pass-cancel`, cancelPassData)
+            .then((res) => {
+                setCancelPassData({
+                    apply: [],
+                    status: "",
+                });
+                setToastData({
+                    message: "Pass Success",
+                    color: "success",
+                });
+                setShowToast(true);
+                setModalPassChange(false);
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setDataPass(dataMap);
+            })
+            .catch((err) => {
+                setModalPassChange(false);
+                setToastData({
+                    message: "Cancel Failed",
+                    color: "error",
+                });
+                setShowToast(true);
+            })
+            .finally(() => {
+                setModalPassChange(false);
+            });
+    };
+
     const falseShow = () => {
         setShowToast(false);
     };
@@ -439,9 +583,9 @@ export default function DetailApply({
         >
             <Head title="Apply" />
 
-            <div className="py-12">
+            <div className="py-8">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400 mb-6">
+                    <ul className="flex flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400 mb-8">
                         <li className="me-4">
                             <NavLink
                                 href={route("apply.index")}
@@ -561,7 +705,7 @@ export default function DetailApply({
                     </ul>
                     <div className="bg-white overflow-hidden shadow-md sm:rounded-md">
                         <div className="p-6 text-gray-900">
-                            <div className="flex justify-start bg-sky-950 p-3 mt-2 mb-5 text-white font-bold border-b-2 border-white rounded-md">
+                            <div className="flex justify-start bg-sky-500 p-3 mt-2 mb-5 text-white font-bold border-b-2 border-white rounded-md">
                                 {vacancy.job_name}
                             </div>
                             {/* apply data */}
@@ -589,8 +733,28 @@ export default function DetailApply({
                                         </div>
                                         <div className="flex justify-end">
                                             <button
+                                                onClick={() => reloadData()}
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-sky-500 hover:border-none hover:border hover:border-sky-500 hover:text-white"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth="1.5"
+                                                    stroke="currentColor"
+                                                    className="w-5 h-6 me-1"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                                                    />
+                                                </svg>
+                                                Reload
+                                            </button>
+                                            <button
                                                 onClick={() => showFormReject()}
-                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -675,7 +839,7 @@ export default function DetailApply({
                                             <div>
                                                 <input
                                                     type="text"
-                                                    className="text-xs rounded-md w-64"
+                                                    className="text-xs rounded-md w-64 me-4"
                                                     placeholder="Search"
                                                 />
                                             </div>
@@ -971,7 +1135,7 @@ export default function DetailApply({
                                         <div className="flex justify-end">
                                             <button
                                                 onClick={() => showFormChange()}
-                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-s-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -1013,27 +1177,6 @@ export default function DetailApply({
                                                 <th>Age</th>
                                                 <th>Stage</th>
                                                 <th>Status</th>
-                                                <th>
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        strokeWidth={1.5}
-                                                        stroke="currentColor"
-                                                        className="w-6 h-6"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"
-                                                        />
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                                        />
-                                                    </svg>
-                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1104,29 +1247,6 @@ export default function DetailApply({
                                                         <td>
                                                             {apply.status.name}
                                                         </td>
-                                                        <td>
-                                                            <button
-                                                                className="bg-slate-400 p-1 rounded hover:bg-blue-500"
-                                                                title="Cancel Reject"
-                                                            >
-                                                                <svg
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    fill="none"
-                                                                    viewBox="0 0 24 24"
-                                                                    strokeWidth={
-                                                                        1.5
-                                                                    }
-                                                                    stroke="currentColor"
-                                                                    className="w-5 h-5 stroke-white"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
-                                                                    />
-                                                                </svg>
-                                                            </button>
-                                                        </td>
                                                     </tr>
                                                 );
                                             })}
@@ -1139,25 +1259,51 @@ export default function DetailApply({
 
                             {tabStatus.pass === true ? (
                                 <div className="rounded-md overflow-y-auto">
-                                    <div className="flex flex-row">
-                                        <div className="font-semibold">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                                className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"
-                                                />
-                                            </svg>
+                                    <div className="grid grid-cols-2">
+                                        <div className="flex flex-row">
+                                            <div className="font-semibold">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="w-6 h-6 cursor-pointer stroke-sky-950 hover:stroke-slate-300"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"
+                                                    />
+                                                </svg>
+                                            </div>
+                                            <div className="text-lg ms-2">
+                                                Data apply passed
+                                            </div>
                                         </div>
-                                        <div className="text-lg ms-2">
-                                            Data apply passed
+                                        <div className="flex justify-end">
+                                            <button
+                                                onClick={() =>
+                                                    showFormPassChange()
+                                                }
+                                                className="bg-slate-200 text-sky-950 py-2 px-3 text-md hover:font-semibold rounded-md inline-flex hover:bg-rose-500 hover:border-none hover:border hover:border-rose-500 hover:text-white"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="w-5 h-6 me-1 hover:font-bold"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                                    />
+                                                </svg>
+                                                Cancel
+                                            </button>
                                         </div>
                                     </div>
                                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 mt-6 border-b border-t">
@@ -1168,10 +1314,10 @@ export default function DetailApply({
                                                         className="rounded-sm"
                                                         type="checkbox"
                                                         onChange={(e) =>
-                                                            checkAll(e)
+                                                            checkAllPass(e)
                                                         }
                                                         defaultChecked={
-                                                            isCheckAll
+                                                            isPassCheckAll
                                                         }
                                                     />
                                                 </th>
@@ -1221,7 +1367,7 @@ export default function DetailApply({
                                                                     apply.checked
                                                                 }
                                                                 onChange={() =>
-                                                                    checked(
+                                                                    checkedPass(
                                                                         apply.id
                                                                     )
                                                                 }
@@ -1582,14 +1728,14 @@ export default function DetailApply({
             <Modal show={modalChange}>
                 <Dialog.Panel className="transform overflow-hidde bg-white rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
                     <div className="grid grid-cols-2 ">
-                        <div className="text-3xl font-bold">
+                        <div className="text-2xl font-bold">
                             Form Change Status
                         </div>
                         <div className="justify-items-end">
                             <button
                                 type="button"
                                 className="float-right py-1 px-2 justify-center rounded border border-transparent bg-red-600  text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                onClick={() => setModalChange(false)}
+                                onClick={() => closeModalChange()}
                             >
                                 X
                             </button>
@@ -1652,16 +1798,16 @@ export default function DetailApply({
                             </div>
                         </div>
                         <div className="w-full">
-                            <div className="w-full shadow-lg bg-gray-50 py4 px-6 rounded-md py-6 h-full">
+                            <div className="w-full shadow-lg bg-white py4 px-6 rounded-md py-6 h-full">
                                 <form>
                                     <div className="w-full">
                                         <label className="block mb-2">
-                                            Stage
+                                            Status
                                         </label>
                                         <select
                                             className="rounded block w-full"
                                             name="stage"
-                                            onChange={inviteChange}
+                                            onChange={inviteCancel}
                                             defaultValue={inviteData.stage}
                                         >
                                             <option value="">
@@ -1673,7 +1819,7 @@ export default function DetailApply({
                                                         key={status.id}
                                                         value={status.id}
                                                     >
-                                                        {status.desc}
+                                                        {status.description}
                                                     </option>
                                                 );
                                             })}
@@ -1681,7 +1827,144 @@ export default function DetailApply({
                                     </div>
                                 </form>
                                 <div className="flex flex-row mt-5">
-                                    <button className="py-3 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 border-none border border-sky-500 text-white bg-sky-950">
+                                    <button
+                                        onClick={() => {
+                                            cancel();
+                                        }}
+                                        className="py-3 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 border-none border border-sky-500 text-white bg-sky-950"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth={1.5}
+                                            stroke="currentColor"
+                                            className="w-4 h-5 me-1.5 font-bold"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                            />
+                                        </svg>
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Dialog.Panel>
+            </Modal>
+
+            {/* modal pass change status  */}
+            <Modal show={modalPassChange}>
+                <Dialog.Panel className="transform overflow-hidde bg-white rounded-2xl p-6 text-left align-middle shadow-xl transition-all h-screen">
+                    <div className="grid grid-cols-2 ">
+                        <div className="text-2xl font-bold">
+                            Form Change Status
+                        </div>
+                        <div className="justify-items-end">
+                            <button
+                                type="button"
+                                className="float-right py-1 px-2 justify-center rounded border border-transparent bg-red-600  text-sm font-medium text-white hover:bg-red-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                onClick={() => closeModalPassChange()}
+                            >
+                                X
+                            </button>
+                        </div>
+                    </div>
+                    <div className="w-full grid grid-cols-2 gap-4 justify-items-center mt-4 pb-10 h-full">
+                        <div className="w-full ">
+                            <div className="w-full shadow-md bg-gradient-to-r from-sky-600 to-sky-500 py4 px-6 rounded-md py-6">
+                                <h1 className="text-base font-semibold text-white">
+                                    List of candidate to change status
+                                </h1>
+                                <table className="w-full text-sm text-left text-white dark:text-gray-400 mt-2 border-b border-t overflow-y-scroll">
+                                    <thead className="text-gray-700 bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr className="font-bold">
+                                            <th className="p-2">Name</th>
+                                            <th className="p-2">Age</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {cancelPassData.apply.map((data) => {
+                                            return (
+                                                <tr key={data.id}>
+                                                    <td className="pe-2 ps-2 pb-1 pt-2">
+                                                        <span
+                                                            className="hover:text-sky-400 hover:cursor-pointer"
+                                                            onClick={() =>
+                                                                getCv(
+                                                                    data
+                                                                        .user_apply
+                                                                        .id
+                                                                )
+                                                            }
+                                                        >
+                                                            {
+                                                                data.user_apply
+                                                                    .first_name
+                                                            }{" "}
+                                                            {
+                                                                data.user_apply
+                                                                    .last_name
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td className="pe-2 ps-2 pb-1 pt-2">
+                                                        {data.user_apply
+                                                            .date_of_birth ===
+                                                        null
+                                                            ? ""
+                                                            : age(
+                                                                  data
+                                                                      .user_apply
+                                                                      .date_of_birth
+                                                              )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="w-full">
+                            <div className="w-full shadow-lg bg-white py4 px-6 rounded-md py-6 h-full">
+                                <form>
+                                    <div className="w-full">
+                                        <label className="block mb-2">
+                                            Status
+                                        </label>
+                                        <select
+                                            className="rounded block w-full"
+                                            name="stage"
+                                            onChange={invitePassCancel}
+                                            defaultValue={inviteData.stage}
+                                        >
+                                            <option value="">
+                                                ...Please Select...
+                                            </option>
+                                            {statusData?.map((status) => {
+                                                return (
+                                                    <option
+                                                        key={status.id}
+                                                        value={status.id}
+                                                    >
+                                                        {status.description}
+                                                    </option>
+                                                );
+                                            })}
+                                        </select>
+                                    </div>
+                                </form>
+                                <div className="flex flex-row mt-5">
+                                    <button
+                                        onClick={() => {
+                                            passCancel();
+                                        }}
+                                        className="py-3 px-4 text-sm font-semibold rounded-md inline-flex hover:bg-sky-500 border-none border border-sky-500 text-white bg-sky-950"
+                                    >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             fill="none"
