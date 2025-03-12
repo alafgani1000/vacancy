@@ -132,12 +132,14 @@ class ApplyController extends Controller
 
     public function loadMoreApply(Request $req, $id)
     {
-        $offset = isset($req->offset) ? $req->offset : 100;
-        $limit = isset($req->limit) ? $req->limit : 100;
+        $offset = isset($req->offset) ? $req->offset : 20;
+        $limit = isset($req->limit) ? $req->limit : 20;
+        $stage = $req->stage;
         $applies = VacancyApply::with(['vacancy','stage','status','userApply'])
             ->whereRelation('status','code','!=','rejected')
             ->whereRelation('status','code','!=','pass')
             ->where('vacancy_id',$id)
+            ->where('stage_id', $stage)
             ->offset($offset)
             ->limit($limit)
             ->orderBy('updated_at','desc')

@@ -21,7 +21,7 @@ export default function DetailApply({
     const [modalCv, SetModalCv] = useState(false);
     const [dataCv, setDataCv] = useState({});
     const [offset, setOffset] = useState(0);
-    const [limit, setLimit] = useState(100);
+    const [limit, setLimit] = useState(20);
     const [isData, setIsData] = useState(true);
     const [data, setData] = useState([]);
     const [isCheckAll, setIsCheckAll] = useState(false);
@@ -78,6 +78,7 @@ export default function DetailApply({
     const [dataRejects, setDataRejects] = useState([]);
     const [dataPass, setDataPass] = useState([]);
     const [JobList, setJobList] = useState();
+    const [filter, setFilter] = useState("");
 
     // variabel reload data
     var reloadInterval;
@@ -98,12 +99,37 @@ export default function DetailApply({
         getStages();
     }, []);
 
-    const loadMoreData = () => {
-        let newOffset = offset + 100;
+    const filterData = (stage) => {
+        // alert("test");
+        let newOffset = offset;
+        setFilter(stage);
         axios
             .put(`/apply/${vacancy.id}/load-more`, {
                 offset: newOffset,
                 limit: limit,
+                stage: stage,
+            })
+            .then((res) => {
+                setData([]);
+                let dataMap = res.data.map((prev) => ({
+                    ...prev,
+                    checked: false,
+                }));
+                setData((prev) => [...prev, ...dataMap]);
+                setOffset(newOffset);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const loadMoreData = () => {
+        let newOffset = offset + 20;
+        axios
+            .put(`/apply/${vacancy.id}/load-more`, {
+                offset: newOffset,
+                limit: limit,
+                statge: filter,
             })
             .then((res) => {
                 let dataMap = res.data.map((prev) => ({
@@ -819,7 +845,14 @@ export default function DetailApply({
                                         {/* content */}
                                         <div className="flex flex-wrap">
                                             <div>
-                                                <select className="text-xs rounded-md me-4">
+                                                <select
+                                                    className="text-xs rounded-md me-4"
+                                                    onChange={(e) =>
+                                                        filterData(
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                >
                                                     <option value="">
                                                         -- Please Select Stage
                                                         --
